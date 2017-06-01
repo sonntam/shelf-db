@@ -321,7 +321,7 @@
 				var retstr = '';
 				if( fname ) {
 					retstr += '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
-					+ 'width:auto" data-other-src="/img/'+ fname_full +'" src="/img/' + fname + '">';
+					+ 'width:auto" data-other-src="/img/parts/'+ fname_full +'" src="/img/parts/' + fname + '">';
 					if( fname_full ) {
 						retstr = '<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">'
 						+ retstr + '</a>';
