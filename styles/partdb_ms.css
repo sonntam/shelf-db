@@ -1,0 +1,231 @@
+/* @import url('jquery.mobile-1.4.5.min.css'); */
+
+/*body {
+  margin: 0;
+  font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+  font-size: 16px;
+  line-height: 1.42857143;
+  -webkit-font-smoothing: antialiased;
+}*/
+
+a {
+  text-decoration: none;
+  color: gray;
+}
+
+/***********
+ * Nav Bar *
+ ***********/
+#navpanel {
+  /*width: 400px;*/
+  /*background-color: #edf0f2;*/
+}
+
+#navpanel .catkeys {
+  font-size: 10px;
+  margin-top: 1.809em;
+  margin-bottom: 0px;
+  padding: 0px;
+  text-align: center;
+}
+
+/**************
+ * Search bar *
+ **************/
+.search {
+  position: relative;
+  padding: 0.809em;
+  color: #aaa;
+  font-size: 16px;
+  display: inline-block;
+  text-align: center;
+  background-color: #2980B9;
+  /*margin-bottom: 0.809em;*/
+}
+
+.search > a {
+  color: #fcfcfc;
+  font-size: 100%;
+  display: inline-block;
+  padding: 4px 6px;
+  margin-bottom: 0.809em;
+  font-weight: bold;
+}
+
+.search > div {
+  background-color: #fff;
+}
+
+/**
+ * jqTree
+ */
+
+.jqtree-tree {
+  font-size: 90%;
+}
+
+/** Hover over element */
+
+.jqtree-element:hover {
+  background-color: #d6d6d6;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+ul.jqtree-tree .jqtree-title {
+  text-decoration-color: gray;
+}
+
+ul.jqtree-tree .jqtree-empty {
+  color: gray;
+}
+
+/** Selected row */
+ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+  background: none;
+  background-color: #c9c9c9;
+  text-decoration-color: #404040;
+  text-decoration-line: none;
+  text-shadow: none;
+  font-weight: bold;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+
+/** Hover over selected row */
+
+ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
+  background: none;
+  background-color: #c9c9c9;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+
+ul li.jqtree_common {
+	/*padding: 0 0 0 20px;
+	margin: 0 0 0 5px;
+	min-height: 19px;*/
+
+	background-image: url(../img/menu/treeview-default-line.png);
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
+	position: relative;
+}
+
+ul.jqtree_common .jqtree-toggler {
+	position: relative;
+	top: -2px;
+	left: 3px;
+	/*height: 20px;*/
+	/*width: 20px;*/
+	/*background-repeat: no-repeat;
+  background-image: url(../img/menu/minusplus.png);*/
+	/*background-position: 50% 0;*/
+	/*text-indent: 100px;*/
+	/*overflow: hidden;
+	cursor: pointer;*/
+}
+
+ul.jqtree_common .jqtree-toggler.jqtree-closed {
+	/*background-position: 50% 100%;*/
+  position: relative;
+  left: 5px;
+}
+
+ul.jqtree-tree li.jqtree-folder {
+  margin-bottom: 0px;
+}
+
+ul.jqtree_common li ul.jqtree_common li:last-child {
+	background-position: 0 -1766px;
+}
+ul.jqtree_common>li:last-child,  ul.jqtree-tree>li:last-child {
+	background-position: 0 -1766px;
+}
+
+div.jqtree-element.jqtree_common {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.jqtree-element.jqtree_common > span {
+  display: inline-block;
+  width: 90%;
+  white-space: normal;
+  word-wrap: break-word;
+  vertical-align: top;
+
+}
+
+/*
+  Links
+ */
+
+ a.homelink, a:visited.homelink {
+   color: #fff;
+   text-shadow: 0 1px 0 #000;
+ }
+
+ a:hover.homelink {
+   color: #fff;
+   text-shadow: 0 1px 5px #000;
+ }
+
+ div.ui-footer {
+   font-size: 70%;
+   padding-left: 10px;
+ }
+
+
+/*
+  Panel
+ */
+.ui-panel-inner {
+  padding: 0em;
+}
+
+@media ( min-width: 35em ) {
+
+	/* wrap on wide viewports once open */
+
+	.ui-panel-page-content-open.ui-panel-page-content-position-left {
+		margin-right: 17em;
+	}
+	.ui-panel-page-content-open.ui-panel-page-content-position-right {
+		margin-left: 17em;
+	}
+	.ui-panel-page-content-open {
+		width: auto;
+	}
+
+	/* disable "dismiss" on wide viewports */
+	.ui-panel-dismiss {
+		display: none;
+	}
+
+	/* same as the above but for panels with display mode "push" only */
+
+	.ui-panel-page-content-open.ui-panel-page-content-position-left.ui-panel-page-content-display-push {
+		margin-right: 17em;
+	}
+	.ui-panel-page-content-open.ui-panel-page-content-position-right.ui-panel-page-content-display-push {
+		margin-left: 17em;
+	}
+	.ui-panel-page-content-open.ui-panel-page-content-display-push {
+		width: auto;
+	}
+
+	.ui-panel-dismiss-display-push {
+		display: none;
+	}
+}
+
+/* Edit controls for category tree */
+div.editcontrols {
+  display: inherit;
+  z-index: 10;
+}
+
+div.editcontrols.editcontrols-hidden {
+  display: none;
+}

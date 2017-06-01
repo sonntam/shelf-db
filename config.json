@@ -1,0 +1,16 @@
+{
+    "config": {
+        "version": "1.0"
+    },
+    "database": {
+        "host": "localhost",
+        "user": "partdb",
+        "password": "",
+        "name": "partdb",
+        "port": 30154
+    },
+    "log": {
+        "loglevel": "error",
+        "logdatetime": false
+    }
+}

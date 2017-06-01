@@ -1,0 +1,1 @@
+#marker-rule: /TODO\s*(.{0,25})/||%1||ToDos||ext=.php
