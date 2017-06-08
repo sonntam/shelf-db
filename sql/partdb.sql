@@ -1719,7 +1719,7 @@ INSERT INTO `parts` (`id`, `id_category`, `name`, `instock`, `mininstock`, `comm
 -- Daten für Tabelle `pictures`
 --
 
-INSERT INTO `pictures` (`id`, `part_id`, `pict_fname`, `pict_width`, `pict_height`, `pict_type`, `tn_obsolete`, `tn_t`, `tn_pictid`, `pict_masterpict`) VALUES
+INSERT INTO `pictures` (`id`, `parent_id`, `pict_fname`, `pict_width`, `pict_height`, `pict_type`, `tn_obsolete`, `tn_t`, `tn_pictid`, `pict_masterpict`) VALUES
 (4, 181, 'img_204875cfc6e84208117f8c8b2cb65bbe.png', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 1),
 (3, 180, 'img_cfcb786ac9dd980c8e7a72a8280ad9e0.png', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),
 (5, 182, 'img_31c7bff3e2a2586e0e974060a3e11b63.png', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 1),

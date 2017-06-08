@@ -31,6 +31,10 @@
 
 		$parent  = $pdb->GetParentCategoryFromId($parent['id']);
 	}
+
+	// FIlter strings
+	$fpFilter = join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetFootprints()));
+	$slFilter = join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetStorelocations()));
 ?>
 
 <script type="text/javascript">
@@ -40,8 +44,10 @@
 <div id=showparts data-role="page">
 	<script>
 
+	pageHookClear();
+
 	// Popup handler
-	$( document ).one( "pagecreate", function() {
+	$.mobile.pageCreateTasks.push( function() {
 	  $( ".photopopup" ).on({
       popupbeforeposition: function(evt) {
         var maxHeight = $( window ).height() - 60 + "px";
@@ -60,8 +66,9 @@
 		});
 	});
 
-		$(':mobile-pagecontainer').off("pagecontainerchange");
-		$(':mobile-pagecontainer').on("pagecontainerchange", function( event, ui ){
+		//$(':mobile-pagecontainer').off("pagecontainerchange");
+		//$(':mobile-pagecontainer').on("pagecontainerchange",
+		$.mobile.pageContainerChangeTasks.push( function( event, ui ){
 				console.log("DEBUG: pagecontainer - change (id = <?php echo $catid; ?>)");
 
 				var $subtree = $('#subcattree');
@@ -108,10 +115,10 @@
 					inlineEditing: {keys:true, position:"afterSelected"},
 					sortname: 'name',
 					viewrecords: true,
-					sortorder: 'desc',
+					sortorder: 'asc',
 					viewrecords: false,
 					gridComplete: function() {
-						debugger;
+
 						var ids = $(this).jqGrid('getDataIDs');
 						for( var i = 0; i < ids.length; i++) {
 								$(this).jqGrid('setRowData', ids[i], {
@@ -130,7 +137,8 @@
 								sortable: false,
 								editable: false,
 								align: 'center',
-								formatter: imageFormatter
+								formatter: imageFormatter,
+								search: false,
 							},
 	            {
 								name: 'name',
@@ -143,7 +151,8 @@
 								},
 								formatter: 'showlink',
 								formatoptions: {
-									idName: 'partid'
+									idName: 'partid',
+									baseLinkUrl: '/pages/page-showpartdetail.php',
 								},
 								width: 40
 						 	},
@@ -184,16 +193,16 @@
 								name: 'footprint',
 								label: 'Footprint',
 								index: 'footprint',
-								sortable: false,
+								sortable: true,
 								align: 'right',
 								edittype: 'select',
 								stype: 'select',
 								searchoptions: {
 									sopt: ["eq","ne"],
-									value: ":Any;FE:FedEx;TN:TNT;IN:IN"
+									value: ":Any;<?php echo $fpFilter; ?>"
 								},
 								editoptions: {
-									value: "<?php echo join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetFootprints())); ?>"
+									value: "<?php echo $fpFilter; ?>"
 								},
 								width: 10
 							},
@@ -208,10 +217,10 @@
 								stype: 'select',
 								searchoptions: {
 									sopt: ["eq","ne"],
-									value: ":Any;FE:FedEx;TN:TNT;IN:IN"
+									value: ":Any;<?php echo $slFilter; ?>"
 								},
 								editoptions: {
-									value: "<?php echo join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetStorelocations())); ?>"
+									value: "<?php echo $slFilter; ?>"
 								},
 								width: 10,
 							},
@@ -225,7 +234,8 @@
 								fixed: true,
 								editable: function(opts) {
 									return (opts.mode == "edit" ? false : true);
-								}
+								},
+								search: false,
 							},
 							{
 								name: 'actions',
@@ -281,8 +291,9 @@
 
 			});
 
-			$(':mobile-pagecontainer').off("pagecontainerbeforeload");
-			$(':mobile-pagecontainer').on("pagecontainerbeforeload", function(event,ui) {
+			//$(':mobile-pagecontainer').off("pagecontainerbeforeload");
+			//$(':mobile-pagecontainer').on("pagecontainerbeforeload",
+			$.mobile.pageContainerBeforeLoadTasks.push( function(event,ui) {
 
 				console.log("DEBUG: pagecontainer - beforeload (id = <?php echo $catid; ?>)");
 
@@ -326,6 +337,10 @@
 						retstr = '<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">'
 						+ retstr + '</a>';
 					}
+				} else {
+					// Try footprint
+					retstr = '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
+					+ 'width:auto" src="/img/footprint/' + rowObject.f_pict_fname + '">';
 				}
 				return retstr;
 			}
@@ -346,7 +361,7 @@
 		?>
 
 			<h3>Unterkategorien</h3>
-			<div id="subcattree" data-url="categorytree.json.php?catid=<?php echo $catid; ?>&withparent=<?php echo ($catid == 0 ? 0 : 1) ?>"></div>
+			<div id="subcattree" data-url="/lib/json.categorytree.php?catid=<?php echo $catid; ?>&withparent=<?php echo ($catid == 0 ? 0 : 1) ?>"></div>
 		<?php
 			}
 		?>

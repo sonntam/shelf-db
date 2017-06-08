@@ -1,3 +1,4 @@
 *.bak
 phpmyadmin
 img/parts/*
+img/footprint/*

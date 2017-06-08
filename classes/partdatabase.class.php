@@ -9,7 +9,7 @@ require_once(__DIR__.'/config.php');
 class PartDatabase
 {
 
-  private const VERSION = array("major" => 1, "minor" => 0);
+  private const VERSION = array("major" => 1, "minor" => 1);
 
   /**
    * @var mysqli $sql MySQL object
@@ -260,6 +260,23 @@ class PartDatabase
     return $children;
   }
 
+  public function GetFootprints($id = null) {
+
+    if( $id === null ) {
+      // Get All
+      $query = "SELECT f.id, f.name, COALESCE(p.pict_fname,'default.png') as pict_fname, p.id as pict_id FROM footprints f LEFT JOIN pictures p ON p.parent_id = f.id AND p.pict_type = 'F' ORDER BY udf_NaturalSortFormat(f.name, 10, \".,\")";
+    } else {
+      $query = "SELECT f.id, f.name, COALESCE(p.pict_fname,'default.png') as pict_fname, p.id as pict_id FROM footprints f LEFT JOIN pictures p ON p.parent_id = f.id AND p.pict_type = 'F' WHERE f.id = $id ORDER BY udf_NaturalSortFormat(f.name, 10, \".,\")";
+    }
+
+    $res = $this->sql->query($query) or Log::WarningSQLQuery($query, $this->sql);
+
+    $children = $res->fetch_all(MYSQLI_ASSOC);
+    $res->free();
+
+    return $children;
+  }
+
   public function GetPartsSegmentByCategoryId( int $catid, int $offset, int $limit, $sortcol, $sortorder, $recursive = false) {
 
     if( $recursive ) {
@@ -268,28 +285,50 @@ class PartDatabase
       $catids = array($catid);
     }
 
-    $query = "SELECT p.*, p.id, p.id_category, p.name, p.instock, p.mininstock, "
+    switch( $sortcol )
+    {
+      case "instock":
+        $sortname = "p.instock";
+        break;
+      case "mininstock":
+        $sortname = "p.mininstock";
+        break;
+      case "footprint":
+        $sortname = "f.name";
+        break;
+      case "storelocid":
+        $sortname = "s.name";
+        break;
+      default:
+        $sortname = "p.name";
+    }
+
+    $sortorder = ($sortorder == "desc" ? "DESC" : "ASC");
+
+    $query = "SELECT p.*, p.id, p.id_category, p.name AS name, p.instock AS instock, p.mininstock AS mininstock, "
       ."CONCAT(p.instock,'/',p.mininstock) AS partnum, f.name AS footprint, "
       ."s.id AS storelocid, s.name AS storeloc, "
       ."su.name AS supplier_name, c.name AS category_name, "
       ."pic.pict_id_arr, pic.pict_fname_arr, pic.pict_height_arr, pic.pict_width_arr, "
       ."pic.pict_masterpict_arr, pic.tn_id_arr, pic.tn_fname_arr, pic.tn_obsolete_arr, "
       ."pic.tn_t_arr,"
-      ."pr.price AS price "
+      ."pr.price AS price, "
+      ."COALESCE(fpr.pict_fname,'default.png') AS f_pict_fname "
       ."FROM parts p "
-      ."JOIN footprints f ON p.id_footprint = f.id "
+      ."LEFT JOIN footprints f ON p.id_footprint = f.id "
       ."LEFT JOIN storeloc s ON p.id_storeloc = s.id "
       ."LEFT JOIN suppliers su ON p.id_supplier = su.id "
       ."LEFT JOIN categories c ON p.id_category = c.id "
       ."LEFT JOIN ("
-        ."SELECT GROUP_CONCAT(a.id) AS pict_id_arr, a.part_id, GROUP_CONCAT(a.pict_fname) AS pict_fname_arr, GROUP_CONCAT(a.pict_height) AS pict_height_arr, "
+        ."SELECT GROUP_CONCAT(a.id) AS pict_id_arr, a.parent_id, GROUP_CONCAT(a.pict_fname) AS pict_fname_arr, GROUP_CONCAT(a.pict_height) AS pict_height_arr, "
           ."GROUP_CONCAT(a.pict_width) AS pict_width_arr, GROUP_CONCAT(a.pict_masterpict) AS pict_masterpict_arr, GROUP_CONCAT(b.id) AS tn_id_arr, GROUP_CONCAT(b.pict_fname) AS tn_fname_arr, "
           ."GROUP_CONCAT(b.tn_obsolete) AS tn_obsolete_arr, GROUP_CONCAT(b.tn_t) AS tn_t_arr FROM pictures a LEFT JOIN pictures b ON b.tn_pictid = a.id "
-        ."WHERE a.pict_type = 'P' GROUP BY part_id"
-      .") pic ON pic.part_id = p.id " //AND (pic.pict_masterpict = 1 OR pic.pict_) "
+        ."WHERE a.pict_type = 'P' GROUP BY parent_id"
+      .") pic ON pic.parent_id = p.id " //AND (pic.pict_masterpict = 1 OR pic.pict_) "
       ."LEFT JOIN prices pr ON pr.part_id = p.id "
+      ."LEFT JOIN pictures fpr ON f.id = fpr.parent_id "
       ."WHERE p.id_category IN (".join(',', $catids ).") "
-      ."ORDER BY udf_NaturalSortFormat(p.name, 10, \".,\") LIMIT $limit OFFSET $offset";
+      ."ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
     $res = $this->sql->query($query) or Log::WarningSQLQuery($query, $this->sql);
     if( !$res )
     {
@@ -301,10 +340,14 @@ class PartDatabase
     return $data;
   }
 
-  public function GetFootprints( ) {
+  public function GetStorelocations($id = null) {
 
     // Extract Part
-    $query = "SELECT * FROM footprints ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+    if( $id === null ) {
+      $query = "SELECT * FROM storeloc ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+    } else {
+      $query = "SELECT * FROM storeloc WHERE id = $id";
+    }
     $res = $this->sql->query($query) or Log::WarningSQLQuery($query, $this->sql);
     $data = $res->fetch_all(MYSQLI_ASSOC);
     $res->free();
@@ -312,12 +355,38 @@ class PartDatabase
     return $data;
   }
 
-  public function GetStorelocations( ) {
+  public function GetPartDetailById( int $partid ) {
 
-    // Extract Part
-    $query = "SELECT * FROM storeloc ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+    $query = "SELECT p.*, p.id, p.id_category, p.name, p.instock, p.mininstock, "
+      ."f.name AS footprint, "
+      ."s.id AS storelocid, s.name AS storeloc, "
+      ."su.name AS supplier_name, c.name AS category_name, "
+      ."pic.pict_id_arr, pic.pict_fname_arr, pic.pict_height_arr, pic.pict_width_arr, "
+      ."pic.pict_masterpict_arr, pic.tn_id_arr, pic.tn_fname_arr, pic.tn_obsolete_arr, "
+      ."pic.tn_t_arr,"
+      ."pr.price AS price, "
+      ."COALESCE(fpr.pict_fname,'default.png') AS f_pict_fname "
+      ."FROM parts p "
+      ."LEFT JOIN footprints f ON p.id_footprint = f.id "
+      ."LEFT JOIN storeloc s ON p.id_storeloc = s.id "
+      ."LEFT JOIN suppliers su ON p.id_supplier = su.id "
+      ."LEFT JOIN categories c ON p.id_category = c.id "
+      ."LEFT JOIN ("
+        ."SELECT GROUP_CONCAT(a.id) AS pict_id_arr, a.parent_id, GROUP_CONCAT(a.pict_fname) AS pict_fname_arr, GROUP_CONCAT(a.pict_height) AS pict_height_arr, "
+          ."GROUP_CONCAT(a.pict_width) AS pict_width_arr, GROUP_CONCAT(a.pict_masterpict) AS pict_masterpict_arr, GROUP_CONCAT(b.id) AS tn_id_arr, GROUP_CONCAT(b.pict_fname) AS tn_fname_arr, "
+          ."GROUP_CONCAT(b.tn_obsolete) AS tn_obsolete_arr, GROUP_CONCAT(b.tn_t) AS tn_t_arr FROM pictures a LEFT JOIN pictures b ON b.tn_pictid = a.id "
+        ."WHERE a.pict_type = 'P' GROUP BY parent_id"
+      .") pic ON pic.parent_id = p.id " //AND (pic.pict_masterpict = 1 OR pic.pict_) "
+      ."LEFT JOIN prices pr ON pr.part_id = p.id "
+      ."LEFT JOIN pictures fpr ON f.id = fpr.parent_id "
+      ."WHERE p.id = $partid "
+      ."LIMIT 1";
     $res = $this->sql->query($query) or Log::WarningSQLQuery($query, $this->sql);
-    $data = $res->fetch_all(MYSQLI_ASSOC);
+    if( !$res )
+    {
+      return null;
+    }
+    $data = $res->fetch_assoc();
     $res->free();
 
     return $data;

@@ -3,7 +3,7 @@
  * Version: see Version variable
  */
 
-SET @VERSION = "1.0";
+SET @VERSION = "1.1";
 
 DROP TABLE IF EXISTS `info`;
 CREATE TABLE `info` (
@@ -116,11 +116,11 @@ CREATE TABLE IF NOT EXISTS `pending_orders` (
 DROP TABLE IF EXISTS `pictures`;
 CREATE TABLE IF NOT EXISTS `pictures` (
   `id` int(11) NOT NULL UNIQUE,
-  `part_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of part this image belongs to',
+  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of part or footprint this image belongs to',
   `pict_fname` varchar(255) NOT NULL DEFAULT '' COMMENT 'Picture filename',
   `pict_width` int(11) NOT NULL DEFAULT '0',
   `pict_height` int(11) NOT NULL DEFAULT '0',
-  `pict_type` enum('P','T') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail',
+  `pict_type` enum('P','T','F','TF') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail, `F` is footprint, `TF` is thumbnail of footprint',
   `tn_obsolete` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Is 1 if thumbnail is outdated and must be regenerated',
   `tn_t` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Generation timestamp of thumbnail',
   `tn_pictid` int(11) NOT NULL DEFAULT '0' COMMENT 'Picture ID this thumbnail belongs to',

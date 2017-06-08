@@ -14,8 +14,10 @@
   $_GET += array("sord" => "asc");       // "asc" or "desc"
   $_GET += array("_search" => false);    // If true this is a search request
   $_GET += array("searchField" => null); // Name of search field
-  $_GET += array("searchOper" => null);  // Search operator "cn" = contains
+  $_GET += array("searchString" => null);// Value of search field
+  $_GET += array("searchOper" => null);  // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
   $_GET += array("filters" => null);     // Filters
+
 
   // Get category ID
   $catid      = $_GET["catid"];
@@ -33,7 +35,7 @@
 
     $offset   = $limit*($page - 1);
 
-    $parts = $pdb->GetPartsSegmentByCategoryId($catid, $offset, $limit, 0, 0, true);
+    $parts = $pdb->GetPartsSegmentByCategoryId($catid, $offset, $limit, $_GET["sidx"], $_GET["sord"], true);
 
     // Copy
     $newparts = array();
