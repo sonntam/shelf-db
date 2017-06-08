@@ -3,7 +3,7 @@
  * Version: see Version variable
  */
 
-SET @VERSION = "1.1";
+SET @VERSION = "1.2";
 
 DROP TABLE IF EXISTS `info`;
 CREATE TABLE `info` (
@@ -86,12 +86,71 @@ CREATE TABLE IF NOT EXISTS `parts` (
   `name` mediumtext NOT NULL,
   `instock` int(11) NOT NULL DEFAULT '0',
   `mininstock` int(11) NOT NULL DEFAULT '0',
+  `totalstock` int(11) NOT NULL DEFAULT '0',
   `comment` mediumtext NOT NULL,
   `id_footprint` int(11) NOT NULL DEFAULT '0',
   `id_storeloc` int(11) NOT NULL DEFAULT '0',
   `id_supplier` int(11) NOT NULL DEFAULT '0',
-  `supplierpartnr` mediumtext NOT NULL
+  `supplierpartnr` mediumtext NOT NULL,
+  `hidden` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL UNIQUE,
+  `name` mediumtext NOT NULL,
+  'passhash' mediumtext NOT NULL,
+  `email` mediumtext NOT NULL,
+  `isadmin` bit(1) NOT NULL DEFAULT b'0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` int(11) NOT NULL UNIQUE,
+  `name` mediumtext NOT NULL,
+  `isadmin` bit(1) NOT NULL DEFAULT b'0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `users_groups`
+--
+
+DROP TABLE IF EXISTS `users_groups`;
+CREATE TABLE IF NOT EXISTS `users_groups` (
+  `id` int(11) NOT NULL UNIQUE,
+  `userid` int(11) NOT NULL,
+  `groupid` int(11) NOT NULL,
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='The user and group relation table';
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `permissions`
+--
+
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` int(11) NOT NULL UNIQUE,
+  `objtype` enum('P','S','F') NOT NULL COMMENT 'Type of object this acl is applied upon `P` is part, `S` is storagelocation, `F` is footprint',
+  `objid` int(11) NOT NULL,
+  `authtype` enum('U','G') NOT NULL COMMENT 'Type of object that gains this acl, `U` is userid, `G` is groupid',
+  `authrights` enum('N','R','W') NOT NULL DEFAULT 'W' COMMENT 'Access rights, `N` is disallow, `R` is read, `W` is write',
+  `authid` int(11) NOT NULL COMMENT 'User or group ID this is applied upon'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='The part and user/group acl relation table';
 
 -- --------------------------------------------------------
 
