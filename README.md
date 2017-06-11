@@ -5,9 +5,11 @@ Used libraries
  - jQuery
  - font awesome
  - jquery-mobile
+ - jquery-validation https://github.com/jquery-validation/jquery-validation
 
 TODO
 
  - Remove json pretty print
  - Remove debugger statements from javascript
  - Remove debug output
+ - new categories must be greyed out in the edit tree view
