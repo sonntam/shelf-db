@@ -6,11 +6,12 @@
 
 
   foreach( $footprints as &$f ) {
-    $f = "<li><a href='#'><img src='/img/footprint/".$f['pict_fname']."'><h2>".$f['name']."</h2></a></li>";
+    $name = htmlspecialchars($f['name']);
+    $f = "<li><a data-rel='back' href='#' footprintid=".$f['id']." footprintname='".$name."'><img src='/img/footprint/".$f['pict_fname']."'><h2>".$name."</h2></a></li>";
   }
 ?>
 
-<div data-role="popup" id="popupFootprintSelectDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="display: flex; flex-flow: column"> <!-- position: fixed; height: 95%; width: 95%; -->
+<div data-role="popup" id="popupFootprintSelectDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="display: flex; flex-flow: column"> <!-- position: fixed; height: 95%; width: 95%; -->
     <div data-role="header" data-theme="a">
       <h1 name="dialogHeader" style="margin: 0 15px;" uilang="popupFootprintHeader"></h1>
     </div>

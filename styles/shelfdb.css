@@ -286,6 +286,20 @@ div.editcontrols.editcontrols-hidden {
 }
 
 /* Partinfo screen */
+.partDetail {
+  display: flex;
+  align-items: center;
+}
+.partDetail .ui-input-text,
+.partDetail .h3 {
+  flex: 1
+}
+
+.partDetail .ui-input-btn {
+  flex: 0 0 auto;
+  margin-left: 0.5em;
+}
+
 .partinfo .partimg {
   max-width:20em;
   max-height:20em;
@@ -300,11 +314,15 @@ div.editcontrols.editcontrols-hidden {
 }
 .partinfo .ui-block-b {
   width: 100%;
-  height: 20em;
 }
 
 .partinfo .ui-block-b > div {
   height: 100%;
+}
+
+.partinfo h4 {
+  margin-bottom: 0.1em;
+  margin-top: 0.1em;
 }
 
 /* 2nd breakpoint - Float all, 20em/25/25 */
@@ -318,5 +336,6 @@ div.editcontrols.editcontrols-hidden {
       width: auto;
       overflow: hidden;
       min-width: 12em;
+      height: 20em;
     }
 }

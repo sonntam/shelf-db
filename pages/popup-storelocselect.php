@@ -6,7 +6,8 @@
 
 
   foreach( $storelocs as &$s ) {
-    $s = "<li><a href='#'>".$s['name']."</a></li>";
+    $name = htmlspecialchars($s['name']);
+    $s = "<li><a href='#' storename='".$name."' storeid=".$s['id']." data-rel='back' data-transition='flow' >".$name."</a></li>";
   }
 ?>
 <div data-role="popup" id="popupStorageLocationDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false" style="display: flex; flex-flow: column"> <!-- position: fixed; height: 95%; width: 95%; -->
@@ -24,7 +25,7 @@
         </div>
         <div class="ui-grid-a">
           <div class="ui-block-a"><a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a></div>
-          <div class="ui-block-b"><a href="#" buttonresult="ok" name="popupAddBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" data-transition="flow"><i class="fa fa-plus"></i> <span uilang="add"></span></a></div>
+          <div class="ui-block-b"><a href="#" buttonresult="ok" name="popupAddBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a"><i class="fa fa-plus"></i> <span uilang="add"></span></a></div>
         </div>
     </div>
 </div>
@@ -32,8 +33,8 @@
 
 <script type="text/javascript">
   $('[name=popupAddBtn]').click( function(evt) {
-    
-    inputPopUp("#popup-storelocselect-dialog",
+
+    inputPopUp(
       Lang.get('editFootprintAdd'),
       Lang.get('editFootprintNewName'),
       Lang.get('editFootprintAddHint'),

@@ -97,11 +97,13 @@ function confirmPopUp(selector, header, text, confirmbtntext, fnc_ok,
 
 
 // Open external input dialog
-function inputPopUp(selector, header, headline, message, confirmbtntext,
+function inputPopUp(header, headline, message, confirmbtntext,
   textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel) {
 
+  var $popup = $('#popupInputDialog');
+
   // The setup function
-  var setupPopup = function() {
+  var setupPopup = function($popup) {
     // Text replace and callback setup
     var $buttonresult = "";
     var $popup = $('#popupInputDialog');
@@ -140,7 +142,6 @@ function inputPopUp(selector, header, headline, message, confirmbtntext,
       // Return buttonresult
       $buttonresult = $(ev.target).attr('buttonresult');
       console.log($buttonresult);
-      $popup.find('a').off('click');
     });
 
     $popup.one('popupafteropen', function(ev,ui) {
@@ -158,39 +159,116 @@ function inputPopUp(selector, header, headline, message, confirmbtntext,
   };
 
   // Check if we need to load
-  var $popup = $('#popupInputDialog');
-  var $tgt = $(selector);
-
   if( $popup.length > 0 )
   {
-    setupPopup();
+    setupPopup($popup);
     $popup.popup('open', { transition: "pop"});
 
   } else {
 
-    $tgt.load('/pages/popup-inputdialog.php', function() {
+    $popuptarget = $('<div />').appendTo('body');
 
+    $popuptarget.load('/pages/popup-inputdialog.php', function() {
+      var $popup = $('#popupInputDialog');
       Lang.searchAndReplace();
-      $popup = setupPopup();
-      $tgt.enhanceWithin();
+      setupPopup($popup);
+      $(this).enhanceWithin();
 
       $popup.popup('open', { transition: "pop"});
     });
   }
 }
 
+// Open external input dialog
+function inputMultilinePopUp(header, headline, message, confirmbtntext,
+  textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel) {
+
+    var $popup = $('#popupInputMultilineDialog');
+
+    var setupPopup = function($popup) {
+      var $buttonresult;
+
+      var $input = $popup.find("[name='dialogText']");
+      var $okbtn = $popup.find("[name='popupOkBtn']");
+      var $cancelbtn = $popup.find("[name='popupCancelBtn']");
+
+      $popup.find("[name='dialogHeader']").first().text(header);
+      $popup.find("[name='dialogHeadline']").first().text(headline);
+      $popup.find("[name='dialogMessage']").first().text(message);
+      $popup.find("[name='dialogTextLabel']").first().text(textlabel);
+      $input.val(textdefault);
+      $input.attr('placeholder',textplaceholder);
+      $okbtn.text(confirmbtntext);
+
+      // Keypress handlers
+      $popup.off('keyup');
+      $popup.one('keyup', function(e){
+        if(e.keyCode == 27) {
+          e.stopPropagation();
+          $cancelbtn.trigger("click");
+        }
+      });
+
+      // Button click handlers
+      $popup.find('a').one('click', function(ev){
+        // Return buttonresult
+        $buttonresult = $(ev.target).attr('buttonresult');
+        console.log($buttonresult);
+      });
+
+      $popup.one('popupafteropen', function(ev,ui) {
+          $popup.find("textarea").first().focus().select();
+      });
+      $popup.one('popupafterclose', function(ev,ui) {
+        if( $buttonresult == "ok" && fnc_ok ) {
+          fnc_ok($input.val());
+        } else if ($buttonresult == "cancel" && fnc_cancel) {
+          fnc_cancel($input.val());
+        }
+      });
+    };
+
+    if( $popup.length > 0 ) {
+      setupPopup($popup);
+      $popup.popup('open', { transition: "pop"});
+    } else {
+      $popuptarget = $('<div />').appendTo('body');
+
+      $popuptarget.load('/pages/popup-inputmultilinedialog.php', function() {
+        $popup = $('#popupInputMultilineDialog');
+
+        Lang.searchAndReplace();
+        setupPopup($popup);
+        $(this).enhanceWithin();
+
+        $popup.popup('open', { transition: "pop"});
+      });
+    }
+}
+
 // Function to handle loading of external popup and enhancing
-function openExternalPopup(evtClickSource, targetSelector, pageUrl) {
+function openExternalPopup(pageUrl, fnc_afteropen, fnc_afterclose, fnc_click) {
+  var $popuptarget = $('[name="externalPopup"][pageurl="'+pageUrl+'"]');
 
-    $(targetSelector).load(pageUrl, function() {
-      var dialogId = $(this).children().first();
+  if( $popuptarget.length > 0 ) {
+    var dialogId = $('[origin="'+pageUrl+'"]');
 
+    dialogId.popup('open');
+
+  } else {
+    $popuptarget = $('<div />').appendTo('body');
+    $popuptarget.attr({
+      	name: 'externalPopup',
+        'pageurl': pageUrl
+    });
+
+    $popuptarget.load(pageUrl, function() {
+      var dialogId = $(this).find('[data-role="popup"]').first();
+      dialogId.attr({
+        'origin': pageUrl
+      });
       Lang.searchAndReplace();
       $(this).enhanceWithin();
-
-      var openDialog = function() {
-          dialogId.popup('open');
-      }
 
       dialogId.popup({
         beforeposition: function() {
@@ -198,13 +276,21 @@ function openExternalPopup(evtClickSource, targetSelector, pageUrl) {
               height: window.innerHeight - 30,
               maxWidth: window.innerWidth - 30
             });
+
+          },
+        afterclose: function(evt,ui) {
+          if( fnc_afterclose ) fnc_afterclose(evt,ui);
+        },
+        afteropen: function(evt,ui) {
+          if( fnc_afteropen ) fnc_afteropen(evt,ui);
         }
       });
 
-      $(evtClickSource).unbind('click');
-      $(evtClickSource).click( openDialog );
+      dialogId.find('a').click( function(evt) {
+        if( fnc_click ) fnc_click(evt);
+      });
 
-      openDialog();
-
+      dialogId.popup('open');
     });
+  }
 }

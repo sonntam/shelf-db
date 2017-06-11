@@ -46,7 +46,7 @@
 			$('#editcontrols-addroot').click(function(evt) {
 				evt.stopPropagation();
 
-				inputPopUp("#dialog", Lang.get('editCategoryAdd'), Lang.get('editCategoryAdd'),
+				inputPopUp(Lang.get('editCategoryAdd'), Lang.get('editCategoryAdd'),
 					Lang.get('editCategoryAddRootHint'), Lang.get('add'),
 					Lang.get('name')+":", Lang.get('name'), "", function(value){
 						// Set name AJAX call to mysql script
@@ -91,7 +91,7 @@
 				var node    = $tree.tree('getNodeById', id)
 				var curname = node.name;
 
-				inputPopUp("#dialog", Lang.get('editCategoryChange'), Lang.get('editCategoryNewName'), "", Lang.get('change'),
+				inputPopUp(Lang.get('editCategoryChange'), Lang.get('editCategoryNewName'), "", Lang.get('change'),
 					Lang.get('name')+":", Lang.get('name'), curname, function(value){
 
 						if( value != null && value != curname ){
@@ -132,7 +132,7 @@
 				var id      = $ctrl.attr("data-id");
 				var node    = $tree.tree('getNodeById', id)
 
-				inputPopUp("#dialog", Lang.get('editCategoryAdd'), Lang.get('editCategoryNewName'),
+				inputPopUp( Lang.get('editCategoryAdd'), Lang.get('editCategoryNewName'),
 					(Lang.get('editCategoryAddHint'))(node.name), Lang.get('add'),
 					Lang.get('name')+":", Lang.get('name'), "", function(value){
 						// Set name AJAX call to mysql script
