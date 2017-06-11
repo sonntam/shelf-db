@@ -2236,7 +2236,7 @@ INSERT INTO `pictures` (`id`, `parent_id`, `pict_fname`, `pict_width`, `pict_hei
 (562, 882, 'img_ceb42b6e7843a003a33f685ea6df0f15.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),
 (563, 883, 'img_4622cde919eb937517a41ff1f06c0fcd.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),
 (564, 884, 'img_935b58d5c2589d088cb43f3022338ce3.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0);
-INSERT INTO `pictures` (`id`, `part_id`, `pict_fname`, `pict_width`, `pict_height`, `pict_type`, `tn_obsolete`, `tn_t`, `tn_pictid`, `pict_masterpict`) VALUES
+INSERT INTO `pictures` (`id`, `parent_id`, `pict_fname`, `pict_width`, `pict_height`, `pict_type`, `tn_obsolete`, `tn_t`, `tn_pictid`, `pict_masterpict`) VALUES
 (565, 891, 'img_c3888c04a06b34cc401f13b4ed9b4800.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),
 (566, 892, 'img_5eabf5aee0118553188347a4c3d14561.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),
 (567, 893, 'img_0cebc7fb610eb2080f427b54701b1a9c.jpg', 0, 0, 'P', 0, '0000-00-00 00:00:00', 0, 0),

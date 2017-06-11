@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL UNIQUE,
   `name` mediumtext NOT NULL,
-  'passhash' mediumtext NOT NULL,
+  `passhash` mediumtext NOT NULL,
   `email` mediumtext NOT NULL,
   `isadmin` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -133,7 +133,7 @@ DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE IF NOT EXISTS `users_groups` (
   `id` int(11) NOT NULL UNIQUE,
   `userid` int(11) NOT NULL,
-  `groupid` int(11) NOT NULL,
+  `groupid` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='The user and group relation table';
 
 -- --------------------------------------------------------

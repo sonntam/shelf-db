@@ -8,11 +8,16 @@
       console.log("DEBUG: pagecontainer - change");
 
       $('#testextpopup').click( function(evt) {
-        openExternalPopup(evt.target, '#dialog', '/pages/popup-footprintselect.php');
+        openExternalPopup('/pages/popup-footprintselect.php');
       });
 
       $('#testextpopup2').click( function(evt) {
-        openExternalPopup(evt.target, '#dialog', '/pages/popup-storelocselect.php');
+        openExternalPopup('/pages/popup-storelocselect.php');
+      });
+
+      // Open external input dialog
+      $('#inputmultipopup').click( function( evt) {
+        inputMultilinePopUp("Header", "Headline", "Message", "Ok", "Label", "Placeholder", "Default");
       });
     });
 
@@ -34,6 +39,7 @@
       <div class="ui-block-a">
         <div id="testextpopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Footprint popup</div>
         <div id="testextpopup2" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Storage location popup</div>
+        <div id="inputmultipopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Input Multiline popup</div>
         <a href="#" id="exit-button" data-rel="back" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Exit</a>
       </div>
       <div class="ui-block-b">
