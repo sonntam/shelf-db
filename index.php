@@ -31,6 +31,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/js/i18n/grid.locale-de.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/css/ui.jqgrid.min.css">
 
+    <!-- jquery-validation -->
+    <script src="./scripts/lib/jquery-validation/jquery.validate.min.js"></script>
+
     <!-- CUSTOM EXTENSIONS -->
     <link href="./styles/shelfdb.css" rel="stylesheet"/>
     <script src="./scripts/lib/js.cookie.js"></script>
