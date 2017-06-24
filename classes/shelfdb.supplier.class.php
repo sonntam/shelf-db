@@ -11,12 +11,6 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
-    public function Test(int $test) {
-      $data = $this->db->Parts()->GetDetailsById( $test );
-
-      var_dump($data);
-    }
-
     public function ExpandRawUrl( $rawurl, $partNr ) {
 
       $match = array();
@@ -75,6 +69,7 @@ namespace ShelfDB {
     }
 
     public function ExistsByName($name) {
+      $name = trim($name);
       if( $name == "" )
         return false;
 
@@ -107,6 +102,7 @@ namespace ShelfDB {
     }
 
     public function Create($name, $pictureFileName) {
+      $name = trim($name);
       $name = $this->db->sql->real_escape_string( $name );
       $query = "INSERT INTO `suppliers` (`name`) VALUES ('$name')";
 
@@ -129,6 +125,7 @@ namespace ShelfDB {
     }
 
     public function GetByName($name) {
+      $name = trim($name);
       if( $name == "" )
         return null;
 
@@ -143,6 +140,7 @@ namespace ShelfDB {
     }
 
     public function SetNameById($id, $name) {
+      $name = trim($name);
       if( $name == "" )
         return;
 
