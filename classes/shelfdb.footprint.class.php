@@ -11,12 +11,6 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
-    public function Test(int $test) {
-      $data = $this->db->Parts()->GetDetailsById( $test );
-
-      var_dump($data);
-    }
-
     public function DeleteById(int $id) {
       // First try to get it
       $fp = $this->GetById($id);
@@ -45,6 +39,7 @@ namespace ShelfDB {
     }
 
     public function ExistsByName($name) {
+      $name = trim($name);
       if( $name == "" )
         return false;
 
@@ -60,6 +55,7 @@ namespace ShelfDB {
     }
 
     public function CreateFromId($name, $baseid) {
+      $name = trim($name);
       $newId = $this->Create($name, "");
       if( $newId )
       {
@@ -77,6 +73,7 @@ namespace ShelfDB {
     }
 
     public function Create($name, $pictureFileName) {
+      $name = trim($name);
       $name = $this->db->sql->real_escape_string( $name );
       $query = "INSERT INTO `footprints` (`name`) VALUES ('$name')";
 
@@ -99,6 +96,7 @@ namespace ShelfDB {
     }
 
     public function GetByName($name) {
+      $name = trim($name);
       if( $name == "" )
         return null;
 
@@ -113,6 +111,7 @@ namespace ShelfDB {
     }
 
     public function SetNameById($id, $name) {
+      $name = trim($name);
       if( $name == "" )
         return;
 
