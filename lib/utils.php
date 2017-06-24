@@ -36,4 +36,39 @@ function getversionstring($version) : string {
   return $version["major"].".".$version["minor"];
 }
 
+function stempnam($folder, $prefix, $suffix ) {
+  $files = glob(joinPaths(dirname(__DIR__),$folder,"*"));
+
+  $createCandidate = function() use($folder,$prefix, $suffix) {
+    return joinPaths(dirname(__DIR__),$folder, $prefix.uniqid().$suffix);
+  };
+
+  $candidate = $createCandidate();
+  while( file_exists($candidate) ) {
+    $candidate = $createCandidate();
+  }
+
+  return $candidate;
+
+}
+
+function joinPaths() {
+    $args = func_get_args();
+    $paths = array();
+
+    foreach ($args as $arg) {
+        $paths = array_merge($paths, (array)$arg);
+    }
+
+    if( sizeof($paths) > 0  ) {
+      $frontSep = substr($paths[0],0,1) == '/';
+    }
+
+    $paths = array_map(function($p) {
+      return trim($p, "/");
+    }, $paths);
+    $paths = array_filter($paths);
+    return ($frontSep ? '/' : "" ).join('/', $paths);
+}
+
 ?>

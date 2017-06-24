@@ -1,60 +1,77 @@
 <?php
-/* POST Script for editing footprints */
+/* POST Script for editing suppliers */
 
 include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
 
 $_POST += array('method' => 'none');
 
-$fp = $pdb->Footprints();
+$su = $pdb->Suppliers();
 
+// Response data structure
 $response = array_replace_recursive($_GET, $_POST, array('success' => true));
 
-switch ($_POST['method']) {
+// Input data structure
+$data     = array_replace_recursive(array(
+  'urlTemplate' => '',
+  'name' => null,
+  'id' => null,
+  'method' => 'none'), $_GET, $_POST);
+
+switch ($data['method']) {
 
   case 'edit': // Edit
-    if( isset( $_POST['id'] ) && isset( $_POST['name'] ) ) {
+    if( isset( $data['id'] ) && isset( $data['name'] ) && isset( $data['urlTemplate']) ) {
 
-      $id   = $_POST['id'];
-      $name = $_POST['name'];
+      $id          = $data['id'];
+      $name        = $data['name'];
+      $urlTemplate = $data['urlTemplate'];
 
-      $isNameNew = $name != $fp->GetNameById( $id );
+      $supplier  = $su->GetById( $id );
 
-      if( $isNameNew && $fp->ExistsByName( $name ) ) {
+      $isNameNew = $name != $supplier['name'];
+      $isUrlNew  = $urlTemplate != $supplier['urlTemplate'];
+
+      if( $isNameNew && $su->ExistsByName( $name ) ) {
         // Error, no duplicates allowed
         // Return error Message
         ob_clean();
         echo json_encode( array(
-          'message' => "Bauform existiert bereits.",
+          'message' => "Lieferant existiert bereits.",
           'success' => false,
           'type' => 'notUnique'
         ));
         return;
       }
 
+      $response  = array_replace_recursive( $response, array(
+        'name' => $supplier['name'],
+        'urlTemplate' => $su->ExpandRawUrl( $supplier['urlTemplate'], "example" )
+      ) );
+
       // Handle new image
-      $imgFile = $_POST['imageFileName'];
-      $setDefaultImg = $_POST['changeToDefaultImg'];
+      $imgFile = $data['imageFileName'];
+      $setDefaultImg = $data['changeToDefaultImg'];
 
       if( isset( $setDefaultImg ) && $setDefaultImg == "true" ) {
 
         // Only delete...
-        $pdb->Pictures()->DeleteAllByElementId($id, 'F');
+        $pdb->Pictures()->DeleteAllByElementId($id, 'SU');
         $response += array(
           'newImageId' => null,
-          'id' => $_POST['id'],
+          'id' => $data['id'],
           'message' => 'Bild erfolgreich auf Standard zurückgesetzt.'
         );
 
       } else if( isset( $imgFile ) && $imgFile != "" ) {
         // Create database entry for image
-        $pid = $pdb->Pictures()->Create($id, 'F', $imgFile);
+        $pid = $pdb->Pictures()->Create($id, 'SU', $imgFile);
 
         if( $pid ) {
           $response += array(
             'message' => "Bild erfolgreich angepasst.",
             'success' => true,
             'newImageId' => $pid,
-            'id' => $_POST['id']
+            'id' => $data['id']
           );
         } else {
           // Clear buffer and print JSON
@@ -70,15 +87,13 @@ switch ($_POST['method']) {
         }
       }
 
-      if( $isNameNew ) {
-        if( $fp->SetNameById( $id, $name ) ) {
-
-          // Clear buffer and print JSON
+      if( $isUrlNew ) {
+        if( $su->SetUrlById( $id, $urlTemplate ) ) {
           $response = array_replace_recursive($response, array(
-            'message' => "Name erfolgreich geändert.",
+            'message' => "Url erfolgreich geändert.",
             'success' => true,
-            'id' => $_POST['id'],
-            'name' => $_POST['name']
+            'id' => $data['id'],
+            'urlTemplate' => $su->ExpandRawUrl( $data['urlTemplate'], "example" )
           ));
         } else {
 
@@ -87,7 +102,32 @@ switch ($_POST['method']) {
 
           // Return error Message
           echo json_encode( array(
-            'message' => "Fehler beim Ändern des Kategorienamens.",
+            'message' => "Fehler beim Ändern der URL.",
+            'success' => false,
+            'type' => 'invalidId'
+          ));
+          return;
+        }
+      }
+
+      if( $isNameNew ) {
+        if( $su->SetNameById( $id, $name ) ) {
+
+          // Clear buffer and print JSON
+          $response = array_replace_recursive($response, array(
+            'message' => "Name erfolgreich geändert.",
+            'success' => true,
+            'id' => $data['id'],
+            'name' => $data['name']
+          ));
+        } else {
+
+          // Clear buffer and print JSON
+          ob_clean();
+
+          // Return error Message
+          echo json_encode( array(
+            'message' => "Fehler beim Ändern des Lieferantennamen.",
             'success' => false,
             'type' => 'invalidId'
           ));
@@ -102,15 +142,15 @@ switch ($_POST['method']) {
    *
    */
   case 'add':
-    if( isset( $_POST['name'] ) ) {
-      $name = $_POST['name'];
+    if( isset( $data['name'] ) ) {
+      $name = $data['name'];
       // Check for duplicates
-      if( $fp->ExistsByName( $name ) ) {
+      if( $su->ExistsByName( $name ) ) {
         // Error, no duplicates allowed
         // Return error Message
         ob_clean();
         echo json_encode( array(
-          'message' => "Bauform existiert bereits.",
+          'message' => "Lieferant existiert bereits.",
           'success' => false,
           'type' => 'notUnique'
         ));
@@ -118,11 +158,11 @@ switch ($_POST['method']) {
       }
 
       $pictureFileName = null;
-      if( isset($_POST['imageFileName']) ) {
-          $pictureFileName = $_POST['imageFileName'];
+      if( isset($data['imageFileName']) ) {
+          $pictureFileName = $data['imageFileName'];
       }
 
-      $newId = $fp->Create( $name, $pictureFileName );
+      $newId = $su->Create( $name, $pictureFileName );
       if( $newId ) {
 
         // Clear buffer and print JSON
@@ -130,7 +170,7 @@ switch ($_POST['method']) {
 
         // Return error Message
         $response = array_replace_recursive($response, array(
-          'message' => "Bauform erfolgreich hinzugefügt.",
+          'message' => "Lieferant erfolgreich hinzugefügt.",
           'success' => true,
           'name' => $name,
           'id' => $newId['id'],
@@ -143,7 +183,7 @@ switch ($_POST['method']) {
 
         // Return error Message
         echo json_encode( array(
-          'message' => "Fehler beim Hinzufügen der Kategorien.",
+          'message' => "Fehler beim Hinzufügen des Lieferants.",
           'success' => false,
           'type' => 'fail'
         ));
@@ -154,16 +194,16 @@ switch ($_POST['method']) {
     break;
 
   case 'copy':
-    if( isset( $_POST['name']) && isset( $_POST['id']) && $fp->GetById($_POST['id']) ) {
-      $name = $_POST['name'];
-      $id   = $_POST['id'];
+    if( isset( $data['name']) && isset( $data['id']) && $su->GetById($data['id']) ) {
+      $name = $data['name'];
+      $id   = $data['id'];
       // Check for duplicates
-      if( $fp->ExistsByName( $name ) ) {
+      if( $su->ExistsByName( $name ) ) {
         // Error, no duplicates allowed
         // Return error Message
         ob_clean();
         echo json_encode( array(
-          'message' => "Bauform existiert bereits.",
+          'message' => "Lieferant existiert bereits.",
           'success' => false,
           'type' => 'notUnique'
         ));
@@ -171,13 +211,12 @@ switch ($_POST['method']) {
       }
 
       // Check if a new or standard picture was selected
-      if( isset($_POST['changeToDefaultImg']) && $_POST['changeToDefaultImg'] == 'true' )
-      {
-        $newId = $fp->Create( $name, "" );
-      } elseif( isset($_POST['imageFileName']) && $_POST['imageFileName'] != "" ) {
-        $newId = $fp->Create( $name, $_POST['imageFileName'] );
+      if( isset($data['changeToDefaultImg']) && $data['changeToDefaultImg'] == 'true' ) {
+        $newId = $su->Create( $name, "" );
+      } elseif( isset($data['imageFileName']) && $data['imageFileName'] != "" ) {
+        $newId = $su->Create( $name, $data['imageFileName'] );
       } else {
-        $newId = $fp->CreateFromId( $name, $id );
+        $newId = $su->CreateFromId( $name, $id );
       }
 
       if( $newId ) {
@@ -187,7 +226,7 @@ switch ($_POST['method']) {
 
         // Return error Message
         $response = array_replace_recursive($response, array(
-          'message' => "Bauform erfolgreich hinzugefügt.",
+          'message' => "Lieferant erfolgreich hinzugefügt.",
           'success' => true,
           'name' => $name,
           'id' => $newId['id'],
@@ -200,7 +239,7 @@ switch ($_POST['method']) {
 
         // Return error Message
         echo json_encode( array(
-          'message' => "Fehler beim Hinzufügen der Kategorien.",
+          'message' => "Fehler beim Hinzufügen des Lieferants.",
           'success' => false,
           'type' => 'fail'
         ));
@@ -210,14 +249,14 @@ switch ($_POST['method']) {
     break;
 
   case 'delete':
-    if( isset( $_POST['id'] ) ) {
-      $id = $_POST['id'];
-      if( !$fp->DeleteById($id) ) {
+    if( isset( $data['id'] ) ) {
+      $id = $data['id'];
+      if( !$su->DeleteById($id) ) {
         ob_clean();
 
         // Return error Message
         echo json_encode( array(
-          'message' => "Fehler beim Löschen der Bauform.",
+          'message' => "Fehler beim Löschen des Lieferanten.",
           'success' => false,
           'id' => $id
         ));

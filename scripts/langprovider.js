@@ -57,12 +57,14 @@ function Lang(language, replaceText)
       yes: 'Yes',
       no: 'No',
       edit: 'Edit',
+      copy: 'Copy',
       move: 'Move',
       delete: 'Delete',
       compress: 'Compress',
       expand: 'Expand',
       cancel: 'Cancel',
       abort: 'Abort',
+      none: 'None',
       tools: 'Tools',
       description: 'Description',
       suppliers: 'Suppliers',
@@ -70,6 +72,7 @@ function Lang(language, replaceText)
       footprints: 'Footprints',
       categories: 'Categories',
       partTitle: 'Part details',
+      moreInfo: 'Learn more',
       enterName: 'Enter name',
       storageLocation: 'Storage location',
       editCategories: 'Edit categories',
@@ -98,35 +101,58 @@ function Lang(language, replaceText)
       no: 'Nein',
       add: 'Anlegen',
       edit: 'Bearbeiten',
+      copy: 'Kopieren',
       change: 'Ändern',
       move: 'Verschieben',
       delete: 'Löschen',
+      reset: 'Zurücksetzen',
       compress: 'Zuklappen',
       expand: 'Aufklappen',
       searchPlaceholder: 'Suche...',
       cancel: 'Abbrechen',
       abort: 'Abbrechen',
+      none: 'Keine',
       tools: 'Werkzeuge',
+      image: 'Bild',
+      copyOf: function(name) {
+        return 'Kopie von '+name;
+      },
+      uploadImageLabel: 'Bild hochladen',
       description: 'Beschreibung',
+      datasheets: 'Datenblätter',
       suppliers: 'Lieferanten',
       footprints: 'Bauformen',
       footprint: 'Bauform',
       categories: 'Kategorien',
       partTitle: 'Bauteilansicht',
+      moreInfo: 'Mehr informationen',
+      noUndoHint: 'Diese Aktion kann nicht rückgängig gemacht werden.',
       enterName: 'Namen eingeben',
+      enterUrl: 'Geben Sie eine Adresse an',
+      enterDescription: 'Beschreibung eingeben',
+      resetImage: 'Bild wiederherstellen',
+      defaultImage: 'Standardbild',
       storageLocation: 'Lagerort',
       storageLocationShowNonEmpty: 'Leerfächer',
       storageLocationShowEmpty: 'Belegte Fächer',
-      footprintShow: 'Bauformen anzeigen',
+      noFootprintShow: 'Teile ohne Bauform',
       icLogosShow: 'IC Hersteller',
       orderItemsShow: 'Zu bestellende Teile',
       statisticsShow: 'Statistiken',
       editCategories: 'Kategorien bearbeiten',
+      editFootprints: 'Bauformen bearbeiten',
       componentDatabase: 'Bauteiledatenbank',
       mainTitle: 'SHELF-DB Bauteile-Datenbank',
       areYouSureQuestion: 'Sind Sie sicher?',
+      searchTableTitle: 'Suchergebnisse in allen Bauteilen',
+      searchCategoryTableTitle: function(categoryName) {
+        return 'Suchergebnisse in Bauteilen der Kategorie \"'+categoryName+'\"';
+      },
       editPartNewName: 'Neuer Name',
       editPartChangeName: 'Benennung ändern',
+      editPartDelete: 'Teil löschen',
+      editPartDescriptionEdit: 'Beschreibung bearbeiten',
+      editPartDescriptionEditHint: 'Ändern Sie hier die bestehende Beschreibung.',
       editCategoryNewName: 'Neuer Name',
       editCategoryChange: 'Kategorie ändern',
       editCategoryAdd: 'Kategorie anlegen',
@@ -156,15 +182,45 @@ function Lang(language, replaceText)
       editCategoriesRootDeleteHint: 'Kategorien auf der Wurzelebene können nur gelöscht werden, wenn sie leer sind (grau)',
       editFootprintNewName: 'Neuer Name',
       editFootprintAdd: 'Bauform anlegen',
+      editFootprintDelete: 'Bauform löschen',
+      editFootprintDeleteHint: function(footprintName) {
+        return 'Möchten Sie die Bauform "' + footprintName + '" wirklich löschen? Bauteile, die diese Bauform nutzen, werden auf die Bauform "-" zurückgesetzt und sind in der Werkzeugleiste auflistbar.';
+      },
       editFootprintAddHint: 'Namen und Bild für neue Bauform angeben',
-      popupFootprintHeader: 'Bauteilform wählen',
-      popupFootprintUserAction: 'Wählen Sie eine Form aus',
+      popupFootprintSelectHeader: 'Bauteilform wählen',
+      popupFootprintEditHeader: 'Bauteilform bearbeiten',
+      popupFootprintAddHeader: 'Bauteilform anlegen',
+      popupFootprintSelectUserAction: 'Wählen Sie eine Form aus',
+      popupFootprintAddUserAction: 'Geben Sie die Daten für die neue Bauform an',
       popupFootprintFilterHint: 'Mit dem Filter kann in den Formen gesucht werden',
       popupFootprintFilterPlaceholder: 'Einträge filtern...',
+
+      editSupplierNewName: 'Neuer Name',
+      editSupplierAdd: 'Lieferant anlegen',
+      editSupplierDelete: 'Lieferanten löschen',
+      editSupplierDeleteHint: function(supplierName) {
+        return 'Möchten Sie den Lieferanten "' + supplierName + '" wirklich löschen? Bauteile, die diesen Lieferanten nutzen, werden auf "-" zurückgesetzt und sind in der Werkzeugleiste auflistbar.';
+      },
+      editSupplierArticleUrl: 'Suchadresse',
+      editSupplierArticleUrlHint: 'Die Suchadresse kann angegeben werden, um aus der Teilenummer eines Teils einen Link zu erzeugen. Dazu können Sie hier den Platzhalter <!PARTNR!> eingeben, der mit der Teilenummer ersetzt wird. Es können auch Ersetzungen angegeben werden. Um z.B. ein " " durch "-" und "!" durch "?" zu ersetzen, geben Sie an der entsprechenden Stelle in der Adresse <!PARTNR; :-;!:?!> ein.',
+
+      editSupplierAddHint: 'Namen und Bild für neuen Lieferanten angeben',
+      popupSupplierSelectHeader: 'Liefertant wählen',
+      popupSupplierEditHeader: 'Lieferant bearbeiten',
+      popupSupplierAddHeader: 'Lieferant anlegen',
+      popupSupplierSelectUserAction: 'Wählen Sie einen Lieferanten aus',
+      popupSupplierAddUserAction: 'Geben Sie die Daten für den neuen Lieferanten an',
+      popupSupplierFilterHint: 'Mit dem Filter kann in den Lieferanten gesucht werden',
+      popupSupplierFilterPlaceholder: 'Einträge filtern...',
+
+
       popupStorelocationHeader: 'Lagerort wählen',
       popupStorelocationUserAction: 'Wählen Sie einen Lagerort aus',
       popupStorelocationFilterHint: 'Mit dem Filter kann in den Lagerorten gesucht werden',
       popupStorelocationFilterPlaceholder: 'Lagerorte filtern...',
+
+      helpInStock: 'Die eingelagerte Menge ist die Menge, die im Lagerort verfügbar ist. Sie ist nicht größer als die vorhandene Menge.',
+      helpTotalInStock: 'Die vorhandene Menge ist die Menge, die überhaupt existiert, aber nicht unbedingt im Lagerort verfügbar ist. Sie ist immer mindestens so groß, wie die eingelagerte Menge.'
     }
   }
 
@@ -206,14 +262,26 @@ this.searchAndReplace = function()
     item = $(item);
 
     var att = item.attr(LANG_ATTRIBUTE_NAME);
-    att = att.split(":");
-    var txt = me.get(att[1] || att[0]);
+    att.split(";").forEach( function(langSet) {
+      var attr = langSet.split(":");
 
-    if( att.length > 1 ) {
-      item.attr(att[0],txt);
-    }
-    else
-      item.text(txt);
+      var txt = me.get(attr[1] || attr[0]);
+
+      // If the string is of function type, try to apply the inner Html as argument
+      if( typeof txt === 'function' ) {
+        if( attr.length > 2 ) {
+          txt = txt(item.attr(attr[2]));
+        } else {
+          txt = txt(item.text());
+        }
+      }
+
+      if( attr.length > 1 ) {
+        item.attr(attr[0],txt);
+      }
+      else
+        item.text(txt);
+    } );
   });
 
   divs.removeAttr(LANG_ATTRIBUTE_NAME);
