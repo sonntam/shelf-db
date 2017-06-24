@@ -63,6 +63,7 @@ namespace {
           . "PHP ERROR [$errno] " . Log::LOG_LEVEL_SUFFIX . Log::BuildTracePrefixPhpErrorHandler($errfile, $errline, $errcontext)
           . Log::LOG_TEXT_PREFIX . $errstr . "\n";
       }
+      return true;
     }
 
     private static function BuildTracePrefix($step) {
