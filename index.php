@@ -201,7 +201,7 @@
         <input id="searchbar" type="text" data-type="search" data-clear-btn="true" uilang="placeholder:searchPlaceholder">
       </div>
 
-      <div data-role="collapsibleset">
+      <div data-role="collapsibleset" data-theme="a" data-content-theme="a">
       <!--<span><a href="#" id="btnSlideCategories"><i class="fa fa-plus-square" aria-hidden="true"></i></a> Kategorien</span>-->
         <div id=categories data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-collapsed="false">
           <h6 uilang="categories"></h6>
@@ -221,7 +221,7 @@
 
         </div>
         <div id=storage data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
-          <h6 uilang="storageLocation"></h6>
+          <h6 uilang="storageLocations"></h6>
           <ul data-role="listview">
             <li><a href="#"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
             <li><a href="#"><i class="fa fa-square-o"></i> <span uilang="storageLocationShowNonEmpty"></span></a></li>
@@ -237,7 +237,7 @@
             <li><a href="#"><i class="fa fa-shopping-cart"></i> <span uilang="orderItemsShow"></span></a></li>
           </ul>
         </div>
-        <div id=suppliers data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-theme="a" data-content-theme="a">
+        <div id=suppliers data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
           <h6 uilang="suppliers"></h6>
           <ul data-role="listview">
             <li><a href="<?php echo $pdb->RelRoot(); ?>/pages/page-editsuppliers.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
