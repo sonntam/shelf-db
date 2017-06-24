@@ -17,3 +17,11 @@ TODO
  - Remove debug output
  - new categories must be greyed out in the edit tree view
  - decode html special chars in database
+ - inline edit
+ - part table search
+ - part table filter
+ - delete part from detail page
+ - copy part from detail page
+ - add datasheets and images on detail page
+ - allow adding of part from part table
+ - use jqueryfileupload
