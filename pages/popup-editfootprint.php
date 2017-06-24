@@ -7,6 +7,7 @@
   $formData['method'] = $_GET['method'];
   $formData['changeToDefaultImg'] = "false";
   $formData['id'] = $_GET['id'];
+  $formData['imageId'] = null;
 
   // What should be done? Adding? Editing existing element?
   switch( strtolower($_GET['method']) ) {
@@ -20,6 +21,7 @@
         if( $footprint ) {
             $formData['name'] = $footprint['name'];
             $formData['imageUrl'] = "/img/footprint/".$footprint['pict_fname'];
+			$formData['imageId'] = $footprint['pict_id'];
         } else {
           return;
         }
@@ -39,6 +41,7 @@
         if( $footprint ) {
             $formData['name'] = $footprint['name'];
             $formData['imageUrl'] = "/img/footprint/".$footprint['pict_fname'];
+			$formData['imageId'] = $supplier['pict_id'];
         } else {
           return;
         }
@@ -242,10 +245,11 @@
                 <input id="file" name="file" type="file" value="">
               </div>
               <div class="ui-block-a">
+				<?php if( $formData['imageId'] && in_array($formData['method'], array('copy','edit') ) ) { ?>
                 <button type="button" class="ui-btn ui-mini" id="resetImg" uilang="resetImage"></button>
-                <?php if( in_array($formData['method'], array('copy','edit') ) ) { ?>
-                  <button type="button" class="ui-btn ui-mini" id="defaultImg" uilang="defaultImage"></button>
-                <?php } ?>
+				<?php } ?>
+                <button type="button" class="ui-btn ui-mini" id="defaultImg" uilang="defaultImage"></button>
+                
               </div>
             </div>
           </div>

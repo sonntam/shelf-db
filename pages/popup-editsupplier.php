@@ -7,6 +7,7 @@
   $formData['method'] = $_GET['method'];
   $formData['changeToDefaultImg'] = "false";
   $formData['id'] = $_GET['id'];
+  $formData['imageId'] = null;
 
   // What should be done? Adding? Editing existing element?
   switch( strtolower($_GET['method']) ) {
@@ -20,6 +21,7 @@
         if( $supplier ) {
             $formData['name'] = $supplier['name'];
             $formData['imageUrl'] = "/img/supplier/".$supplier['pict_fname'];
+            $formData['imageId'] = $supplier['pict_id'];
             $formData['urlTemplate']  = $supplier['urlTemplate'];
         } else {
           return;
@@ -41,6 +43,7 @@
             $formData['name'] = $supplier['name'];
             $formData['imageUrl'] = "/img/supplier/".$supplier['pict_fname'];
             $formData['urlTemplate']  = $supplier['urlTemplate'];
+            $formData['imageId'] = $supplier['pict_id'];
         } else {
           return;
         }
@@ -96,7 +99,6 @@
     var formData = $(evt.target).formData();
 
     function postUploadReaction(formData) {
-      debugger;
       $.ajax({
         url: '/lib/edit-supplier.php',
         type: 'POST',
@@ -253,7 +255,7 @@
         </div>
         <div class="ui-block-a">
           <div style="display: flex; flex-flow: row">
-            <div class="ui-shadow" style="text-align: center; background-color: lightgray; flex: 0 0 10em; width: 10em">
+            <div class="ui-shadow" style="text-align: center; background-color: lightgray; flex: 0 0 10em; width: 10em; height: 10em">
               <img id="imgPreview" original-src="<?php echo $formData['imageUrl']; ?>" style="max-width:10em; max-height:10em" src="<?php echo htmlentities($formData['imageUrl']); ?>">
             </div>
             <div class="ui-grid-solo" style="flex: 1; margin-left: 1em; align-self: flex-end">
@@ -262,7 +264,7 @@
                 <input id="file" name="file" type="file" value="">
               </div>
               <div class="ui-block-a">
-                <?php if( in_array($formData['method'], array('copy','edit') ) ) { ?>
+                <?php if( $formData['imageId'] && in_array($formData['method'], array('copy','edit') ) ) { ?>
                   <button type="button" class="ui-btn ui-mini" id="resetImg" uilang="resetImage"></button>
                 <?php } ?>
                 <button type="button" class="ui-btn ui-mini" id="defaultImg" uilang="defaultImage"></button>

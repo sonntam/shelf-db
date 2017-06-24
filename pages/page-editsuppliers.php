@@ -152,7 +152,6 @@
 									case 'ok':
 										// Reload item
 										$.mobile.referencedLoading('show');
-										debugger;
 										$.ajax({
 											url: '/lib/json.suppliers.php?partNr=example&id='+id,
 											cache: false,
