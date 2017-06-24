@@ -205,7 +205,7 @@ class PartDatabase
     $query = "SELECT `value` FROM info WHERE `key`='version';";
     $res = $this->sql->query($query) or Log::WarningSQLQuery($query,$this->sql);
 
-    if($res === false || ($data = $res->fetch_array()) === null)
+    if(!$res || ($data = $res->fetch_array()) === null)
     {
       // No version table exist at all... return empty version
       return false;
