@@ -47,14 +47,14 @@
       $newparts[$i]['name'] = $parts[$i]['name'];
     }
 
-    $responce = new stdClass();
-    $responce->page    = $page;
-    $responce->total   = $numpages;
-    $responce->records = $numparts;
+    $response = new stdClass();
+    $response->page    = $page;
+    $response->total   = $numpages;
+    $response->records = $numparts;
 
-    $responce->rows    = $newparts;
+    $response->rows    = $newparts;
 
-    $json = json_encode($responce, JSON_PRETTY_PRINT);
+    $json = json_encode($response, JSON_PRETTY_PRINT);
 
     // Clear buffer and print JSON
     ob_clean();
