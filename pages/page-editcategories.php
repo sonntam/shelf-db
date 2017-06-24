@@ -55,7 +55,7 @@
 							type: 'POST',
 							dataType: 'json',
 							data: {
-								method: 'addcat',
+								method: 'add',
 								newname: value,
 								parentid: 0
 							}
@@ -101,7 +101,7 @@
 								type: 'POST',
 								dataType: 'json',
 								data: {
-									method: 'editcatname',
+									method: 'editName',
 									newname: value,
 									id: id
 								}
@@ -141,7 +141,7 @@
 							type: 'POST',
 							dataType: 'json',
 							data: {
-								method: 'addcat',
+								method: 'add',
 								newname: value,
 								parentid: id
 							}
@@ -192,11 +192,11 @@
 						}).join(", "));
 				}
 
-				confirmPopUp( "#dialog",
-				 	Lang.get('editCategoryDelete'),
-					(Lang.get('editCategoryRemoveLeafQuestion'))(curname, subcatstring, partmovestring ),
-					Lang.get('delete'),
-					function() {
+				confirmPopUp({
+			    header: Lang.get('editCategoryDelete'),
+			    text: (Lang.get('editCategoryRemoveLeafQuestion'))(curname, subcatstring, partmovestring ),
+			    confirmButtonText: Lang.get('delete'),
+			    confirm: function() {
 
 						// Set name AJAX call to mysql script
 						$.ajax({
@@ -204,7 +204,7 @@
 							type: 'POST',
 							dataType: 'json',
 							data: {
-								method: 'deletecat',
+								method: 'delete',
 								id: id
 							}
 						}).done(function(data) {
@@ -225,7 +225,7 @@
 							}
 						});
 					}
-				);
+				});
 			});
 
 			$tree.bind('tree.move', function(event) {
@@ -252,11 +252,11 @@
 
 				if( prevParentId != newParentId )
 				{
-					confirmPopUp( "#dialog",
-					 	Lang.get('editCategoryMove'),
-						(Lang.get('editCategoryMoveConfirmTest'))(node.name,npnode.name),
-						Lang.get('move'),
-						function() {
+					confirmPopUp({
+				    header: Lang.get('editCategoryMove'),
+				    text: (Lang.get('editCategoryMoveConfirmTest'))(node.name,npnode.name),
+				    confirmButtonText: Lang.get('move'),
+				    confirm: function() {
 							// Apply move in database
 							$.ajax({
 								url: '/lib/edit-category.php',
@@ -288,7 +288,7 @@
 								}
 							});
 						}
-					);
+					});
 				}
 			});
 
@@ -331,7 +331,7 @@
   <div data-role="header">
     <h1 uilang="editCategories"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
-
+		<button id="editcontrols-addroot" class="ui-icon-fa-plus ui-btn-inline ui-btn ui-btn-right ui-btn-icon-notext" uilang="add"></button>
   </div>
   <div role="main" class="ui-content">
 
@@ -343,7 +343,7 @@
 			<li uilang="editCategoriesDeleteMigrateHint"></li>
 			<li uilang="editCategoriesRootDeleteHint"></li>
 			</ul>
-			<p><i id="editcontrols-addroot" class="fa fa-plus ui-btn-inline ui-btn" style="color: green"></i></p>
+
 			<div id="editcategorytree" data-url="/lib/json.categorytree.php"></div>
 			<div class="editcontrols editcontrols-hidden">
 				<span><i id="editcontrols-edit" class="fa fa-pencil"></i>&nbsp;</span>

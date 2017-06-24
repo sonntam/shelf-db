@@ -13,7 +13,7 @@
   $catid      = $_GET["catid"];
   $withparent = $_GET["withparent"];
 
-  $tree = $pdb->GetCategoriesAsArray($catid, $withparent == 1);
+  $tree = $pdb->Categories()->GetAsArray($catid, $withparent == 1);
 
   $json = json_encode($tree, JSON_PRETTY_PRINT);
 

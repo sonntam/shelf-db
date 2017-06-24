@@ -17,19 +17,70 @@ $.fn.bindFirst = function(name, fn) {
     });
 };
 
-// Open external confirm dialog
-function confirmPopUp(selector, header, text, confirmbtntext, fnc_ok,
-  fnc_cancel) {
+$.fn.formData = function() {
+  // https://stackoverflow.com/a/24012884
+  return $(this).serializeArray().reduce(function(obj, item) {
+    obj[item.name] = item.value;
+    return obj;
+  }, {});
+};
 
-  var setupPopup = function() {
+$.mobile.switchPopup = function(sourceElement, destinationElement, onswitched) {
+    var afterClose = function() {
+        destinationElement.popup("open");
+        sourceElement.off("popupafterclose", afterClose);
+
+        if (onswitched && typeof onswitched === "function"){
+            onswitched();
+        }
+    };
+
+    sourceElement.on("popupafterclose", afterClose);
+    sourceElement.popup("close");
+};
+
+// Spinner count
+$.mobile.spinnerRefCount = 0;
+$.mobile.referencedLoading = function(cmd) {
+  switch(cmd) {
+    case 'show':
+      if( this.spinnerRefCount == 0 )
+        this.loading('show');
+
+      this.spinnerRefCount++;
+      break;
+    case 'hide':
+      this.spinnerRefCount--;
+      if( this.spinnerRefCount <= 0 )
+      this.loading('hide');
+      break;
+  }
+};
+
+// Open external confirm dialog
+function confirmPopUp(options) {
+
+  var defaults = {
+    header: "",
+    text: "",
+    confirmButtonText: "Ok",
+    transition: "pop",
+    confirm: undefined,
+    cancel: undefined
+  };
+
+  options = $.extend(defaults, options);
+
+  var $popup = $('#popupConfirmDialog');
+
+  var setupPopup = function($popup) {
 
     var $buttonresult = "";
-    var $popup = $('#popupDialog');
     var $cancelbtn = $popup.find("[name='popupCancelBtn']");
 
-    $popup.find("[name='dialogHeader']").first().text(header);
-    $popup.find("[name='dialogText']").first().text(text);
-    $popup.find("[name='popupOkBtn']").first().text(confirmbtntext);
+    $popup.find("[name='dialogHeader']").first().text(options.header);
+    $popup.find("[name='dialogText']").first().text(options.text);
+    $popup.find("[name='popupOkBtn']").first().text(options.confirmButtonText);
 
     // Keypress handlers
     $popup.off('keypress');
@@ -54,7 +105,6 @@ function confirmPopUp(selector, header, text, confirmbtntext, fnc_ok,
       // Return buttonresult
       $buttonresult = $(ev.target).attr('buttonresult');
       console.log($buttonresult);
-      $popup.find('a').off('click');
     });
 
     $popup.one('popupafteropen', function(ev,ui) {
@@ -63,10 +113,10 @@ function confirmPopUp(selector, header, text, confirmbtntext, fnc_ok,
 
     $popup.one('popupafterclose', function(ev,ui) {
 
-      if( $buttonresult == "ok" && fnc_ok ) {
-        fnc_ok();
-      } else if ($buttonresult == "cancel" && fnc_cancel) {
-        fnc_cancel();
+      if( $buttonresult == "ok" && options.confirm ) {
+        options.confirm();
+      } else if ($buttonresult == "cancel" && options.cancel ) {
+        options.cancel();
       }
     });
 
@@ -74,23 +124,26 @@ function confirmPopUp(selector, header, text, confirmbtntext, fnc_ok,
   };
 
   // Check if we need to load
-  var $popup = $('#popupDialog');
-  var $tgt = $(selector);
-
   if( $popup.length > 0 )
   {
-    setupPopup();
-    $popup.popup('open', { transition: "pop"});
+    setupPopup($popup);
+    $popup.popup('open', { transition: options.transition });
 
   } else {
 
-    $tgt.load('/pages/popup-confirmdialog.php', function() {
+    var $popuptarget = $('<div />').appendTo('body');
 
+    $.mobile.referencedLoading('show');
+
+    $popuptarget.load('/pages/popup-confirmdialog.php', function() {
+      var $popup = $('#popupConfirmDialog');
       Lang.searchAndReplace();
-      $popup = setupPopup();
-      $tgt.enhanceWithin();
+      setupPopup($popup);
+      $(this).enhanceWithin();
 
-      $popup.popup('open', { transition: "pop"});
+      $.mobile.referencedLoading('hide');
+
+      $popup.popup('open', { transition: options.transition});
     });
   }
 }
@@ -106,7 +159,6 @@ function inputPopUp(header, headline, message, confirmbtntext,
   var setupPopup = function($popup) {
     // Text replace and callback setup
     var $buttonresult = "";
-    var $popup = $('#popupInputDialog');
     var $input = $popup.find("[name='dialogText']");
     var $okbtn = $popup.find("[name='popupOkBtn']");
     var $cancelbtn = $popup.find("[name='popupCancelBtn']");
@@ -166,13 +218,17 @@ function inputPopUp(header, headline, message, confirmbtntext,
 
   } else {
 
-    $popuptarget = $('<div />').appendTo('body');
+    var $popuptarget = $('<div />').appendTo('body');
+
+    $.mobile.referencedLoading('show');
 
     $popuptarget.load('/pages/popup-inputdialog.php', function() {
       var $popup = $('#popupInputDialog');
       Lang.searchAndReplace();
       setupPopup($popup);
       $(this).enhanceWithin();
+
+      $.mobile.referencedLoading('hide');
 
       $popup.popup('open', { transition: "pop"});
     });
@@ -217,7 +273,7 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
       });
 
       $popup.one('popupafteropen', function(ev,ui) {
-          $popup.find("textarea").first().focus().select();
+          $popup.find("textarea").first().focus();
       });
       $popup.one('popupafterclose', function(ev,ui) {
         if( $buttonresult == "ok" && fnc_ok ) {
@@ -234,6 +290,8 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
     } else {
       $popuptarget = $('<div />').appendTo('body');
 
+      $.mobile.referencedLoading('show');
+
       $popuptarget.load('/pages/popup-inputmultilinedialog.php', function() {
         $popup = $('#popupInputMultilineDialog');
 
@@ -241,56 +299,106 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
         setupPopup($popup);
         $(this).enhanceWithin();
 
+        $.mobile.referencedLoading('hide');
+
         $popup.popup('open', { transition: "pop"});
       });
     }
 }
 
 // Function to handle loading of external popup and enhancing
-function openExternalPopup(pageUrl, fnc_afteropen, fnc_afterclose, fnc_click) {
-  var $popuptarget = $('[name="externalPopup"][pageurl="'+pageUrl+'"]');
+function openExternalPopup(options) {
+  // Get options
+  var defaults = {
+    url: null,
+    afteropen: undefined,
+    afterclose: undefined,
+    click: undefined,
+    submit: undefined,
+    forceReload: false,
+    transition: "pop",
+    minBorder: 30,
+    customEventName: undefined,
+    customEventHandler: undefined,
+    constrainHeight: false,
+    fixedMaxWidth: null
+  };
+
+  options = $.extend(defaults, options);
+
+  if(!(options.url)) return;
+
+  // Cleanup pageUrl and remove GET stuff
+  var urlSplit = options.url.split("?");
+
+  options.url = urlSplit[0];
+  var urlParams = urlSplit[1] || "";
+
+  var $popuptarget = $('[name="externalPopup"][pageurl="'+options.url+'"]');
+
+  // Force a reload if the page parameters differ as we do not know if the appearance changes server-side
+  if( $popuptarget.length > 0 && urlParams != $popuptarget.attr('pageparams') ) {
+    options.forceReload = true;
+  }
+
+  if( options.forceReload && $popuptarget.length > 0 )
+  {
+    $('[origin="'+options.url+'"]').popup('destroy');
+    $popuptarget.remove();
+    $popuptarget = $();
+  }
 
   if( $popuptarget.length > 0 ) {
-    var dialogId = $('[origin="'+pageUrl+'"]');
 
-    dialogId.popup('open');
+    var dialogId = $('[origin="'+options.pageUrl+'"]');
+
+    dialogId.popup('open', { transition: options.transition});
 
   } else {
     $popuptarget = $('<div />').appendTo('body');
     $popuptarget.attr({
       	name: 'externalPopup',
-        'pageurl': pageUrl
+        'pageurl': options.url,
+        'pageparams': urlParams
     });
 
-    $popuptarget.load(pageUrl, function() {
+    $.mobile.referencedLoading('show');
+
+    $popuptarget.load(options.url + (urlParams?"?"+urlParams:""), function() {
+
       var dialogId = $(this).find('[data-role="popup"]').first();
       dialogId.attr({
-        'origin': pageUrl
+        'origin': options.url
       });
       Lang.searchAndReplace();
       $(this).enhanceWithin();
 
+      // Setup event handlers
       dialogId.popup({
         beforeposition: function() {
+
             $(this).css( {
-              height: window.innerHeight - 30,
-              maxWidth: window.innerWidth - 30
+              maxHeight: ( options.constrainHeight ? window.innerHeight - options.minBorder : null ),
+              maxWidth: ( options.fixedMaxWidth ? options.fixedMaxWidth : window.innerWidth - options.minBorder )
             });
 
           },
-        afterclose: function(evt,ui) {
-          if( fnc_afterclose ) fnc_afterclose(evt,ui);
-        },
-        afteropen: function(evt,ui) {
-          if( fnc_afteropen ) fnc_afteropen(evt,ui);
-        }
+        afterclose: (options.afterclose ? options.afterclose : null),
+        afteropen: (options.afteropen ? options.afteropen : null),
       });
 
-      dialogId.find('a').click( function(evt) {
-        if( fnc_click ) fnc_click(evt);
-      });
+      if( options.customEventName && options.customEventHandler )
+        dialogId.on(options.customEventName, options.customEventHandler);
 
-      dialogId.popup('open');
+      if( options.click )
+        dialogId.find('a, button').click( options.click );
+
+      if( options.submit )
+        dialogId.find('form').on( 'submit', options.submit );
+
+      $.mobile.referencedLoading('hide');
+
+      dialogId.popup('open', { transition: options.transition});
     });
   }
 }

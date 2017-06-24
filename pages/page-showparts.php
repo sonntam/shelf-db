@@ -5,9 +5,14 @@
 	require_once(dirname(__DIR__).'/classes/partdatabase.class.php');
 
 	$_GET 	+= array("id" => null);
+	$_GET   += array("search" => null);
+	$_GET		+= array("catid" => 0);
+
+	$search     = $_GET["search"];
+	$searchMode = $search && ($search != "");
 
 	$catid      = $_GET["catid"];
-	$catname    = $pdb->GetCategoryNameFromId($catid);
+	$catname    = $pdb->Categories()->GetNameFromId($catid);
 	$catrecurse = $_GET["catrecurse"] == "1";
 
 	// Create button from category node
@@ -17,10 +22,10 @@
 	};
 
 	// Get Parent
-	$parent  				= $pdb->GetParentCategoryFromId($catid);
+	$parent  				= $pdb->Categories()->GetParentFromId($catid);
 	$catParentName 	= $parent['name'];
 	$catParentId    = $parent['id'];
-	$catHasChildren = (int)( count($pdb->GetCategoryDirectChildrenFromId($catid)) > 0 );
+	$catHasChildren = (int)( count($pdb->Categories()->GetDirectChildrenFromId($catid)) > 0 );
 	// Get All parent nodes and create buttons
 	$buttons = [];
 	if( $catid != 0 )
@@ -29,12 +34,12 @@
 	while($parent['id'] != 0) {
 		array_unshift($buttons, $funCreateButton($parent,1));
 
-		$parent  = $pdb->GetParentCategoryFromId($parent['id']);
+		$parent  = $pdb->Categories()->GetParentFromId($parent['id']);
 	}
 
 	// FIlter strings
-	$fpFilter = join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetFootprints()));
-	$slFilter = join(';', array_map(function($el){return $el['id'].":".$el['name'];}, $pdb->GetStorelocations()));
+	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
+	$slFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
 ?>
 
 <script type="text/javascript">
@@ -130,10 +135,10 @@
 	        colModel: [
 							{
 								name: 'image',
-								label: 'Bild',
-								index: 'pict_fname_arr',
+								label: Lang.get('image'),
+								index: 'mainpicfile',
 								fixed: true,
-								width: 32,
+								width: 32+5 /*2+2+1 padding + border*/,
 								sortable: false,
 								editable: false,
 								align: 'center',
@@ -142,7 +147,7 @@
 							},
 	            {
 								name: 'name',
-								label: 'Name',
+								label: Lang.get('name'),
 								index: 'name',
 								sortable: true,
 								align: 'left',
@@ -191,7 +196,7 @@
 							},
 							{
 								name: 'footprint',
-								label: 'Footprint',
+								label: Lang.get('footprint'),
 								index: 'footprint',
 								sortable: true,
 								align: 'right',
@@ -305,43 +310,14 @@
 
 			function imageFormatter(cellvalue, options, rowObject) {
 
-				var masteridx  = 0;
-				var fname      = null;
-				var fname_full = null;
-
-				// Find master picture index, if any
-				if( rowObject.pict_masterpict_arr ) {
-					masteridx = rowObject.pict_masterpict_arr.split(',').indexOf('1')
-					masteridx = Math.max(masteridx,0);
-				}
-
-				if( rowObject.tn_fname_arr ) {
-					var fname_arr = rowObject.tn_fname_arr.split(',');
-					masteridx = Math.min(fname_arr.length-1, masteridx);
-					fname = fname_arr[masteridx];
-				}
-				if( rowObject.pict_fname_arr ) {
-					var fname_arr = rowObject.pict_fname_arr.split(',');
-					masteridx = Math.min(fname_arr.length-1, masteridx);
-					if( !fname ) {
-						fname = fname_arr[masteridx];
-					}
-					fname_full = fname_arr[masteridx];
-				}
-
 				var retstr = '';
-				if( fname ) {
-					retstr += '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
-					+ 'width:auto" data-other-src="/img/parts/'+ fname_full +'" src="/img/parts/' + fname + '">';
-					if( fname_full ) {
-						retstr = '<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">'
-						+ retstr + '</a>';
-					}
-				} else {
-					// Try footprint
-					retstr = '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
-					+ 'width:auto" src="/img/footprint/' + rowObject.f_pict_fname + '">';
-				}
+
+				retstr = '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
+				+ 'width:auto" data-other-src="'+rowObject.mainPicFile+'" src="'+rowObject.mainPicThumbFile+'">'
+
+				retstr = '<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">'
+									+ retstr + '</a>';
+
 				return retstr;
 			}
 	</script>

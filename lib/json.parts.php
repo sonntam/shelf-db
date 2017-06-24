@@ -17,11 +17,12 @@
   $_GET += array("searchString" => null);// Value of search field
   $_GET += array("searchOper" => null);  // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
   $_GET += array("filters" => null);     // Filters
-
+  $_GET += array("globalSearchString" => null);
 
   // Get category ID
   $catid      = $_GET["catid"];
   $partid     = $_GET["partid"];
+  $search     = $_GET["globalSearchString"];
 
   if( $partid === null ) { // Get list of all parts of category
 
@@ -29,13 +30,13 @@
     $page       = $_GET["page"];
 
     // http://www.trirand.com/blog/jqgrid/jqgrid.html
-    $numparts = $pdb->GetNumberOfPartsByCategoryId($catid, true);
+    $numparts = $pdb->Parts()->GetCountByCategoryId($catid, $search, true);
     $numpages = ceil($numparts/$limit);
     $page     = min($numpages,$page);
 
     $offset   = $limit*($page - 1);
 
-    $parts = $pdb->GetPartsSegmentByCategoryId($catid, $offset, $limit, $_GET["sidx"], $_GET["sord"], true);
+    $parts = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $_GET["sidx"], $_GET["sord"], true, $search);
 
     // Copy
     $newparts = array();
@@ -46,6 +47,7 @@
       $newparts[$i]['name'] = $parts[$i]['name'];
     }
 
+    $responce = new stdClass();
     $responce->page    = $page;
     $responce->total   = $numpages;
     $responce->records = $numparts;
@@ -60,7 +62,7 @@
     echo $json;
 
   } else {  // Single part information
-    $parts = array( $pdb->GetPartById($partid) );
+    $parts = array( $pdb->Parts()->GetById($partid) );
 
     $json = json_encode($parts, JSON_PRETTY_PRINT);
 

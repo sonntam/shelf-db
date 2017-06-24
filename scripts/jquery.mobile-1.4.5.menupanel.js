@@ -55,6 +55,14 @@ $.widget( "mobile.menupanel", $.mobile.panel, {
                         .addClass( self._pageContentOpenClasses )
                         .addClass( classes.pageContentPrefix + "-open" );
 
+                    // Handle fixed headers
+                    var $header = $page.find('[data-role="header"][data-position="fixed"]');
+                    if( $header.length > 0 )
+                    {
+                      $header = $header.first();
+                      $header.addClass("ui-panel-animate ui-panel-page-content-position-left ui-panel-page-content-display-reveal ui-panel-page-content-open");
+                    }
+
                     // Set data
                     self._page().jqmRemoveData( "panel" );
                     $page.jqmData( "panel", "open" );

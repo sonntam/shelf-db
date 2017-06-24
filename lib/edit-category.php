@@ -7,9 +7,9 @@ $_POST += array('method' => 'none');
 
 switch ($_POST['method']) {
 
-  case 'editcatname': // Edit name
+  case 'editName': // Edit name
     if( isset( $_POST['id'] ) && isset( $_POST['newname'] ) ) {
-      if( $pdb->SetCategoryNameById( $_POST['id'], $_POST['newname'] ) ) {
+      if( $pdb->Categories()->SetNameById( $_POST['id'], $_POST['newname'] ) ) {
 
         // Clear buffer and print JSON
         ob_clean();
@@ -34,9 +34,9 @@ switch ($_POST['method']) {
     }
     break;
 
-  case 'addcat': // Add new category
+  case 'add': // Add new category
     if( isset( $_POST['parentid'] ) && isset( $_POST['newname'] ) ) {
-      if( $newid = $pdb->AddCategoryToParentById( $_POST['parentid'], $_POST['newname'] ) ) {
+      if( $newid = $pdb->Categories()->Create( $_POST['parentid'], $_POST['newname'] ) ) {
 
         // Clear buffer and print JSON
         ob_clean();
@@ -64,7 +64,7 @@ switch ($_POST['method']) {
 
     break;
 
-  case 'deletecat':
+  case 'delete':
 
     break;
 

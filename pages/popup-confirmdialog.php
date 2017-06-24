@@ -1,4 +1,4 @@
-<div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:500px;">
+<div data-role="popup" id="popupConfirmDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:500px;">
     <div data-role="header" data-theme="a">
     <h1 name="dialogHeader" style="margin: 0 15px;"></h1>
     </div>
