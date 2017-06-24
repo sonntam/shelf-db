@@ -130,10 +130,10 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 				foreach($parameters as $name => $value)
 				{
 						$class = "ConfigFile\\".ucfirst($key);
-						$property = strtoupper($name);
+						$property = $name;
 						if( property_exists($class, $property) ) {
-							Log::Debug("Setting $class::$".strtoupper($name)." = \"$value\"");
-							$class::${strtoupper($name)} = $value;
+							Log::Debug("Setting $class::$".$property." = \"$value\"");
+							$class::${$property} = $value;
 						} else {
 							Log::Warning("Setting $key\\$name does not exist in this software. Ignoring...");
 						}

@@ -10,7 +10,10 @@
         "port": 55555
     },
     "log": {
-        "loglevel": "debug",
-        "logdatetime": false
+        "logLevel": "debug",
+        "logDateTime": false
+    },
+    "filesystem": {
+      "tempFileMaxAgeSecs": 30
     }
 }

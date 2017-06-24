@@ -10,7 +10,7 @@ namespace ConfigFile {
 	 */
 	class Config {
 		/** @var string Version number of this configuration file */
-		static $VERSION = "1.0";
+		static $version = "1.0";
 	}
 
 	/**
@@ -19,15 +19,15 @@ namespace ConfigFile {
 	class Database {
 
 		/** @var string SQL Database Hostname */
-		static public $HOST = "localhost";
+		static public $host = "localhost";
 		/** @var string SQL Database username */
-		static public $USER = "partdb";
+		static public $user = "partdb";
 		/** @var string SQL Database password */
-		static public $PASSWORD = "";
+		static public $password = "";
 		/** @var string SQL Database name to use */
-		static public $NAME = "partdb";
+		static public $name = "partdb";
 		/** @var int Port of SQL database */
-		static public $PORT = 30154;
+		static public $port = 30154;
 
 	}
 
@@ -40,9 +40,16 @@ namespace ConfigFile {
 		 * One of each debug, info, warning, error
 		 * @var string
 		 */
-		static public $LOGLEVEL = "error";
+		static public $logLevel = "error";
 
-		static public $LOGDATETIME = false;
+		static public $logDateTime = false;
+	}
+
+	/**
+	 * Filesystem relevant configuration settings
+	 */
+	class FileSystem {
+		static public $tempFileMaxAgeSecs = 30;
 	}
 
 }
