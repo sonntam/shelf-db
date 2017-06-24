@@ -320,10 +320,10 @@ function openExternalPopup(options) {
     minBorder: 30,
     customEventName: undefined,
     customEventHandler: undefined,
-    constrainHeight: false,
+    constrainHeight: true,
     fixedMaxWidth: null
   };
-
+  
   options = $.extend(defaults, options);
 
   if(!(options.url)) return;
