@@ -98,6 +98,26 @@ CREATE TABLE IF NOT EXISTS `parts` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `history`
+--
+
+DROP TABLE IF EXISTS `history`;
+CREATE TABLE IF NOT EXISTS `history` (
+  `id` int(11) NOT NULL UNIQUE,
+  `userid` int(11) NOT NULL,
+  `action` mediumtext NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `itemid` int(11),
+  `itemtype` enum('C','P','F','SU','SL') NOT NULL COMMENT 'Type of item this entry belongs to `C` category, `P` part, `F` footprint, `SL` storelocation, `SU` supplier',
+  `field` mediumtext NOT NULL,
+  `newvalue` mediumtext,
+  `oldvalue` mediumtext
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `users`
 --
 
@@ -179,7 +199,7 @@ CREATE TABLE IF NOT EXISTS `pictures` (
   `pict_fname` varchar(255) NOT NULL DEFAULT '' COMMENT 'Picture filename',
   `pict_width` int(11) NOT NULL DEFAULT '0',
   `pict_height` int(11) NOT NULL DEFAULT '0',
-  `pict_type` enum('P','T','F','TF') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail, `F` is footprint, `TF` is thumbnail of footprint',
+  `pict_type` enum('P','T','F','TF','SU') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail, `F` is footprint, `TF` is thumbnail of footprint, `SU` is supplier',
   `tn_obsolete` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Is 1 if thumbnail is outdated and must be regenerated',
   `tn_t` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Generation timestamp of thumbnail',
   `tn_pictid` int(11) NOT NULL DEFAULT '0' COMMENT 'Picture ID this thumbnail belongs to',
@@ -222,7 +242,8 @@ CREATE TABLE IF NOT EXISTS `storeloc` (
 DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` int(11) NOT NULL UNIQUE,
-  `name` tinytext NOT NULL
+  `name` tinytext NOT NULL,
+  `urlTemplate` text NULL DEFAULT NULL '' COMMENT 'This is the template url for the shop that can show items in the webbrowser by inserting the supplierpartnr'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --

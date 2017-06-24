@@ -8,16 +8,31 @@
       console.log("DEBUG: pagecontainer - change");
 
       $('#testextpopup').click( function(evt) {
-        openExternalPopup('/pages/popup-footprintselect.php');
+        openExternalPopup({url: '/pages/popup-footprintselect.php'});
       });
 
       $('#testextpopup2').click( function(evt) {
-        openExternalPopup('/pages/popup-storelocselect.php');
+        openExternalPopup({url: '/pages/popup-storelocselect.php'});
       });
 
       // Open external input dialog
       $('#inputmultipopup').click( function( evt) {
         inputMultilinePopUp("Header", "Headline", "Message", "Ok", "Label", "Placeholder", "Default");
+      });
+
+      $('#editfootprint').click( function(evt) {
+        openExternalPopup({url: '/pages/popup-editfootprint.php', forceReload: true});
+      });
+
+      $('#editfootprintId').click( function(evt) {
+        openExternalPopup({url: '/pages/popup-editfootprint.php?method=edit&id=9', forceReload: true});
+      });
+
+      $('#partSearch').click( function() {
+        $.ajax({
+          type: 'POST',
+          dataType: 'json'
+        });
       });
     });
 
@@ -40,6 +55,9 @@
         <div id="testextpopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Footprint popup</div>
         <div id="testextpopup2" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Storage location popup</div>
         <div id="inputmultipopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Input Multiline popup</div>
+        <div id="editfootprint" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Add footprint popup</div>
+        <div id="editfootprintId" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Edit footprint Id popup</div>
+        <div id="partSearch" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Test parts search...</div>
         <a href="#" id="exit-button" data-rel="back" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Exit</a>
       </div>
       <div class="ui-block-b">
