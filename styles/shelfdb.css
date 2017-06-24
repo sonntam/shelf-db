@@ -371,7 +371,7 @@ div.editcontrols.editcontrols-hidden {
       width: auto;
       overflow: hidden;
       min-width: 15em;
-      height: 20em;
+      min-height: 20em;
     }
 }
 
