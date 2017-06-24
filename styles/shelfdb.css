@@ -231,6 +231,32 @@ div.editcontrols.editcontrols-hidden {
 }
 
 /**
+ * tooltip button
+ */
+.my-tooltip-btn {
+  border: 0;
+  background: none;
+}
+
+/**
+ * jquery mobile split button for collapsible
+ */
+.ui-collapsible-heading .ui-btn.ui-collapsible-split-button {
+  position: absolute;
+  top: 0;
+  min-width: 3em;
+  right: 0;
+  height: 100%;
+  height: calc(100% - 2px);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-width: 1px;
+  margin: 0;
+}
+
+/**
  * jqgrid styles
  */
 .ui-jqgrid-title {
@@ -286,37 +312,45 @@ div.editcontrols.editcontrols-hidden {
 }
 
 /* Partinfo screen */
-.partDetail {
+.flexBoxTextInputEditControl {
   display: flex;
   align-items: center;
 }
-.partDetail .ui-input-text,
-.partDetail .h3 {
+.flexBoxTextInputEditControl .ui-input-text,
+.flexBoxTextInputEditControl h3 {
   flex: 1
 }
 
-.partDetail .ui-input-btn {
+.flexBoxTextInputEditControl .ui-input-btn {
   flex: 0 0 auto;
   margin-left: 0.5em;
 }
 
-.partinfo .partimg {
+.partinfo .partimage {
   max-width:20em;
   max-height:20em;
   width: auto;
   height:auto;
+  margin:auto;
+  display:block;
 }
-.partinfo .ui-block-a {
-  max-width: 20em;
-  height: 20em;
-  width: auto;
+.partinfo .partimageblock {
+  width:100%;
   float: none;
+  text-align: center;
+  display: table;
 }
-.partinfo .ui-block-b {
+
+.partinfo .partimagewrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.partinfo .partdetailsblock {
   width: 100%;
 }
 
-.partinfo .ui-block-b > div {
+.partinfo .partdetailsblock > div {
   height: 100%;
 }
 
@@ -326,16 +360,42 @@ div.editcontrols.editcontrols-hidden {
 }
 
 /* 2nd breakpoint - Float all, 20em/25/25 */
-@media (min-width: 32em) {
-    .partinfo .ui-block-a {
+@media (min-width: 40em) {
+    .partinfo .partimageblock {
       float: left;
+      width: 20em;
     }
 
-    .partinfo .ui-block-b {
+    .partinfo .partdetailsblock {
       float: none;
       width: auto;
       overflow: hidden;
-      min-width: 12em;
+      min-width: 15em;
       height: 20em;
     }
+}
+
+/* FA Icons in jquery mobile */
+.ui-btn-fa {
+    padding-left: 2.5em;
+}
+.ui-btn-fa .fa {
+    position: absolute;
+    left: 9px;
+    width: 22px;
+    height: 22px;
+}
+.ui-btn-fa .fa:before {
+    line-height: 22px !important;
+}
+
+.ui-fa-disk .fa {
+    background-color: rgba(0, 0, 0, 0.298039);
+    border-radius: 1em;
+    font-size: 14px;
+}
+
+/* Simpledialog 2 */
+.ui-simpledialog-container {
+  border-color: #fff !important;
 }
