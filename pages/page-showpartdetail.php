@@ -241,6 +241,28 @@
 								</div>
 							</div>
 						</div>
+						<div class="ui-grid-a">
+							<div class="ui-block-a" style="padding-right: 0.5em">
+								<h4 uilang="supplier"></h4>
+							</div>
+							<div class="ui-block-b" style="padding-left: 0.5em">
+								<h4 uilang="partNumber"></h4>
+							</div>
+						</div>
+						<div class="ui-grid-a">
+							<div class="ui-block-a" style="padding-right: 0.5em">
+								<div class="flexBoxTextInputEditControl">
+									<input name="showSupplier" type="text" readonly=readonly value="<?php echo $part['supplier_name']; ?>">
+									<input name="editSupplier" type="button" data-icon="edit" data-iconpos="notext">
+								</div>
+							</div>
+							<div class="ui-block-b" style="padding-left: 0.5em">
+								<div class="flexBoxTextInputEditControl">
+									<input name="showPartNumber" type="text" readonly=readonly value="<?php echo $part['supplierpartnr']; ?>">
+									<input name="editPartNumber" type="button" data-icon="edit" data-iconpos="notext">
+								</div>
+							</div>
+						</div>
           </div>
         </div>
       </div>
@@ -262,6 +284,10 @@
 				<div data-role="collapsible">
 			    <h4 uilang="datasheets"></h4>
 					<p>TODO: DS</p>
+				</div>
+				<div data-role="collapsible">
+			    <h4 uilang="images"></h4>
+					<p>TODO: IMG</p>
 				</div>
 			</div>
     </div>
