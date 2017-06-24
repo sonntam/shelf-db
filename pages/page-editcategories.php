@@ -213,8 +213,9 @@
 							{
 									// Open tree to new node (but do not select it)
 									$ctrl.detach();
-									$tree.tree('removedNode', node);
-
+									$tree.tree('removeNode', node);
+									$tree.trigger('tree.init');
+									
 									// Hide controls
 									hideControls();
 

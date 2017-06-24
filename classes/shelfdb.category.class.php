@@ -12,6 +12,13 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    public function AllReplaceParentId( int $oldid, int $newid ) {
+      $query = "UPDATE SET parentnode = $newid WHERE parentnode = $oldid";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      return $res;
+    }
+
     public function GetSubcategoryIdsFromId( int $rootcatid, $includeroot = false ) {
 
       if( $includeroot ) {
@@ -134,11 +141,32 @@ namespace ShelfDB {
       }
     }
 
+    public function DeleteById( int $id, $moveSiblingsUpwards = false ) {
+
+      // Get siblings
+      if( $moveSiblingsUpwards ) {
+        $parent = $this->GetParentFromId($id);
+        $this->AllReplaceParentId( $id, $parent['id'] );
+      } else {
+        // Delete siblings
+        $siblings = $this->GetSubcategoryIdsFromId( $id, false );
+        foreach( $siblings as $sibling ){
+          $this->DeleteById( $sibling, false );
+        }
+      }
+
+      // Delete this
+      $query = "DELETE FROM categories WHERE id = $id;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      return $res;
+    }
+
     public function Create( int $parentid, string $name ) {
       $name = $this->db->sql->real_escape_string( $name );
       $query = "INSERT INTO `categories` (`name`, `parentnode`) VALUES ('$name', $parentid)";
 
-      $res = $this->db->sql->query($query);
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res === true ) {
         $newid = $this->db->sql->insert_id;
@@ -156,7 +184,7 @@ namespace ShelfDB {
 
       $query = "UPDATE `categories` SET `parentnode` = $newparentid WHERE `id` = $id";
 
-      $res = $this->db->sql->query($query) ;
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res === true ) {
         // Everything OK

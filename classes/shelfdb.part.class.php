@@ -26,6 +26,13 @@ namespace ShelfDB {
       return $res;
     }
 
+    public function AllReplaceStorelocationId( int $oldid, int $newid ) {
+      $query = "UPDATE parts SET id_storeloc = $newid WHERE id_storeloc = $oldid;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      return $res;
+    }
+
     private function GetCountByCategoryIdEscaped( int $catid = 0, $escapedSearch = "", $recursive = false ) {
 
       $partcount = 0;
