@@ -6,6 +6,7 @@ Used libraries
  - font awesome
  - jquery-mobile
  - jquery-validation https://github.com/jquery-validation/jquery-validation
+ - jquery-mobile-font-awesome https://github.com/dotcastle/jquery-mobile-font-awesome
 
 TODO
 
