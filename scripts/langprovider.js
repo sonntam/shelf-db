@@ -115,17 +115,20 @@ function Lang(language, replaceText)
       none: 'Keine',
       tools: 'Werkzeuge',
       image: 'Bild',
+      images: 'Bilder',
       copyOf: function(name) {
         return 'Kopie von '+name;
       },
       uploadImageLabel: 'Bild hochladen',
       description: 'Beschreibung',
       datasheets: 'Datenblätter',
+      supplier: 'Lieferant',
       suppliers: 'Lieferanten',
       footprints: 'Bauformen',
       footprint: 'Bauform',
       categories: 'Kategorien',
       partTitle: 'Bauteilansicht',
+      partNumber: 'Artikelnummer',
       moreInfo: 'Mehr informationen',
       noUndoHint: 'Diese Aktion kann nicht rückgängig gemacht werden.',
       enterName: 'Namen eingeben',
@@ -196,6 +199,22 @@ function Lang(language, replaceText)
       popupFootprintAddUserAction: 'Geben Sie die Daten für die neue Bauform an',
       popupFootprintFilterHint: 'Mit dem Filter kann in den Formen gesucht werden',
       popupFootprintFilterPlaceholder: 'Einträge filtern...',
+
+      editStoreLocationNewName: 'Neuer Name',
+      editStoreLocationAdd: 'Lagerort anlegen',
+      editStoreLocationDelete: 'Lagerort löschen',
+      editStoreLocationDeleteHint: function(storelocName) {
+        return 'Möchten Sie den Lagerort "' + storelocName + '" wirklich löschen? Bauteile, die diesen Lagerort nutzen, werden auf den Lagerort "-" zurückgesetzt und sind in der Werkzeugleiste auflistbar.';
+      },
+      editStoreLocationAddHint: 'Namen für neuen Lagerort angeben',
+      popupStoreLocationSelectHeader: 'Lagerort wählen',
+      popupStoreLocationEditHeader: 'Lagerort bearbeiten',
+      popupStoreLocationAddHeader: 'Lagerort anlegen',
+      popupStoreLocationSelectUserAction: 'Wählen Sie einen neuen Lagerort aus',
+      popupStoreLocationAddUserAction: 'Geben Sie die Daten für den neuen Lagerort an',
+      popupStoreLocationEditUserAction: 'Geben Sie die neuen Daten für den Lagerort an',
+      popupStoreLocationFilterHint: 'Mit dem Filter kann in den Lagerorten gesucht werden',
+      popupStoreLocationFilterPlaceholder: 'Einträge filtern...',
 
       editSupplierNewName: 'Neuer Name',
       editSupplierAdd: 'Lieferant anlegen',
