@@ -103,7 +103,7 @@
 
 		$('[name=editStoreloc]').click(function(evt) {
 			openExternalPopup({
-				url: '/pages/popup-storelocselect.php',
+				url: '/pages/popup-selectstorelocation.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
 				},
@@ -125,7 +125,7 @@
 
 		$('[name=editFootprint]').click(function(evt) {
 			openExternalPopup({
-				url: '/pages/popup-footprintselect.php',
+				url: '/pages/popup-selectfootprint.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
 				},

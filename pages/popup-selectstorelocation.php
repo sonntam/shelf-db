@@ -33,7 +33,7 @@
         </div>
     </div>
 </div>
-<div id="popup-storelocselect-dialog"></div>
+<div id="popup-selectstorelocation-dialog"></div>
 
 <script type="text/javascript">
   $('[name=popupAddBtn]').click( function(evt) {
