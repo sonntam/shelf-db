@@ -323,7 +323,7 @@ function openExternalPopup(options) {
     constrainHeight: true,
     fixedMaxWidth: null
   };
-  
+
   options = $.extend(defaults, options);
 
   if(!(options.url)) return;
@@ -350,7 +350,7 @@ function openExternalPopup(options) {
 
   if( $popuptarget.length > 0 ) {
 
-    var dialogId = $('[origin="'+options.pageUrl+'"]');
+    var dialogId = $('[origin="'+options.url+'"]');
 
     dialogId.popup('open', { transition: options.transition});
 

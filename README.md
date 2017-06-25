@@ -24,4 +24,3 @@ TODO
  - copy part from detail page
  - add datasheets and images on detail page
  - allow adding of part from part table
- - use jqueryfileupload
