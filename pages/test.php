@@ -8,11 +8,15 @@
       console.log("DEBUG: pagecontainer - change");
 
       $('#testextpopup').click( function(evt) {
-        openExternalPopup({url: '/pages/popup-footprintselect.php'});
+        openExternalPopup({url: '/pages/popup-selectfootprint.php'});
       });
 
       $('#testextpopup2').click( function(evt) {
-        openExternalPopup({url: '/pages/popup-storelocselect.php'});
+        openExternalPopup({url: '/pages/popup-selectstorelocation.php'});
+      });
+
+      $('#selectSupplier').click( function(evt) {
+        openExternalPopup({url: '/pages/popup-selectsupplier.php'});
       });
 
       // Open external input dialog
@@ -57,6 +61,7 @@
         <div id="inputmultipopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Input Multiline popup</div>
         <div id="editfootprint" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Add footprint popup</div>
         <div id="editfootprintId" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Edit footprint Id popup</div>
+        <div id="selectSupplier" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Select supplier dialog</div>
         <div id="partSearch" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Test parts search...</div>
         <a href="#" id="exit-button" data-rel="back" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Exit</a>
       </div>
