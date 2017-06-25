@@ -11,8 +11,34 @@ $_REQUEST['oper']"edit"
 $_REQUEST['id']"763"
    */
 
-  $q = "HI";
+  // Submitted data
+  $data = array_replace_recursive(array(
+    'method' => 'none'
+  ), $_GET, $_POST );
 
-  echo $q;
+  $response = array(
+    'success' => false
+  );
+
+  // Actions
+  switch($data['method']) {
+    case 'add':
+      # code...
+      break;
+    case 'delete':
+      # code...
+      break;
+    case 'edit':
+      # code...
+      break;
+
+    default:
+      break;
+  }
+
+  // Send response
+  ob_clean();
+
+  echo json_encode($resonse) ;
 
 ?>
