@@ -10,7 +10,7 @@
     ?>
       <li>
         <a data-rel='back' href='#' footprintid=<?php echo $f['id']; ?> footprintname='<?php echo $name; ?>'>
-          <img src='/img/footprint/<?php echo $f['pict_fname']; ?>'>
+          <img class="ui-center-element-absolute" src='/img/footprint/<?php echo $f['pict_fname']; ?>'>
           <h2><?php echo $name; ?></h2>
         </a>
       </li>

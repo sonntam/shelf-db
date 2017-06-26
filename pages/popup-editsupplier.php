@@ -256,7 +256,7 @@
         <div class="ui-block-a">
           <div style="display: flex; flex-flow: row">
             <div class="ui-shadow" style="text-align: center; background-color: lightgray; flex: 0 0 10em; width: 10em; height: 10em">
-              <img id="imgPreview" original-src="<?php echo $formData['imageUrl']; ?>" style="max-width:10em; max-height:10em" src="<?php echo htmlentities($formData['imageUrl']); ?>">
+              <img id="imgPreview" class="ui-center-element-relative" original-src="<?php echo $formData['imageUrl']; ?>" style="max-width:10em; max-height:10em" src="<?php echo htmlentities($formData['imageUrl']); ?>">
             </div>
             <div class="ui-grid-solo" style="flex: 1; margin-left: 1em; align-self: flex-end">
               <div class="ui-block-a">

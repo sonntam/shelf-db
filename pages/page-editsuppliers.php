@@ -10,7 +10,7 @@
 		<li data-icon="false" data-filtertext="<?php echo $name; ?>">
       <div class="ui-grid-a">
         <div class="ui-block-a" style="max-width: 7em">
-          <img style="max-width: 5em; max-height: 5em" src='/img/supplier/<?php echo $pictureFilename; ?>'>
+          <img class="ui-center-element-absolute" style="max-width: 5em; max-height: 5em" src='/img/supplier/<?php echo $pictureFilename; ?>'>
         </div>
         <div class="ui-block-b">
           <h2><?php echo $name; ?></h2>

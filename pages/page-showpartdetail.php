@@ -10,6 +10,7 @@
 	{
     $part = $pdb->Parts()->GetDetailsById($_GET["partid"]);
 		$name = $part['name'];
+		$partFootprintImageFile = joinPaths( $pdb->RelRoot(), 'img/footprint', $part['f_pict_fname']);
 	}
 
 ?>
@@ -198,6 +199,9 @@
 						</div>
             <h4 uilang="footprint"></h4>
 						<div class="flexBoxTextInputEditControl">
+							<a href="#popupimg" data-rel="popup" data-position-to="window">
+								<img data-other-src="<?php echo $partFootprintImageFile; ?>" src="<?php echo $partFootprintImageFile ?>" name="imgFootprint" style="max-height: 2.2em">
+							</a>
 							<input name="showFootprint" readonly="readonly" type=text value="<?php echo htmlentities($part['footprint'],ENT_HTML5,'UTF-8'); ?>">
 							<input name="editFootprint" type="button" data-icon="edit" data-iconpos="notext">
 						</div>

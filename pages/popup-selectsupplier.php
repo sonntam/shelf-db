@@ -10,7 +10,7 @@
     ?>
       <li>
         <a data-rel='back' href='#' supplierid=<?php echo $f['id']; ?> suppliername='<?php echo $name; ?>'>
-          <img src='/img/supplier/<?php echo $f['pict_fname']; ?>'>
+          <img class="ui-center-element-absolute" class="ui-center-element" src='/img/supplier/<?php echo $f['pict_fname']; ?>'>
           <h2><?php echo $name; ?></h2>
         </a>
       </li>
