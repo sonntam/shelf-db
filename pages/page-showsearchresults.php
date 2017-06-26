@@ -290,7 +290,7 @@
 	</script>
 
   <div data-role="header">
-    <h1>Kategorie <?php echo $catname; ?></a></h1>
+    <h1 uilang="searchResults"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>
 		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&catrecurse=1">Ebene höher</a>
@@ -298,7 +298,7 @@
   </div>
   <div role="main" class="ui-content">
 
-			<h3>Teile</h3>
+			<h3 uilang="searchResultsFor"><?php echo htmlentities($search); ?></h3>
 			<!-- Bild/Bottomlevel Kategorie/Name/Lagerbestand/Footprint/Lagerort/Datenblätter/+- -->
 			<p>
 				<table id=grido></table>

@@ -94,8 +94,8 @@
 
 				$("#grido").jqGrid({
 					caption: 'Teile in Kategorie <?php echo $catname; ?>',
-					url:'../lib/json.parts.php?catid=<?php echo $catid; ?>',
-					editurl: 'edit-part.php',
+					url:'<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>',
+					editurl: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
 					autowidth: true,
 					shrinkToFit: true,
 					datatype: 'json',
