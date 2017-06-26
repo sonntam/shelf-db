@@ -81,7 +81,7 @@ class PartDatabase
   public static function GetRelativeRoot() {
     static $relRoot = null;
     if( is_null($relRoot) ) {
-      $relRoot = str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname(__DIR__) );
+      $relRoot = '/' . str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname(__DIR__) );
     }
     return $relRoot;
   }

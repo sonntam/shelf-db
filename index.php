@@ -8,49 +8,54 @@
     <title uilang="mainTitle"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- JQUERY -->
-    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-2.1.4.js"></script>-->
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-2.1.4.min.js"></script>
     <!--<script src="./js/jquery-3.2.0.js"></script>-->
     <!--<script src="https://code.jquery.com/jquery-migrate-3.0.0.js"></script>-->
 
     <!-- JQUERY MOBILE -->
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/lib/jquery.mobile-1.4.5.js"></script>
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/jquery.mobile-1.4.5.menupanel.js"></script>
-    <link href="<?php echo $pdb->RelRoot(); ?>/styles/jquery.mobile-1.4.5.css" rel="stylesheet"/>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.mobile-1.4.5.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/jquery.mobile-1.4.5.menupanel.js"></script>
+    <link href="<?php echo $pdb->RelRoot(); ?>styles/jquery.mobile-1.4.5.css" rel="stylesheet"/>
     <!--<link rel="stylesheet" href="./css/jquery-ui.min.css">-->
 
     <!-- JQTREE -->
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/lib/tree.jquery.js"></script>
-    <link href="<?php echo $pdb->RelRoot(); ?>/styles/jqtree.css" rel="stylesheet"/>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/tree.jquery.js"></script>
+    <link href="<?php echo $pdb->RelRoot(); ?>styles/jqtree.css" rel="stylesheet"/>
     <!-- <link href="./css/jqtree.style.css" rel="stylesheet"/> -->
 
     <!-- FONT AWESOME -->
-    <link href="<?php echo $pdb->RelRoot(); ?>/styles/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="<?php echo $pdb->RelRoot(); ?>styles/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 
     <!-- JQUERY UI -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">-->
+    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/jquery-ui.min.css">
 
     <!-- JQGRID FREE -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/jquery.jqgrid.src.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/js/i18n/grid.locale-de.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/css/ui.jqgrid.min.css">
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/jquery.jqgrid.src.js"></script>-->
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.jqgrid.src.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/js/i18n/grid.locale-de.js"></script>-->
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/grid.locale-de.js"></script>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/css/ui.jqgrid.min.css">-->
+    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/ui.jqgrid.min.css">
 
     <!-- jquery-validation -->
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/lib/jquery-validation/jquery.validate.min.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/jquery.validate.min.js"></script>
 
     <!-- jquery-mobile-font-awesome -->
-    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>/styles/jqm-font-awesome-usvg-upng.css" />
+    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/jqm-font-awesome-usvg-upng.css" />
 
     <!-- jquery-mobile-simpledialogs2 -->
-    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>/styles/jquery.mobile.simpledialog.css" />
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/lib/jquery.mobile.simpledialog2.js"></script>
+    <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/jquery.mobile.simpledialog.css" />
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.mobile.simpledialog2.js"></script>
 
     <!-- CUSTOM EXTENSIONS -->
-    <link href="<?php echo $pdb->RelRoot(); ?>/styles/shelfdb.css" rel="stylesheet"/>
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/lib/js.cookie.js"></script>
-    <script src="<?php echo $pdb->RelRoot(); ?>/scripts/custom.ext.js"></script>
+    <link href="<?php echo $pdb->RelRoot(); ?>styles/shelfdb.css" rel="stylesheet"/>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/js.cookie.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/custom.ext.js"></script>
 
     <!-- Localization -->
-    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>/scripts/langprovider.js?language=deDE"></script>
+    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=deDE"></script>
 
     <script>
       (pageHookClear = function() {
@@ -73,7 +78,7 @@
         if(e.which == 13) {//Enter key pressed
             if( $(e.target).val() != "" ) {
               $(':mobile-pagecontainer').pagecontainer("change",
-                "<?php echo $pdb->RelRoot(); ?>/pages/page-showsearchresults.php?catid=0&search="+encodeURIComponent($(e.target).val()),
+                "<?php echo $pdb->RelRoot(); ?>pages/page-showsearchresults.php?catid=0&search="+encodeURIComponent($(e.target).val()),
                 {
                   allowSamePageTransition: true,
                   reload: true
@@ -97,7 +102,7 @@
         $tree.bind('tree.click', function(e) {
           // e.node.name - Name string
           // e.node.id   - ID string
-          $(':mobile-pagecontainer').pagecontainer("change","<?php echo $pdb->RelRoot(); ?>/pages/page-showparts.php?catid=" + e.node.id + "&catrecurse=" + Number(e.node.children.length > 0));
+          $(':mobile-pagecontainer').pagecontainer("change","<?php echo $pdb->RelRoot(); ?>pages/page-showparts.php?catid=" + e.node.id + "&catrecurse=" + Number(e.node.children.length > 0));
         });
 
         $('#collapse').click(function() {
@@ -181,7 +186,7 @@
         <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
       </div>
       <div role="main" class="ui-content">
-        <p><a href="<?php echo $pdb->RelRoot(); ?>/pages/test.php">Testlink</a></p>
+        <p><a href="<?php echo $pdb->RelRoot(); ?>pages/test.php">Testlink</a></p>
         <p>
 
         </p>
@@ -206,7 +211,7 @@
         <div id=categories data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-collapsed="false">
           <h6 uilang="categories"></h6>
             <ul data-role="listview">
-              <li><a href="<?php echo $pdb->RelRoot(); ?>/pages/page-editcategories.php"><i class="fa fa-pencil"></i> <span uilang="edit"></span></a></li>
+              <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-editcategories.php"><i class="fa fa-pencil"></i> <span uilang="edit"></span></a></li>
             </ul>
 
             <div class="ui-grid-a">
@@ -217,13 +222,13 @@
                 <a id="expand" class="ui-btn ui-shadow catkeys" href="#"><i class="fa fa-expand"></i> <span uilang="expand"></span></a>
               </div>
             </div>
-            <div id="categorytree" data-url="<?php echo $pdb->RelRoot(); ?>/lib/json.categorytree.php"></div>
+            <div id="categorytree" data-url="<?php echo $pdb->RelRoot(); ?>lib/json.categorytree.php"></div>
 
         </div>
         <div id=storage data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
           <h6 uilang="storageLocations"></h6>
           <ul data-role="listview">
-            <li><a href="<?php echo $pdb->RelRoot(); ?>/pages/page-editstorelocation.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+            <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-editstorelocation.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
             <li><a href="#"><i class="fa fa-square-o"></i> <span uilang="storageLocationShowNonEmpty"></span></a></li>
             <li><a href="#"><i class="fa fa-square"></i> <span uilang="storageLocationShowEmpty"></span></a></li>
           </ul>
@@ -240,13 +245,13 @@
         <div id=suppliers data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
           <h6 uilang="suppliers"></h6>
           <ul data-role="listview">
-            <li><a href="<?php echo $pdb->RelRoot(); ?>/pages/page-editsuppliers.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+            <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-editsuppliers.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
           </ul>
         </div>
         <div id=footprints data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
           <h6 uilang="footprints"></h6>
           <ul data-role="listview">
-            <li><a href="<?php echo $pdb->RelRoot(); ?>/pages/page-editfootprints.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+            <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-editfootprints.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
           </ul>
         </div>
       </div>
