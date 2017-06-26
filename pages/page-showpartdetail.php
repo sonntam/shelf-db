@@ -70,6 +70,12 @@
 
 		});
 
+		$('[name=editPartNumber]').click(function(evt) {
+			inputPopUp({
+					// TODO change to object arguments...
+			});
+		});
+
 		$('[name=editName]').click(function(evt) {
 			// inputPopUp(header, headline, message, confirmbtntext,
 			// 	textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel)
