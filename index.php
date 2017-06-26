@@ -76,7 +76,7 @@
         // Search
         $('#searchbar').keypress(function(e){
         if(e.which == 13) {//Enter key pressed
-            if( $(e.target).val() != "" ) {
+            if( $(e.target).val().trim() != "" ) {
               $(':mobile-pagecontainer').pagecontainer("change",
                 "<?php echo $pdb->RelRoot(); ?>pages/page-showsearchresults.php?catid=0&search="+encodeURIComponent($(e.target).val()),
                 {
