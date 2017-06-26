@@ -131,6 +131,10 @@ function Lang(language, replaceText)
       partNumber: 'Artikelnummer',
       moreInfo: 'Mehr informationen',
       noUndoHint: 'Diese Aktion kann nicht rückgängig gemacht werden.',
+      searchResults: 'Suchergebnisse',
+      searchResultsFor: function(str) {
+        return 'Suchergebnisse für "'+str+'"';
+      },
       enterName: 'Namen eingeben',
       enterUrl: 'Geben Sie eine Adresse an',
       enterDescription: 'Beschreibung eingeben',
@@ -285,20 +289,35 @@ this.searchAndReplace = function()
     var att = item.attr(LANG_ATTRIBUTE_NAME);
     att.split(";").forEach( function(langSet) {
       var attr = langSet.split(":");
+      
+      var setAttr = null;
+      var strName = null;
+      var strArg  = null;
 
-      var txt = me.get(attr[1] || attr[0]);
+      if( attr.length == 1 ) { // Simplereplace
+        strName = attr[0];
+      } else if( attr.length == 2 ) { // Set attribute
+        setAttr = attr[0];
+        strName = attr[1];
+      } else if( attr.length == 3 ) { // Function call
+        setAttr = attr[0];
+        strName = attr[1];
+        strArg  = attr[2];
+      }
+
+      var txt = me.get(strName);
 
       // If the string is of function type, try to apply the inner Html as argument
       if( typeof txt === 'function' ) {
-        if( attr.length > 2 ) {
-          txt = txt(item.attr(attr[2]));
+        if( strArg ) {
+          txt = txt(strArg);
         } else {
           txt = txt(item.text());
         }
       }
 
-      if( attr.length > 1 ) {
-        item.attr(attr[0],txt);
+      if( setAttr && setAttr != "" ) {
+        item.attr(setAttr,txt);
       }
       else
         item.text(txt);

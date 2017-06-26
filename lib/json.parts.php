@@ -17,12 +17,12 @@
   $_GET += array("searchString" => null);// Value of search field
   $_GET += array("searchOper" => null);  // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
   $_GET += array("filters" => null);     // Filters
-  $_GET += array("globalSearchString" => null);
+  $_GET += array("globalSearchString" => "");
 
   // Get category ID
   $catid      = $_GET["catid"];
   $partid     = $_GET["partid"];
-  $search     = $_GET["globalSearchString"];
+  $search     = trim($_GET["globalSearchString"]);
 
   if( $partid === null ) { // Get list of all parts of category
 
