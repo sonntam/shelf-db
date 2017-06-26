@@ -33,10 +33,55 @@ namespace ShelfDB {
       return $res;
     }
 
-    private function GetCountByCategoryIdEscaped( int $catid = 0, $escapedSearch = "", $recursive = false ) {
+    private function ExplodeSearchString($search) {
+      if( !is_array($search) ) {
+        $search = str_getcsv( $search, " ");
+        foreach( $search as &$el) {
+          $escapedSearch = '%'.$this->db->sql->real_escape_string($el).'%';
+          $el = "("
+            ."f.name LIKE '$escapedSearch' OR "
+            ."s.name LIKE '$escapedSearch' OR "
+            ."su.name LIKE '$escapedSearch' OR "
+            ."c.name LIKE '$escapedSearch' OR "
+            ."p.name LIKE '$escapedSearch' OR "
+            ."p.comment LIKE '$escapedSearch')";
+        }
+      }
+      return $search;
+    }
+
+    public function DeleteById(int $id) {
+      // First try to get it
+      $fp = $this->GetDetailsById($id);
+      if( !$fp ) return false;
+
+      $query = "DELETE FROM parts WHERE id = $id;";
+      //$res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = true;
+
+      if( !$res )
+        return false; // Database my be inconsistent because footrprints have already been replaced
+
+      // Now delete the image
+      if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){
+        $picIds = explode(';',$fp['pict_id_arr']);
+        foreach($picIds as $picId) {
+            \Log::Info("Trying to delete the image id = $picId entry for part id = $id");
+            //$this->db->Pictures()->DeleteById($picId);
+        }
+
+        //$this->db->Pictures()->DeleteById($fp['pict_id']);
+      }
+      return true;
+    }
+
+    private function GetCountByCategoryIdExploded( int $catid = 0, $escapedSearch = null, $recursive = false ) {
 
       $partcount = 0;
       $clauses = array();
+
+      if( $escapedSearch === null )
+        $escapedSearch = array();
 
       if( $recursive && $catid == 0 ) {
         $recursive = false;
@@ -44,13 +89,7 @@ namespace ShelfDB {
         $clauses[] = "p.id_category = $catid";
       }
 
-      $clauses[] = "("
-        ."f.name LIKE '%$escapedSearch%' OR "
-        ."s.name LIKE '%$escapedSearch%' OR "
-        ."su.name LIKE '%$escapedSearch%' OR "
-        ."c.name LIKE '%$escapedSearch%' OR "
-        ."p.name LIKE '%$escapedSearch%' OR "
-        ."p.comment LIKE '%$escapedSearch%')";
+      $clauses = array_merge($clauses, $escapedSearch);
 
       $query = "SELECT COUNT(p.id) as partcount FROM parts p "
           ."LEFT JOIN footprints f ON p.id_footprint = f.id "
@@ -77,7 +116,7 @@ namespace ShelfDB {
 
         foreach( $children as $category )
         {
-          $partcount += $this->GetCountByCategoryIdEscaped( $category['id'], $search, true );
+          $partcount += $this->GetCountByCategoryIdExploded( $category['id'], $escapedSearch, true );
         }
       }
 
@@ -90,8 +129,8 @@ namespace ShelfDB {
       $partcount = 0;
 
       if( $search && $search != "" ) {
-        $search = $this->db->sql->real_escape_string($search);
-        return $this->GetCountByCategoryIdEscaped( $catid, $search, $recursive);
+        $search = $this->ExplodeSearchString($search);
+        return $this->GetCountByCategoryIdExploded( $catid, $search, $recursive);
       }
 
       $query = "SELECT COUNT(p.id) as partcount FROM parts p WHERE p.id_category = $catid";
@@ -129,17 +168,12 @@ namespace ShelfDB {
       }
 
       if( !$search || $search == "" ) {
-        $searchFilter = "";
+        $searchFilter = array();
       } else {
-        $search = $this->db->sql->real_escape_string($search);
-        $searchFilter = "AND ("
-          ."f.name LIKE '%$search%' OR "
-          ."s.name LIKE '%$search%' OR "
-          ."su.name LIKE '%$search%' OR "
-          ."c.name LIKE '%$search%' OR "
-          ."p.name LIKE '%$search%' OR "
-          ."p.comment LIKE '%$search%') ";
+        $searchFilter = $this->ExplodeSearchString($search);
       }
+
+      $searchFilter[] = "p.id_category IN (".join(',', $catids ).")";
 
       switch( $sortcol )
       {
@@ -187,8 +221,7 @@ namespace ShelfDB {
         ."LEFT JOIN ("
           ."SELECT * FROM pictures WHERE pict_type = 'F'"
         .") fpr ON f.id = fpr.parent_id "
-        ."WHERE p.id_category IN (".join(',', $catids ).") "
-          .$searchFilter
+        ."WHERE ".join(" AND ", $searchFilter)
         ."ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
       if( !$res )
