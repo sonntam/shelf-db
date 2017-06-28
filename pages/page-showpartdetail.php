@@ -201,8 +201,34 @@
 					// TODO Submit and save new name, then update GUI on success
 					$('[name=showDescription]').text(newdescription);
 				}
-			);
+			});
 		});
+	});
+
+	$.mobile.pageContainerChangeTasks.push( function() {
+
+		var lastwidth = 9999;
+		$(window).on('resize', function() {
+			var width = $(".partdetailsblock").width();
+
+			if( width < 360 && lastwidth >= 360 ) {
+				$('[name=subTotal],[name=addTotal],[name=subStock],[name=addStock]').parent().hide();
+			} else if( width >= 360 && lastwidth < 360) {
+				$('[name=subTotal],[name=addTotal],[name=subStock],[name=addStock]').parent().show();
+			}
+
+			if( width < 420 && lastwidth >= 420 ) {
+
+			} else if( width >= 420 && lastwidth < 420 ) {
+
+			}
+			lastwidth = width;
+
+		});
+
+		// Initial column hide/show
+		$(window).triggerHandler('resize');
+
 	});
 
 	</script>
@@ -250,7 +276,7 @@
 						<div class="ui-grid-a">
 							<div class="ui-block-a" style="padding-right: 0.5em">
 								<h4>
-									Menge vorhanden&nbsp;
+									<span uilang="amountAvailable"></span>&nbsp;
 									<a href="#popupInfoTotalInstock" data-rel="popup" data-transition="pop"
 									class="ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext my-tooltip-btn"
 									title="Learn more" uilang="moreInfo"></a>
@@ -261,7 +287,7 @@
 							</div>
 							<div class="ui-block-b" style="padding-left: 0.5em">
 								<h4>
-									Menge eingelagert&nbsp;
+									<span uilang="amountStored"></span>&nbsp;
 									<a href="#popupInfoInstock" data-rel="popup" data-transition="pop"
 									class="ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext my-tooltip-btn"
 									title="Learn more" uilang="moreInfo"></a>
@@ -277,6 +303,7 @@
 									<input name="showTotal" type="text" readonly=readonly value="<?php echo $part['totalstock']; ?>">
 									<input name="addTotal" type="button" data-icon="fa-plus-circle" data-iconpos="notext">
 									<input name="subTotal" type="button" data-icon="fa-minus-circle" data-iconpos="notext">
+									<input name="editTotal" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
 							<div class="ui-block-b" style="padding-left: 0.5em">
@@ -284,6 +311,7 @@
 									<input name="showStock" type="text" readonly=readonly value="<?php echo $part['instock']; ?>">
 									<input name="addStock" type="button" data-icon="fa-plus-circle" data-iconpos="notext">
 									<input name="subStock" type="button" data-icon="fa-minus-circle" data-iconpos="notext">
+									<input name="editStock" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
 						</div>
