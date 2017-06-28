@@ -1,7 +1,6 @@
 <div id=test data-role="page">
 
   <script>
-
     pageHookClear();
 
     $.mobile.pageContainerChangeTasks.push( function( event, ui ){
@@ -21,7 +20,15 @@
 
       // Open external input dialog
       $('#inputmultipopup').click( function( evt) {
-        inputMultilinePopUp("Header", "Headline", "Message", "Ok", "Label", "Placeholder", "Default");
+        inputMultilinePopUp({
+          header: "Header",
+          headline: "Headline",
+          message: "Message",
+          confirmButtonText: "Ok",
+          textLabel: "Label",
+          textPlaceholder: "Placeholder",
+          textDefault: "Default",
+        });
       });
 
       $('#editfootprint').click( function(evt) {

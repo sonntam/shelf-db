@@ -46,9 +46,14 @@
 			$('#editcontrols-addroot').click(function(evt) {
 				evt.stopPropagation();
 
-				inputPopUp(Lang.get('editCategoryAdd'), Lang.get('editCategoryAdd'),
-					Lang.get('editCategoryAddRootHint'), Lang.get('add'),
-					Lang.get('name')+":", Lang.get('name'), "", function(value){
+				inputPopUp({
+			    header: Lang.get('editCategoryAdd'),
+			    headline: Lang.get('editCategoryAdd'),
+			    message: Lang.get('editCategoryAddRootHint'),
+			    confirmButtonText: Lang.get('add'),
+			    textLabel: Lang.get('name')+":",
+			    textPlaceholder: Lang.get('name'),
+			    ok: function(value){
 						// Set name AJAX call to mysql script
 						$.ajax({
 							url: '/lib/edit-category.php',
@@ -81,7 +86,7 @@
 							}
 						});
 					}
-				);
+				});
 			});
 
 			$('#editcontrols-edit').click(function (evt) {
@@ -91,8 +96,14 @@
 				var node    = $tree.tree('getNodeById', id)
 				var curname = node.name;
 
-				inputPopUp(Lang.get('editCategoryChange'), Lang.get('editCategoryNewName'), "", Lang.get('change'),
-					Lang.get('name')+":", Lang.get('name'), curname, function(value){
+				inputPopUp({
+			    header: Lang.get('editCategoryChange'),
+			    headline: Lang.get('editCategoryNewName'),
+			    confirmButtonText: Lang.get('change'),
+			    textLabel: Lang.get('name')+":",
+			    textPlaceholder: Lang.get('name'),
+			    textDefault: curname,
+			    ok: function(value){
 
 						if( value != null && value != curname ){
 							// Set name AJAX call to mysql script
@@ -122,8 +133,7 @@
 							});
 						}
 					}
-				);
-
+				});
 			});
 
 			$('#editcontrols-add').click(function (evt) {
@@ -132,9 +142,14 @@
 				var id      = $ctrl.attr("data-id");
 				var node    = $tree.tree('getNodeById', id)
 
-				inputPopUp( Lang.get('editCategoryAdd'), Lang.get('editCategoryNewName'),
-					(Lang.get('editCategoryAddHint'))(node.name), Lang.get('add'),
-					Lang.get('name')+":", Lang.get('name'), "", function(value){
+				inputPopUp({
+			    header: Lang.get('editCategoryAdd'),
+			    headline: Lang.get('editCategoryNewName'),
+			    message: (Lang.get('editCategoryAddHint'))(node.name),
+			    confirmButtonText: Lang.get('add'),
+			    textLabel: Lang.get('name')+":",
+			    textPlaceholder: Lang.get('name'),
+			    ok: function(value){
 						// Set name AJAX call to mysql script
 						$.ajax({
 							url: '/lib/edit-category.php',
@@ -167,7 +182,7 @@
 							}
 						});
 					}
-				);
+				});
 			});
 
 			$('#editcontrols-delete').click(function (evt) {
@@ -215,7 +230,7 @@
 									$ctrl.detach();
 									$tree.tree('removeNode', node);
 									$tree.trigger('tree.init');
-									
+
 									// Hide controls
 									hideControls();
 

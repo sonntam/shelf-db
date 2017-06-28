@@ -150,8 +150,23 @@ function confirmPopUp(options) {
 
 
 // Open external input dialog
-function inputPopUp(header, headline, message, confirmbtntext,
-  textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel) {
+function inputPopUp(options) {
+
+  // Get options
+  var defaults = {
+    header: Lang.get('change'),
+    headline: Lang.get('enterName'),
+    message: "",
+    confirmButtonText: Lang.get('ok'),
+    textLabel: "",
+    textPlaceholder: "",
+    textDefault: "",
+    ok: null,
+    cancel: null,
+    transition: "pop"
+  };
+
+  options = $.extend(defaults,options);
 
   var $popup = $('#popupInputDialog');
 
@@ -163,13 +178,13 @@ function inputPopUp(header, headline, message, confirmbtntext,
     var $okbtn = $popup.find("[name='popupOkBtn']");
     var $cancelbtn = $popup.find("[name='popupCancelBtn']");
 
-    $popup.find("[name='dialogHeader']").first().text(header);
-    $popup.find("[name='dialogHeadline']").first().text(headline);
-    $popup.find("[name='dialogMessage']").first().text(message);
-    $popup.find("[name='dialogTextLabel']").first().text(textlabel);
-    $input.val(textdefault);
-    $input.attr('placeholder',textplaceholder);
-    $okbtn.text(confirmbtntext);
+    $popup.find("[name='dialogHeader']").first().text(options.header);
+    $popup.find("[name='dialogHeadline']").first().text(options.headline);
+    $popup.find("[name='dialogMessage']").first().text(options.message);
+    $popup.find("[name='dialogTextLabel']").first().text(options.textLabel);
+    $input.val(options.textDefault);
+    $input.attr('placeholder',options.textPlaceholder);
+    $okbtn.text(options.confirmButtonText);
 
     // Keypress handlers
     $input.off('keypress');
@@ -200,10 +215,10 @@ function inputPopUp(header, headline, message, confirmbtntext,
         $popup.find("input").first().focus().select();
     });
     $popup.one('popupafterclose', function(ev,ui) {
-      if( $buttonresult == "ok" && fnc_ok ) {
-        fnc_ok($input.val());
-      } else if ($buttonresult == "cancel" && fnc_cancel) {
-        fnc_cancel($input.val());
+      if( $buttonresult == "ok" && options.ok ) {
+        options.ok($input.val());
+      } else if ($buttonresult == "cancel" && options.cancel) {
+        options.cancel($input.val());
       }
     });
 
@@ -214,7 +229,7 @@ function inputPopUp(header, headline, message, confirmbtntext,
   if( $popup.length > 0 )
   {
     setupPopup($popup);
-    $popup.popup('open', { transition: "pop"});
+    $popup.popup('open', { transition: options.transition });
 
   } else {
 
@@ -230,14 +245,29 @@ function inputPopUp(header, headline, message, confirmbtntext,
 
       $.mobile.referencedLoading('hide');
 
-      $popup.popup('open', { transition: "pop"});
+      $popup.popup('open', { transition: options.transition });
     });
   }
 }
 
 // Open external input dialog
-function inputMultilinePopUp(header, headline, message, confirmbtntext,
-  textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel) {
+function inputMultilinePopUp(options) {
+
+    var defaults = {
+      header: Lang.get('input'),
+      headline: "",
+      message: "",
+      confirmButtonText: Lang.get('ok'),
+      textLabel: "",
+      textPlaceholder: "",
+      textDefault: "",
+      ok: null,
+      cancel: null,
+      transition: "pop",
+      afteropen: null
+    };
+
+    options = $.extend(defaults,options)
 
     var $popup = $('#popupInputMultilineDialog');
 
@@ -248,13 +278,13 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
       var $okbtn = $popup.find("[name='popupOkBtn']");
       var $cancelbtn = $popup.find("[name='popupCancelBtn']");
 
-      $popup.find("[name='dialogHeader']").first().text(header);
-      $popup.find("[name='dialogHeadline']").first().text(headline);
-      $popup.find("[name='dialogMessage']").first().text(message);
-      $popup.find("[name='dialogTextLabel']").first().text(textlabel);
-      $input.val(textdefault);
-      $input.attr('placeholder',textplaceholder);
-      $okbtn.text(confirmbtntext);
+      $popup.find("[name='dialogHeader']").first().text(options.header);
+      $popup.find("[name='dialogHeadline']").first().text(options.headline);
+      $popup.find("[name='dialogMessage']").first().text(options.message);
+      $popup.find("[name='dialogTextLabel']").first().text(options.textLabel);
+      $input.val(options.textDefault);
+      $input.attr('placeholder',options.textPlaceholder);
+      $okbtn.text(options.confirmButtonText);
 
       // Keypress handlers
       $popup.off('keyup');
@@ -274,19 +304,20 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
 
       $popup.one('popupafteropen', function(ev,ui) {
           $popup.find("textarea").first().focus();
+          if( options.afteropen ) options.afteropen(ev,ui);
       });
       $popup.one('popupafterclose', function(ev,ui) {
-        if( $buttonresult == "ok" && fnc_ok ) {
-          fnc_ok($input.val());
-        } else if ($buttonresult == "cancel" && fnc_cancel) {
-          fnc_cancel($input.val());
+        if( $buttonresult == "ok" && options.ok ) {
+          options.ok($input.val());
+        } else if ($buttonresult == "cancel" && options.cancel) {
+          options.cancel($input.val());
         }
       });
     };
 
     if( $popup.length > 0 ) {
       setupPopup($popup);
-      $popup.popup('open', { transition: "pop"});
+      $popup.popup('open', { transition: options.transition });
     } else {
       $popuptarget = $('<div />').appendTo('body');
 
@@ -301,7 +332,7 @@ function inputMultilinePopUp(header, headline, message, confirmbtntext,
 
         $.mobile.referencedLoading('hide');
 
-        $popup.popup('open', { transition: "pop"});
+        $popup.popup('open', { transition: options.transition });
       });
     }
 }

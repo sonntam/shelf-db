@@ -72,31 +72,30 @@
 
 		$('[name=editPartNumber]').click(function(evt) {
 			inputPopUp({
-					// TODO change to object arguments...
+					header: Lang.get('editPartPartNumber'),
+					headline: Lang.get('editPartChangePartNumber'),
+					textPlaceholder: Lang.get('enterPartNumber'),
+					textDefault: $('[name=showPartNumber]').val(),
+					ok: function( newnumber ) {
+						$('[name=showPartNumber]').val(newnumber);
+					}
 			});
 		});
 
 		$('[name=editName]').click(function(evt) {
-			// inputPopUp(header, headline, message, confirmbtntext,
-			// 	textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel)
-			inputPopUp(
-				Lang.get('editPartNewName'),
-				Lang.get('editPartChangeName'),
-				"",
-				Lang.get('ok'),
-				"",
-				Lang.get('enterName'),
-				$('[name=showName]').text(),
-				function( newname ) {
+			inputPopUp({
+		    header: Lang.get('editPartNewName'),
+		    headline: Lang.get('editPartChangeName'),
+		    textPlaceholder: Lang.get('enterName'),
+		    textDefault: $('[name=showName]').text(),
+		    ok: function( newname ) {
 					// TODO Submit and save new name, then update GUI on success
 					$('[name=showName]').text(newname);
 				}
-			);
+			});
 		});
 
 		$('[name=deletePart]').click(function(evt) {
-			// inputPopUp(header, headline, message, confirmbtntext,
-			// 	textlabel, textplaceholder, textdefault, fnc_ok, fnc_cancel)
 			confirmPopUp({
 		    header: Lang.get('editPartDelete'),
 		    text: Lang.get('noUndoHint'),
@@ -110,6 +109,7 @@
 
 		$('[name=editStoreloc]').click(function(evt) {
 			openExternalPopup({
+				forceReload: true,
 				url: '/pages/popup-selectstorelocation.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
@@ -132,6 +132,7 @@
 
 		$('[name=editFootprint]').click(function(evt) {
 			openExternalPopup({
+				forceReload: true,
 				url: '/pages/popup-selectfootprint.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
@@ -144,6 +145,44 @@
 					{
 						// Load store location name and store in database
 						$('[name=showFootprint]').attr('value',$(evt.currentTarget).attr('footprintname'));
+						// Update picture
+						$.ajax({
+							url: '/lib/json.footprints.php',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								id: fpClicked
+							}
+						}).done(function(data) {
+							// Update gui
+							if( data ) {
+								var imgFile = '<?php echo $pdb->RelRoot(); ?>img/footprint/'+data['pict_fname'];
+								$('[name=imgFootprint]').attr({
+									src: imgFile,
+									'data-other-src': imgFile
+								});
+							}
+						});
+					}
+				}
+			});
+		});
+
+		$('[name=editSupplier]').click(function(evt) {
+			openExternalPopup({
+				forceReload: true,
+				url: '/pages/popup-selectsupplier.php',
+				afteropen: function(evt) {
+					$(evt.target).find("input").first().focus().select();
+				},
+				afterclose: function(evt) {
+				},
+				click: function(evt) {
+					var fpClicked = $(evt.currentTarget).attr('supplierid');
+					if( fpClicked )
+					{
+						// Load store location name and store in database
+						$('[name=showSupplier]').attr('value',$(evt.currentTarget).attr('suppliername'));
 					}
 				}
 			});
@@ -153,15 +192,12 @@
 			evt.preventDefault();
 			evt.stopPropagation();
 
-			inputMultilinePopUp(
-				Lang.get('editPartDescriptionEdit'),
-				Lang.get('editPartDescriptionEditHint'),
-				"",
-				Lang.get('ok'),
-				"",
-				Lang.get('enterDescription'),
-				$('[name=showDescription]').text(),
-				function( newdescription ) {
+			inputMultilinePopUp({
+	      header: Lang.get('editPartDescriptionEdit'),
+	      headline: Lang.get('editPartDescriptionEditHint'),
+	      textPlaceholder: Lang.get('enterDescription'),
+	      textDefault: $('[name=showDescription]').text(),
+	      ok: function( newdescription ) {
 					// TODO Submit and save new name, then update GUI on success
 					$('[name=showDescription]').text(newdescription);
 				}

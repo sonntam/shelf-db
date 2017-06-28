@@ -38,12 +38,14 @@
 <script type="text/javascript">
   $('[name=popupAddBtn]').click( function(evt) {
 
-    inputPopUp(
-      Lang.get('editFootprintAdd'),
-      Lang.get('editFootprintNewName'),
-      Lang.get('editFootprintAddHint'),
-      Lang.get('add'),
-      Lang.get('name')+":", Lang.get('name'), "", function(value){
+    inputPopUp({
+      header: Lang.get('editFootprintAdd'),
+      headline: Lang.get('editFootprintNewName'),
+      message: Lang.get('editFootprintAddHint'),
+      confirmButtonText: Lang.get('add'),
+      textLabel: Lang.get('name')+":",
+      textPlaceholder: Lang.get('name'),
+      ok: function(value){
         // Set name AJAX call to mysql script
         $.ajax({
           url: '/lib/edit-footprint.php',
@@ -66,6 +68,6 @@
           }
         });
       }
-    );
+    });
   });
 </script>
