@@ -19,7 +19,8 @@ namespace ShelfDB {
         $repArgs = explode(';', $match[1]);
         foreach($repArgs as &$arg ) {
           $arg = explode(':',$arg);
-          $partNr = str_replace($arg[0], $arg[1], $partNr);
+          if( sizeof($arg) == 2 )
+            $partNr = str_replace($arg[0], $arg[1], $partNr);
         }
         return preg_replace("/<!PARTNR(?:;.*?)?!>/", urlencode($partNr), $rawurl);
       } else {
