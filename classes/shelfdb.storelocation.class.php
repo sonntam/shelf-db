@@ -35,6 +35,34 @@ namespace ShelfDB {
       return $data;
     }
 
+    public function GetEmpty() {
+      $query = "SELECT * FROM storeloc s WHERE NOT id IN (SELECT DISTINCT id_storeloc FROM parts) ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        $data = $res->fetch_all(MYSQLI_ASSOC);
+        $res->free();
+
+        return $data;
+      } else {
+        return null;
+      }
+    }
+
+    public function GetNonEmpty() {
+      $query = "SELECT * FROM storeloc s WHERE id IN (SELECT DISTINCT id_storeloc FROM parts) ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        $data = $res->fetch_all(MYSQLI_ASSOC);
+        $res->free();
+
+        return $data;
+      } else {
+        return null;
+      }
+    }
+
     public function DeleteById(int $id) {
       // First try to get it
       $fp = $this->GetById($id);
