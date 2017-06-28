@@ -124,6 +124,16 @@ namespace ShelfDB {
 
     }
 
+    public function GetCountByStoreLocationId( int $storelocId ) {
+      $query = "SELECT COUNT(id) as numParts FROM parts WHERE id_storeloc = $storelocId";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      $data = $res->fetch_assoc();
+      $res->free();
+
+      return $data['numParts'];
+    }
+
     public function GetCountByCategoryId( int $catid = 0, $search = "", $recursive = false ) {
 
       $partcount = 0;
@@ -160,12 +170,7 @@ namespace ShelfDB {
       return $partcount;
     }
 
-    private function GetListByCategoryId($search, int $catid, int $offset, int $limit, $sortcol, $sortorder, $recursive = false) {
-      if( $recursive ) {
-        $catids = $this->db->Categories()->GetSubcategoryIdsFromId( $catid, true );
-      } else {
-        $catids = array($catid);
-      }
+    private function GetSegmentByTypeId( string $type, int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
 
       if( !$search || $search == "" ) {
         $searchFilter = array();
@@ -173,12 +178,35 @@ namespace ShelfDB {
         $searchFilter = $this->ExplodeSearchString($search);
       }
 
-      $searchFilter[] = "p.id_category IN (".join(',', $catids ).")";
+      switch($type) {
+        case 'category':
+          if( $recursive ) {
+            $ids = $this->db->Categories()->GetSubcategoryIdsFromId( $id, true );
+          } else {
+            $ids = array($id);
+          }
+          $searchFilter[] = "p.id_category IN (".join(',', $ids ).")";
+          break;
+        case 'storeLocation':
+          $searchFilter[] = "p.id_storeloc = $id";
+          break;
+        case 'footprint':
+          $searchFilter[] = "p.id_footprint = $id";
+          break;
+        case 'supplier':
+          $searchFilter[] = "p.id_supplier = $id";
+          break;
+        default:
+          return null;
+      }
 
       switch( $sortcol )
       {
         case "instock":
           $sortname = "p.instock";
+          break;
+        case "totalstock":
+          $sortname = "p.totalstock";
           break;
         case "mininstock":
           $sortname = "p.mininstock";
@@ -221,7 +249,7 @@ namespace ShelfDB {
         ."LEFT JOIN ("
           ."SELECT * FROM pictures WHERE pict_type = 'F'"
         .") fpr ON f.id = fpr.parent_id "
-        ."WHERE ".join(" AND ", $searchFilter)
+        ."WHERE ".join(" AND ", $searchFilter)." "
         ."ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
       if( !$res )
@@ -239,7 +267,19 @@ namespace ShelfDB {
     }
 
     public function GetSegmentByCategoryId( int $catid, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
-      return $this->GetListByCategoryId($search, $catid, $offset, $limit, $sortcol, $sortorder, $recursive, $search);
+      return $this->GetSegmentByTypeId('category', $catid, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
+    }
+
+    public function GetSegmentByFootprintId( int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
+      return $this->GetSegmentByTypeId('footprint', $id, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
+    }
+
+    public function GetSegmentBySupplierId( int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
+      return $this->GetSegmentByTypeId('supplier', $id, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
+    }
+
+    public function GetSegmentByStoreLocationId( int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
+      return $this->GetSegmentByTypeId('storeLocation', $id, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
     }
 
     public function GetDetailsById( int $partid ) {
