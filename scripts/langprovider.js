@@ -116,6 +116,7 @@ function Lang(language, replaceText)
       tools: 'Werkzeuge',
       image: 'Bild',
       images: 'Bilder',
+      input: 'Eingabe',
       copyOf: function(name) {
         return 'Kopie von '+name;
       },
@@ -129,6 +130,8 @@ function Lang(language, replaceText)
       categories: 'Kategorien',
       partTitle: 'Bauteilansicht',
       partNumber: 'Artikelnummer',
+      amountStored: 'Menge eingelagert',
+      amountAvailable: 'Menge vorhanden',
       moreInfo: 'Mehr informationen',
       noUndoHint: 'Diese Aktion kann nicht rückgängig gemacht werden.',
       searchResults: 'Suchergebnisse',
@@ -138,12 +141,13 @@ function Lang(language, replaceText)
       enterName: 'Namen eingeben',
       enterUrl: 'Geben Sie eine Adresse an',
       enterDescription: 'Beschreibung eingeben',
+      enterPartNumber: 'Artikelnummer eingeben',
       resetImage: 'Bild wiederherstellen',
       defaultImage: 'Standardbild',
       storageLocation: 'Lagerort',
       storageLocations: 'Lagerorte',
-      storageLocationShowNonEmpty: 'Leerfächer',
-      storageLocationShowEmpty: 'Belegte Fächer',
+      storageLocationShowNonEmpty: 'Belegte Fächer',
+      storageLocationShowEmpty: 'Leerfächer',
       noFootprintShow: 'Teile ohne Bauform',
       icLogosShow: 'IC Hersteller',
       orderItemsShow: 'Zu bestellende Teile',
@@ -159,6 +163,9 @@ function Lang(language, replaceText)
       },
       editPartNewName: 'Neuer Name',
       editPartChangeName: 'Benennung ändern',
+      editPartPartNumber: 'Neue Artikelnummer',
+      editPartChangePartNumber: 'Artikelnummer ändern',
+
       editPartDelete: 'Teil löschen',
       editPartDescriptionEdit: 'Beschreibung bearbeiten',
       editPartDescriptionEditHint: 'Ändern Sie hier die bestehende Beschreibung.',
@@ -289,7 +296,7 @@ this.searchAndReplace = function()
     var att = item.attr(LANG_ATTRIBUTE_NAME);
     att.split(";").forEach( function(langSet) {
       var attr = langSet.split(":");
-      
+
       var setAttr = null;
       var strName = null;
       var strArg  = null;
