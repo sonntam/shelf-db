@@ -7,10 +7,10 @@
 	$createListEntryFcn = function( $name, $id, $images ) {
 		ob_start();
 		?>
-		<li data-icon="false" data-filtertext="<?php echo $name; ?>">
+		<li data-filtertext="<?php echo $name; ?>">
 
           <h2 style="float: left"><?php echo $name; ?></h2>
-          
+
     </li>
 		<?php
 		return ob_get_clean();
