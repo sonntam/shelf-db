@@ -242,6 +242,7 @@ function Lang(language, replaceText)
       popupSupplierAddHeader: 'Lieferant anlegen',
       popupSupplierSelectUserAction: 'Wählen Sie einen Lieferanten aus',
       popupSupplierAddUserAction: 'Geben Sie die Daten für den neuen Lieferanten an',
+      popupSupplierEditUserAction: 'Geben Sie die neuen Daten für den Lieferanten an',
       popupSupplierFilterHint: 'Mit dem Filter kann in den Lieferanten gesucht werden',
       popupSupplierFilterPlaceholder: 'Einträge filtern...',
 
