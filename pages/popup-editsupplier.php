@@ -1,20 +1,21 @@
 <?php
   require_once(dirname(__DIR__).'/classes/partdatabase.class.php');
 
-  $_GET += array("id" => null);
-  $_GET += array("method" => "add");
+  $data = array_replace_recursive( array(
+    "method" => "add"
+  ), $_GET, $_POST);
 
-  $formData['method'] = $_GET['method'];
+  $formData['method'] = $data['method'];
   $formData['changeToDefaultImg'] = "false";
-  $formData['id'] = $_GET['id'];
+  $formData['id'] = $data['id'];
   $formData['imageId'] = null;
 
   // What should be done? Adding? Editing existing element?
-  switch( strtolower($_GET['method']) ) {
+  switch( strtolower($data['method']) ) {
     case 'edit':
-      if( isset($_GET['id']) ) {
+      if( isset($data['id']) ) {
         // Fetch data
-        $id = $_GET['id'];
+        $id = $data['id'];
 
         $supplier = $pdb->Suppliers()->GetById($id);
 
@@ -33,9 +34,9 @@
       break;
 
     case 'copy':
-      if( isset($_GET['id']) ) {
+      if( isset($data['id']) ) {
         // Fetch data
-        $id = $_GET['id'];
+        $id = $data['id'];
 
         $supplier = $pdb->Suppliers()->GetById($id);
 
@@ -239,10 +240,14 @@
 
 <div data-role="popup" id="popupSupplierEditDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false"> <!-- position: fixed; height: 95%; width: 95%; -->
   <div data-role="header" data-theme="a">
-    <h1 name="dialogHeader" style="margin: 0 15px;" uilang="popupSupplierAddHeader"></h1>
+    <h1 name="dialogHeader" style="margin: 0 15px;" uilang="<?php
+      echo ($data['method'] == 'edit' ? "popupSupplierEditHeader" : "popupSupplierAddHeader");
+      ?>"></h1>
   </div>
   <div role="main" class="ui-content" >
-    <h3 name="dialogHeadline" class="ui-title" uilang="popupSupplierAddUserAction"></h3>
+    <h3 name="dialogHeadline" class="ui-title" uilang="<?php
+      echo ($data['method'] == 'edit' ? "popupSupplierEditUserAction" : "popupSupplierAddUserAction");
+      ?>"></h3>
     <form id="supplierEditForm" data-ajax="false">
       <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
       <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo $formData['changeToDefaultImg']; ?>">
