@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- JQUERY -->
     <!--<script src="https://code.jquery.com/jquery-2.1.4.js"></script>-->
-    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-2.1.4.min.js"></script>
+    <!--<script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-2.1.4.min.js"></script>-->
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-2.1.4.js"></script>
     <!--<script src="./js/jquery-3.2.0.js"></script>-->
     <!--<script src="https://code.jquery.com/jquery-migrate-3.0.0.js"></script>-->
 
@@ -40,7 +41,8 @@
     <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/ui.jqgrid.min.css">
 
     <!-- jquery-validation -->
-    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/jquery.validate.min.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/jquery.validate.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/localization/messages_de.min.js"></script>
 
     <!-- jquery-mobile-font-awesome -->
     <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/jqm-font-awesome-usvg-upng.css" />
@@ -126,6 +128,84 @@
             return true;
           });
         });
+
+        $('a#userLogin').click( function() {
+          openExternalPopup({
+            url: '<?php echo $pdb->RelRoot(); ?>pages/popup-login.php',
+            submit: function(evt) {
+              evt.preventDefault();
+              evt.stopPropagation();
+
+              if( !$(evt.target).valid() )
+                return;
+
+              $.mobile.referencedLoading('show');
+
+              $.ajax({
+                url: '<?php echo $pdb->RelRoot(); ?>lib/edit-user.php',
+                data: $(evt.target).formData(),
+                method: 'post',
+                cache: false,
+                dataType: 'json',
+                success: function(data) {
+                  $.mobile.referencedLoading('hide');
+
+                  if( data.success ) {
+                    // Do visual things after login
+                    // Reload nav and main page
+                    $.mobile.pageContainer.change("<?php echo $pdb->RelRoot(); ?>index.php");
+
+                    $('[data-group=loggedIn]').removeClass('ui-screen-hidden');
+                    $('[data-group=loggedOut]').addClass('ui-screen-hidden');
+
+                    $('#popupLoginDialog').popup('close');
+                  } else {
+                    // Show error
+                    $('#popupLoginDialog').find('input').addClass('error');
+                  }
+
+                },
+                error: function() {
+                  // Show error
+                  $.mobile.referencedLoading('hide');
+                }
+              });
+            },
+            afterclose: function(evt) {
+              $(this).find("form").validate().resetForm();
+              $(this).find("#username").val("");
+              $(this).find("#password").val("");
+            }
+          });
+        });
+
+        $("a#userLogout").click( function(evt) {
+
+          $.mobile.referencedLoading('show');
+
+          $.ajax({
+            url: '<?php echo $pdb->RelRoot(); ?>lib/edit-user.php',
+            data: {
+              method: 'logout'
+            },
+            method: 'post',
+            cache: false,
+            dataType: 'json',
+            success: function(data) {
+              // Reload nav and main page
+              $.mobile.pageContainer.change("<?php echo $pdb->RelRoot(); ?>index.php");
+
+              $('[data-group=loggedIn]').addClass('ui-screen-hidden');
+              $('[data-group=loggedOut]').removeClass('ui-screen-hidden');
+
+              $.mobile.referencedLoading('hide');
+            },
+            error: function() {
+              // Show error
+              $.mobile.referencedLoading('hide');
+            }
+          });
+        });
       });
 
       $(document).on("pagebeforecreate", function(evt) {
@@ -208,6 +288,21 @@
 
       <div data-role="collapsibleset" data-theme="a" data-content-theme="a">
       <!--<span><a href="#" id="btnSlideCategories"><i class="fa fa-plus-square" aria-hidden="true"></i></a> Kategorien</span>-->
+      <div data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+        <h6 uilang="account"></h6>
+        <ul data-role="listview">
+          <?php
+            if( $pdb->Users()->IsLoggedIn() ) {
+              $loginClasses = "ui-screen-hidden";
+            } else {
+              $logoutClasses = "ui-screen-hidden";
+            }
+          ?>
+          <li data-group="loggedIn" class="<?php echo $logoutClasses; ?>" data-icon="false"><a id="userLogout" href="#"><i class="fa fa-sign-out"></i> <span uilang="logout"></span></a></li>
+          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>" ><a id="userLogin" href="#"><i class="fa fa-sign-in"></i> <span uilang="login"></span></a></li>
+          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>" ><a href="<?php echo $pdb->RelRoot(); ?>"><i class="fa fa-user"></i> <span uilang="register"></span></a></li>
+        </ul>
+      </div>
         <div id=categories data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-collapsed="false">
           <h6 uilang="categories"></h6>
             <ul data-role="listview">
@@ -256,5 +351,6 @@
         </div>
       </div>
     </div>
+
   </body>
 </html>
