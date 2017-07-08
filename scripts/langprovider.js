@@ -120,6 +120,15 @@ function Lang(language, replaceText)
       copyOf: function(name) {
         return 'Kopie von '+name;
       },
+      account: 'Benutzerkonto',
+      login: 'Einloggen',
+      logout: 'Ausloggen',
+      logoutUser: function(username) {
+        return username + " ausloggen";
+      },
+      username: 'Benutzername',
+      password: 'Passwort',
+      register: 'Registrieren',
       uploadImageLabel: 'Bild hochladen',
       description: 'Beschreibung',
       datasheets: 'Datenblätter',
@@ -134,11 +143,14 @@ function Lang(language, replaceText)
       amountAvailable: 'Menge vorhanden',
       moreInfo: 'Mehr informationen',
       noUndoHint: 'Diese Aktion kann nicht rückgängig gemacht werden.',
+      loginHint: 'Geben Sie Benutzername und Passwort ein, um sich einzuloggen.',
       searchResults: 'Suchergebnisse',
       searchResultsFor: function(str) {
         return 'Suchergebnisse für "'+str+'"';
       },
       enterName: 'Namen eingeben',
+      enterUsername: 'Benutzername eingeben',
+      enterPassword: 'Passwort eingeben',
       enterUrl: 'Geben Sie eine Adresse an',
       enterDescription: 'Beschreibung eingeben',
       enterPartNumber: 'Artikelnummer eingeben',
