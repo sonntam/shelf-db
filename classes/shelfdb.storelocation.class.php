@@ -50,7 +50,8 @@ namespace ShelfDB {
     }
 
     public function GetNonEmpty() {
-      $query = "SELECT * FROM storeloc s WHERE id IN (SELECT DISTINCT id_storeloc FROM parts) ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
+      $query = "SELECT s.* FROM storeloc s "
+        ."WHERE id IN (SELECT DISTINCT id_storeloc FROM parts) ORDER BY udf_NaturalSortFormat(name, 10, \".,\")";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res ) {
@@ -74,6 +75,9 @@ namespace ShelfDB {
 
       $query = "DELETE FROM storeloc WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // Update history
+      $pdb->History()->Add(0, 'SL', 'delete', 'object', $fp, '' );
 
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
@@ -114,13 +118,19 @@ namespace ShelfDB {
 
     public function Create($name) {
       $name = trim($name);
-      $name = $this->db->sql->real_escape_string( $name );
-      $query = "INSERT INTO `storeloc` (`name`) VALUES ('$name')";
+      $esname = $this->db->sql->real_escape_string( $name );
+      $query = "INSERT INTO `storeloc` (`name`) VALUES ('$esname')";
 
       $res = $this->db->sql->query($query);
 
       if( $res === true ) {
         $newid = $this->db->sql->insert_id;
+
+        // Update history
+        $pdb->History()->Add(0, 'SL', 'create', 'object', '', array(
+          "id" => $newid,
+          "name" => $name
+        ) );
 
         return array('id' => $newid);
 
@@ -135,9 +145,17 @@ namespace ShelfDB {
       if( $name == "" )
         return;
 
-      $name = $this->db->sql->real_escape_string($name);
-      $query = "UPDATE storeloc SET name = '$name' WHERE id = $id;";
+      $esname = $this->db->sql->real_escape_string($name);
+
+      $oldname = $this->GetNameById($id);
+
+      $query = "UPDATE storeloc SET name = '$esname' WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        // Update history
+        $pdb->History()->Add(0, 'SL', 'edit', 'name', $oldname, $name);
+      }
 
       return $res;
     }

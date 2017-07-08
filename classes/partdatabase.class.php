@@ -4,6 +4,7 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
 require_once(__DIR__.'/shelfdb.user.class.php');
+require_once(__DIR__.'/shelfdb.history.class.php');
 require_once(__DIR__.'/shelfdb.picture.class.php');
 require_once(__DIR__.'/shelfdb.supplier.class.php');
 require_once(__DIR__.'/shelfdb.category.class.php');
@@ -43,6 +44,7 @@ class PartDatabase
     $this->pictures         = new ShelfDB\Pictures($this);
     $this->suppliers        = new ShelfDB\Suppliers($this);
     $this->users            = new ShelfDB\Users($this);
+    $this->history          = new ShelfDB\History($this);
   }
 
   public function Parts()           { return $this->parts; }
@@ -52,6 +54,7 @@ class PartDatabase
   public function Pictures()        { return $this->pictures; }
   public function Suppliers()       { return $this->suppliers; }
   public function Users()           { return $this->users; }
+  public function History()         { return $this->history; }
 
   /**
    * Get the singleton instance of PartDatabase

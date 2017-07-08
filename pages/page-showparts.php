@@ -12,7 +12,7 @@
 	$searchMode = $search && ($search != "");
 
 	$catid      = $_GET["catid"];
-	$catname    = $pdb->Categories()->GetNameFromId($catid);
+	$catname    = $pdb->Categories()->GetNameById($catid);
 	$catrecurse = $_GET["catrecurse"] == "1";
 
 	// Create button from category node

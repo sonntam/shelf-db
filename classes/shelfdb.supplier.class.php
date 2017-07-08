@@ -57,6 +57,9 @@ namespace ShelfDB {
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
 
+      // Update history
+      $this->db->History()->Add($id, 'SU', 'delete', 'object', $su, '' );
+
       // Now delete the image
       if( isset($su['pict_id']) && $su['pict_id'] ){
         \Log::Info("Trying to delete the image entry for supplier id = $id");
@@ -85,12 +88,15 @@ namespace ShelfDB {
       return $result;
     }
 
-    public function CreateFromId($name, $baseid) {
-      $newId = $this->Create($name, "");
+    public function CreateFromId($name, $baseid, $url) {
+
+      $su = $this->GetById($baseid);
+
+      $newId = $this->Create($name, "", (!$url ? $su['urlTemplate'] : $url));
       if( $newId )
       {
         // Create copy of image
-        $su = $this->GetById($baseid);
+
         if( !$su ); // error but ignore for now
 
         if( $su['pict_id'] ) {
@@ -102,10 +108,13 @@ namespace ShelfDB {
       return false;
     }
 
-    public function Create($name, $pictureFileName) {
+    public function Create($name, $pictureFileName, $url = "") {
+
       $name = trim($name);
-      $name = $this->db->sql->real_escape_string( $name );
-      $query = "INSERT INTO `suppliers` (`name`) VALUES ('$name')";
+      $esname = $this->db->sql->real_escape_string( $name );
+      $esurl  = $this->db->sql->real_escape_string( $url );
+
+      $query = "INSERT INTO `suppliers` (`name`, `urlTemplate`) VALUES ('$esname', '$esurl')";
 
       $res = $this->db->sql->query($query);
 
@@ -117,7 +126,12 @@ namespace ShelfDB {
         if( $pictureFileName != "" )
           $picid = $this->db->Pictures()->Create($newid, 'SU', $pictureFileName, false);
 
-        return array('id' => $newid, 'picId' => $picid);
+        $fp = array('id' => $newid, 'name' => $name, 'picId' => $picid, 'urlTemplate' => $url);
+
+        // Update history
+        $this->db->History()->Add($newid, 'SU', 'create', 'object', '', $fp);
+
+        return $fp;
 
       } else {
         \Log::WarningSQLQuery($query, $this->db->sql);
@@ -145,9 +159,14 @@ namespace ShelfDB {
       if( $name == "" )
         return;
 
-      $name = $this->db->sql->real_escape_string($name);
-      $query = "UPDATE suppliers SET name = '$name' WHERE id = $id;";
+      $oldname = $this->GetNameById($id);
+
+      $esname = $this->db->sql->real_escape_string($name);
+      $query = "UPDATE suppliers SET name = '$esname' WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // History
+      $this->db->History()->Add($id, 'SU', 'edit', 'name', $oldname, $name);
 
       return $res;
     }
@@ -164,9 +183,15 @@ namespace ShelfDB {
     }
 
     public function SetUrlById($id, $url) {
-      $name = $this->db->sql->real_escape_string($url);
-      $query = "UPDATE suppliers SET urlTemplate = '$url' WHERE id = $id;";
+
+      $oldurl = $this->GetUrlById($id);
+
+      $esurl = $this->db->sql->real_escape_string($url);
+      $query = "UPDATE suppliers SET urlTemplate = '$esurl' WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // History
+      $this->db->History()->Add($id, 'SU', 'edit', 'urlTemplate', $oldurl, $url);
 
       return $res;
     }

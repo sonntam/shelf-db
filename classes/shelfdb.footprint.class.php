@@ -26,6 +26,9 @@ namespace ShelfDB {
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
 
+      // Update history
+      $pdb->History()->Add($id, 'P', "delete", 'object', '', $fp );
+
       // Now delete the image
       if( isset($fp['pict_id']) && $fp['pict_id'] ){
         \Log::Info("Trying to delete the image entry for footprint id = $id");
@@ -87,7 +90,12 @@ namespace ShelfDB {
         if( $pictureFileName != "" )
           $picid = $this->db->Pictures()->Create($newid, 'F', $pictureFileName, false);
 
-        return array('id' => $newid, 'picId' => $picid);
+        $fp = array('id' => $newid, 'name' => $name, 'picId' => $picid);
+
+        // History update
+        $this->db->History()->Add($newid, 'F', 'create', 'object', '', $fp);
+
+        return $fp;
 
       } else {
         \Log::WarningSQLQuery($query, $this->db->sql);
@@ -115,9 +123,16 @@ namespace ShelfDB {
       if( $name == "" )
         return;
 
-      $name = $this->db->sql->real_escape_string($name);
-      $query = "UPDATE footprints SET name = '$name' WHERE id = $id;";
+      $oldname = $this->GetNameById($id);
+
+      if( !$oldname ) return false;
+
+      $esname = $this->db->sql->real_escape_string($name);
+      $query = "UPDATE footprints SET name = '$esname' WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // History
+      $this->db->History()->Add($id, 'F', 'edit', 'name', $oldname, $name);
 
       return $res;
     }

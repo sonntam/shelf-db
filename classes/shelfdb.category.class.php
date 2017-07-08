@@ -13,8 +13,17 @@ namespace ShelfDB {
     }
 
     public function AllReplaceParentId( int $oldid, int $newid ) {
-      $query = "UPDATE SET parentnode = $newid WHERE parentnode = $oldid";
+      $query = "UPDATE categories SET parentnode = $newid WHERE parentnode = $oldid";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // Update history
+      $pdb->History()->Add(0, 'C', 'edit', 'parentnode', array(
+        "parentnode" => $oldid,
+        "parentname" => $this->GetNameById($oldid)
+      ), array(
+        "parentnode" => $newid,
+        "parentname" => $this->GetNameById($newid)
+      ) );
 
       return $res;
     }
@@ -109,7 +118,19 @@ namespace ShelfDB {
       return $tree;
     }
 
-    public function GetNameFromId( int $id ) {
+    public function GetById( int $id ) {
+
+      $query = "SELECT * FROM `categories` WHERE `id` = $id";
+
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      $data = $res->fetch_assoc();
+      $res->free();
+
+      return $data;
+    }
+
+    public function GetNameById( int $id ) {
 
       if( $id == 0 )
         return "root";
@@ -125,13 +146,19 @@ namespace ShelfDB {
     }
 
     public function SetNameById( int $id, string $name ) {
-      $name  = $this->db->sql->real_escape_string( $name );
-      $query = "UPDATE `categories` SET `name` = '$name' WHERE `id` = $id";
+
+      $oldname = $this->GetNameById($id);
+      if( !$oldname ) return false;
+
+      $esname  = $this->db->sql->real_escape_string( $name );
+      $query = "UPDATE `categories` SET `name` = '$esname' WHERE `id` = $id";
 
       $res = $this->db->sql->query($query) ;
 
       if( $res === true ) {
         // Everything OK
+        $this->db->History()->Add($id, 'C', 'edit', 'name', $oldname, $name );
+
         return true;
       } else {
         // Error occured
@@ -159,17 +186,33 @@ namespace ShelfDB {
       $query = "DELETE FROM categories WHERE id = $id;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
+      if( $res ) {
+        $cat = $this->GetById($id);
+        $this->db->History()->Add($id, 'C', 'delete', 'object', $cat, '');
+      }
+
       return $res;
     }
 
-    public function Create( int $parentid, string $name ) {
+    public function Create( int $parentId, string $name ) {
       $name = $this->db->sql->real_escape_string( $name );
-      $query = "INSERT INTO `categories` (`name`, `parentnode`) VALUES ('$name', $parentid)";
+      $query = "INSERT INTO `categories` (`name`, `parentnode`) VALUES ('$name', $parentId)";
 
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res === true ) {
         $newid = $this->db->sql->insert_id;
+
+        // Get parent
+        $parentName = $this->GetNameGetNameById($parentId);
+
+        // Add history
+        $this->db->History()->Add($newid, 'C', 'create', 'object', '', array(
+          "id" => $newid,
+          "name" => $name,
+          "parentnode" => $parentId,
+          "parentname" => $parentName
+        ));
 
         return $newid;
 
@@ -182,12 +225,28 @@ namespace ShelfDB {
 
     public function MoveToParentById( int $id, int $newparentid ) {
 
+      $cat = $this->GetById($id);
+
+      if( !$cat ) return false;
+
       $query = "UPDATE `categories` SET `parentnode` = $newparentid WHERE `id` = $id";
 
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res === true ) {
         // Everything OK
+        $oldParentName = $this->GetNameById($cat["parentnode"]);
+        $newParentName = $this->GetNameById($newparentid);
+        
+        $this->db->History()->Add($id,'C','edit','parentnode',array(
+          "parentnode" => $cat["parentnode"],
+          "parentname" => $oldParentName
+        ),
+        array(
+          "parentnode" => $newparentid,
+          "parentname" => $newParentName
+        ));
+
         return true;
       } else {
         // Error occured

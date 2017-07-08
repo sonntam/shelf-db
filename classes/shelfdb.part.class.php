@@ -16,6 +16,15 @@ namespace ShelfDB {
       $query = "UPDATE parts SET id_footprint = $newid WHERE id_footprint = $oldid;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
+      // Update history
+      $pdb->History()->Add(0, 'P', 'edit', 'footprint', array(
+        "id" => $oldid,
+        "name" => $this->db->Footprints()->GetNameById($oldid)
+      ), array(
+        "id" => $newid,
+        "name" => $this->db->Footprints()->GetNameById($newid)
+      ) );
+
       return $res;
     }
 
@@ -23,12 +32,30 @@ namespace ShelfDB {
       $query = "UPDATE parts SET id_supplier = $newid WHERE id_supplier = $oldid;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
+      // Update history
+      $pdb->History()->Add(0, 'P', 'edit', 'supplier', array(
+        "id" => $oldid,
+        "name" => $this->db->Suppliers()->GetNameById($oldid)
+      ), array(
+        "id" => $newid,
+        "name" => $this->db->Suppliers()->GetNameById($newid)
+      ) );
+
       return $res;
     }
 
     public function AllReplaceStorelocationId( int $oldid, int $newid ) {
       $query = "UPDATE parts SET id_storeloc = $newid WHERE id_storeloc = $oldid;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      // Update history
+      $pdb->History()->Add(0, 'P', 'edit', 'storeLocation', array(
+        "id" => $oldid,
+        "name" => $this->db->StoreLocations()->GetNameById($oldid)
+      ), array(
+        "id" => $newid,
+        "name" => $this->db->StoreLocations()->GetNameById($newid)
+      ) );
 
       return $res;
     }
@@ -56,21 +83,21 @@ namespace ShelfDB {
       if( !$fp ) return false;
 
       $query = "DELETE FROM parts WHERE id = $id;";
-      //$res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
-      $res = true;
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
+
+      // Update history
+      $pdb->History()->Add(0, 'P', 'delete', 'object', $fp, '');  
 
       // Now delete the image
       if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){
         $picIds = explode(';',$fp['pict_id_arr']);
         foreach($picIds as $picId) {
             \Log::Info("Trying to delete the image id = $picId entry for part id = $id");
-            //$this->db->Pictures()->DeleteById($picId);
+            $this->db->Pictures()->DeleteById($picId);
         }
-
-        //$this->db->Pictures()->DeleteById($fp['pict_id']);
       }
       return true;
     }

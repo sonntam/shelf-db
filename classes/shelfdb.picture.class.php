@@ -138,7 +138,7 @@ namespace ShelfDB {
       $imgDir = $this->GetImageFolderFromType($img['pict_type']);
       if( !$imgDir ) return false;
 
-      $removeImageFun = function($fullPath, $id) {
+      $removeImageFun = function($fullPath, $id, $img) {
         // Delete from DB
         $query = "DELETE FROM pictures WHERE id = $id;";
         $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
@@ -150,6 +150,10 @@ namespace ShelfDB {
           } else {
             \Log::Info("Deleted image id = $id but kept the image file");
           }
+
+          // History
+          $this->db->History()->Add($id, 'PIC', 'delete', 'object', $img ,'');
+
           return true;
         } else {
           \Log::Error("Deleting of image id = $id at path \"$fullPath\" failed!");
@@ -163,11 +167,11 @@ namespace ShelfDB {
 
       $fullImagePath = joinPaths($this->db->AbsRoot(), $imgDir, $img['pict_fname']);
 
-      $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['id'] );
+      $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['id'], $img );
 
       for( $i = 0; $i < sizeof( $img['thumbnails']); $i++ ) {
         $fullImagePath = joinPaths($this->db->AbsRoot(), '/img/thumb', $img['thumbnails'][$i]['filename']);
-        $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['thumbnails'][$i]['id'] );
+        $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['thumbnails'][$i]['id'], $img['thumbnails'][$i] );
       }
 
       return true;
