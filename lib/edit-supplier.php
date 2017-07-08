@@ -142,8 +142,10 @@ switch ($data['method']) {
    *
    */
   case 'add':
-    if( isset( $data['name'] ) ) {
+    if( isset( $data['name'] ) && isset( $data['urlTemplate'] ) ) {
       $name = $data['name'];
+      $url  = $data['urlTemplate'];
+
       // Check for duplicates
       if( $su->ExistsByName( $name ) ) {
         // Error, no duplicates allowed
@@ -162,7 +164,7 @@ switch ($data['method']) {
           $pictureFileName = $data['imageFileName'];
       }
 
-      $newId = $su->Create( $name, $pictureFileName );
+      $newId = $su->Create( $name, $pictureFileName, $url );
       if( $newId ) {
 
         // Clear buffer and print JSON
@@ -172,10 +174,8 @@ switch ($data['method']) {
         $response = array_replace_recursive($response, array(
           'message' => "Lieferant erfolgreich hinzugefügt.",
           'success' => true,
-          'name' => $name,
-          'id' => $newId['id'],
-          'picId' => $newId['picid']
-        ));
+          'name' => $name
+        ), $newId);
 
       } else {
         // Clear buffer and print JSON
@@ -194,9 +194,11 @@ switch ($data['method']) {
     break;
 
   case 'copy':
-    if( isset( $data['name']) && isset( $data['id']) && $su->GetById($data['id']) ) {
+    if( isset( $data['name']) && isset( $data['id']) && isset( $data['urlTemplate'] ) && $su->GetById($data['id']) ) {
       $name = $data['name'];
       $id   = $data['id'];
+      $url  = $data['urlTemplate'];
+
       // Check for duplicates
       if( $su->ExistsByName( $name ) ) {
         // Error, no duplicates allowed
@@ -212,11 +214,11 @@ switch ($data['method']) {
 
       // Check if a new or standard picture was selected
       if( isset($data['changeToDefaultImg']) && $data['changeToDefaultImg'] == 'true' ) {
-        $newId = $su->Create( $name, "" );
+        $newId = $su->Create( $name, "", $url );
       } elseif( isset($data['imageFileName']) && $data['imageFileName'] != "" ) {
-        $newId = $su->Create( $name, $data['imageFileName'] );
+        $newId = $su->Create( $name, $data['imageFileName'], $url );
       } else {
-        $newId = $su->CreateFromId( $name, $id );
+        $newId = $su->CreateFromId( $name, $id, $url );
       }
 
       if( $newId ) {
@@ -228,10 +230,8 @@ switch ($data['method']) {
         $response = array_replace_recursive($response, array(
           'message' => "Lieferant erfolgreich hinzugefügt.",
           'success' => true,
-          'name' => $name,
-          'id' => $newId['id'],
-          'picId' => $newId['picid']
-        ));
+          'name' => $name
+        ),$newId);
 
       } else {
         // Clear buffer and print JSON
