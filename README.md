@@ -24,3 +24,5 @@ TODO
  - copy part from detail page
  - add datasheets and images on detail page
  - allow adding of part from part table
+ - show price information in part detail view including tooltip with
+   timestamp of last update
