@@ -416,3 +416,13 @@ div.editcontrols.editcontrols-hidden {
   -ms-transform: translateY(-50%) !important;
   -webkit-transform: translateY(-50%) !important;
 }
+
+/* jquery validation */
+label.error {
+  color: red;
+}
+
+input.error {
+  border: 1px red solid;
+  background: lightpink;
+}
