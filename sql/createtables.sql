@@ -103,12 +103,12 @@ CREATE TABLE IF NOT EXISTS `parts` (
 
 DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
-  `id` int(11) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
   `userid` int(11) NOT NULL,
   `action` mediumtext NOT NULL,
   `timestamp` datetime NOT NULL,
   `itemid` int(11),
-  `itemtype` enum('C','P','F','SU','SL') NOT NULL COMMENT 'Type of item this entry belongs to `C` category, `P` part, `F` footprint, `SL` storelocation, `SU` supplier',
+  `itemtype` enum('C','P','F','SU','SL','U','G','PIC') NOT NULL COMMENT 'Type of item this entry belongs to `C` category, `P` part, `F` footprint, `SL` storelocation, `SU` supplier, `U` user, `G` group, `PIC` picture',
   `field` mediumtext NOT NULL,
   `newvalue` mediumtext,
   `oldvalue` mediumtext
@@ -123,11 +123,13 @@ CREATE TABLE IF NOT EXISTS `history` (
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
   `name` mediumtext NOT NULL,
   `passhash` mediumtext NOT NULL,
   `email` mediumtext NOT NULL,
-  `isadmin` bit(1) NOT NULL DEFAULT b'0'
+  `isadmin` bit(1) NOT NULL DEFAULT b'0',
+  `registrationComplete` bit(1) NOT NULL DEFAULT b'0',
+  `registrationCode` VARCHAR(512) DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -138,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE IF NOT EXISTS `groups` (
-  `id` int(11) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
   `name` mediumtext NOT NULL,
   `isadmin` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -151,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 
 DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE IF NOT EXISTS `users_groups` (
-  `id` int(11) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
   `userid` int(11) NOT NULL,
   `groupid` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='The user and group relation table';
@@ -164,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `users_groups` (
 
 DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE IF NOT EXISTS `permissions` (
-  `id` int(11) NOT NULL UNIQUE,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
   `objtype` enum('P','S','F') NOT NULL COMMENT 'Type of object this acl is applied upon `P` is part, `S` is storagelocation, `F` is footprint',
   `objid` int(11) NOT NULL,
   `authtype` enum('U','G') NOT NULL COMMENT 'Type of object that gains this acl, `U` is userid, `G` is groupid',
