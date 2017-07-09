@@ -1,16 +1,27 @@
+Shelf-DB
+--------
+
+A web application based on php/MySQL/Javascript to keep track of things.
+The design is mobile-first.
+
+Formally based on Part-DB https://github.com/sandboxgangster/Part-DB but now completely rewritten from scratch,
+offering new features and a different UI approach.
+
 Used libraries
+--------------
 
- - Plain-jqTree-Theme from artlung/Plain-jqTree-Theme
- - jqTree from http://mbraak.github.io/jqTree/
- - jQuery
- - font awesome
- - jquery-mobile
- - jquery-validation https://github.com/jquery-validation/jquery-validation
- - jquery-mobile-font-awesome https://github.com/dotcastle/jquery-mobile-font-awesome
- - jQueryFileUpload https://github.com/Abban/jQueryFileUpload
- - simpledialog2 jquery mobile plugin https://github.com/jtsage/jquery-mobile-simpledialog
+ - Plain-jqTree-Theme from https://github.com/artlung/Plain-jqTree-Theme - MIT License
+ - jqTree http://mbraak.github.io/jqTree/ - Apache License 2.0
+ - jQuery https://jquery.org - MIT License
+ - font awesome http://http://fontawesome.io - SIL Open Font License / MIT License
+ - jquery-mobile https://jquerymobile.com/ - MIT License (same as jQuery)
+ - jquery-validation https://github.com/jquery-validation/jquery-validation - MIT License
+ - jquery-mobile-font-awesome https://github.com/dotcastle/jquery-mobile-font-awesome - GNU GPLv3
+ - jQueryFileUpload https://github.com/Abban/jQueryFileUpload - MIT License
+ - simpledialog2 jquery mobile plugin https://github.com/jtsage/jquery-mobile-simpledialog - Creative Commons 3
 
-TODO
+TODOs
+-----
 
  - Remove json pretty print
  - Remove debugger statements from javascript
