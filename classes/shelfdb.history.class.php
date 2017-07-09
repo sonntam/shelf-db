@@ -18,12 +18,18 @@ namespace ShelfDB {
 
       $action   = $this->db->sql->real_escape_string($action);
       $field    = $this->db->sql->real_escape_string($field);
-      $oldValue = $this->db->sql->real_escape_string($oldValue);
-      $newValue = $this->db->sql->real_escape_string($newValue);
+      $oldValue = ( is_string($oldValue) ?
+          $this->db->sql->real_escape_string($oldValue)
+        : $this->db->sql->real_escape_string(json_encode($oldValue))
+      );
+      $newValue = ( is_string($newValue) ?
+          $this->db->sql->real_escape_string($newValue)
+        : $this->db->sql->real_escape_string(json_encode($newValue))
+      );
       $itemType = $this->db->sql->real_escape_string($itemType);
 
       $query = "INSERT INTO history (userid, action, timestamp, itemid, itemtype, field, newvalue, oldvalue) "
-        ."VALUES ($userId, '$action',NOW(), $itemId, '$itemType', '$field', '".json_encode($newValue)."', '".json_encode($oldValue)."');";
+        ."VALUES ($userId, '$action',NOW(), $itemId, '$itemType', '$field', '".$newValue."', '".$oldValue."');";
 
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
