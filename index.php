@@ -1,5 +1,5 @@
 <?php
-  include_once(__DIR__.'/classes/partdatabase.class.php');
+  include_once(__DIR__.'/classes/shelfdb.class.php');
 ?>
 <!DOCTYPE html>
 <html>

@@ -1,5 +1,5 @@
 <?php
-  include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
+  include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   /*
   $_REQUESTarray[7]

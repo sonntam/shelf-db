@@ -1,5 +1,5 @@
 <?php
-	require_once(dirname(__DIR__).'/classes/partdatabase.class.php');
+	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get storelocations
   $storelocations = $pdb->StoreLocations()->GetNonEmpty();

@@ -1,10 +1,10 @@
 <?php
 
   /**
-   * Generate PartDB list of parts of a category and all its subcategories as JSON file
+   * Generate ShelfDB list of parts of a category and all its subcategories as JSON file
    */
 
-  include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
+  include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   $_GET += array("catid" => 0);
   $_GET += array("partid" => null);

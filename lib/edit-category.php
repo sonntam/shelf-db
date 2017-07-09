@@ -1,7 +1,7 @@
 <?php
 /* POST Script for editing categories */
 
-include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
+include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
 $data = array_replace_recursive(
   array(
