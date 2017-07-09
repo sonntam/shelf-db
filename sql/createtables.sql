@@ -1,4 +1,4 @@
-/* Part-DB SQL table creation
+/* Shelf-DB SQL table creation
  *
  * Version: see Version variable
  */
