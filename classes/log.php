@@ -22,6 +22,11 @@ namespace {
       );
     }
 
+    public static function LogSQLQuery(string $query) {
+      Log::Debug("SQL query:\n$query");
+      return true;
+    }
+
     public static function Error(string $text) {
       Log::LogWithLevelTrace("ERROR",$text);
     }
