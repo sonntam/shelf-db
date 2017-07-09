@@ -188,6 +188,25 @@ namespace ShelfDB {
     public function IsLoggedIn() {
       return $this->isLoggedIn;
     }
+
+    public function IsAdmin() {
+      if( $this->IsLoggedIn() ) {
+        $id    = $this->GetLoggedInUserId();
+        $query = "SELECT isadmin FROM users WHERE id = $id;";
+        $res   = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+        if( !$res ) return false;
+
+        $data  = $res->fetch_assoc();
+
+        $res->free();
+
+        if( intVal($data['isadmin']) == 1 )
+          return true;
+      }
+
+      return false;
+    }
   }
 }
 
