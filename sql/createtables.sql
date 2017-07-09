@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `pictures` (
   `pict_fname` varchar(255) NOT NULL DEFAULT '' COMMENT 'Picture filename',
   `pict_width` int(11) NOT NULL DEFAULT '0',
   `pict_height` int(11) NOT NULL DEFAULT '0',
-  `pict_type` enum('P','T','F','TF','SU') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail, `F` is footprint, `TF` is thumbnail of footprint, `SU` is supplier',
+  `pict_type` enum('P','T','F','TF','SU','SL') NOT NULL DEFAULT 'P' COMMENT '`P` is full picture, `T` is thumbnail, `F` is footprint, `TF` is thumbnail of footprint, `SU` is supplier, `SL` is store location',
   `tn_obsolete` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Is 1 if thumbnail is outdated and must be regenerated',
   `tn_t` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Generation timestamp of thumbnail',
   `tn_pictid` int(11) NOT NULL DEFAULT '0' COMMENT 'Picture ID this thumbnail belongs to',
