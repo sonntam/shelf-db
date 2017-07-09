@@ -11,6 +11,7 @@
     $part = $pdb->Parts()->GetDetailsById($_GET["partid"]);
 		$name = $part['name'];
 		$partFootprintImageFile = joinPaths( $pdb->RelRoot(), 'img/footprint', $part['f_pict_fname']);
+		$partSupplierImageFile = joinPaths( $pdb->RelRoot(), 'img/supplier', $part['su_pict_fname']);
 	}
 
 ?>
@@ -70,6 +71,12 @@
 
 		});
 
+		$('[name=showSupplier]').click(function(evt) {
+			var url = $(this).attr('url');
+			if( url )
+				window.open(url,'_blank');
+		});
+
 		$('[name=editPartNumber]').click(function(evt) {
 			inputPopUp({
 					header: Lang.get('editPartPartNumber'),
@@ -78,6 +85,24 @@
 					textDefault: $('[name=showPartNumber]').val(),
 					ok: function( newnumber ) {
 						$('[name=showPartNumber]').val(newnumber);
+						// Get url for part and update picture
+						//
+						$.mobile.referencedLoading('show');
+						$.ajax({
+							url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								id: $('[name=showSupplier]').attr('supplierId'),
+								partNr: newnumber
+							}
+						}).done(function(data) {
+							// Update gui
+							if( data ) {
+								$('[name=showSupplier]').attr('url',data.urlTemplate);
+							}
+							$.mobile.referencedLoading('hide');
+						});
 					}
 			});
 		});
@@ -115,7 +140,6 @@
 					$(evt.target).find("input").first().focus().select();
 				},
 				afterclose: function(evt) {
-					//debugger;
 					//alert(JSON.stringify(evt));
 				},
 				click: function(evt) {
@@ -147,7 +171,7 @@
 						$('[name=showFootprint]').attr('value',$(evt.currentTarget).attr('footprintname'));
 						// Update picture
 						$.ajax({
-							url: '/lib/json.footprints.php',
+							url: '<?php echo $pdb->RelRoot(); ?>lib/json.footprints.php',
 							type: 'POST',
 							dataType: 'json',
 							data: {
@@ -182,8 +206,113 @@
 					if( fpClicked )
 					{
 						// Load store location name and store in database
-						$('[name=showSupplier]').attr('value',$(evt.currentTarget).attr('suppliername'));
+						$('[name=showSupplier]')
+							.attr('value',$(evt.currentTarget).attr('suppliername'))
+							.attr('supplierId', fpClicked);
+
+						// Get url for part and update picture
+						$.ajax({
+							url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								id: fpClicked,
+								partNr: $('[name=showPartNumber]').val()
+							}
+						}).done(function(data) {
+							// Update gui
+							if( data ) {
+								var imgFile = '<?php echo $pdb->RelRoot(); ?>img/supplier/'+data['pict_fname'];
+								$('[name=imgSupplier]').attr({
+									src: imgFile,
+									'data-other-src': imgFile
+								});
+
+								$('[name=showSupplier]').attr('url',data.urlTemplate);
+							}
+						});
+
 					}
+				}
+			});
+		});
+
+		$('[name=editPrice]').click(function(evt) {
+			inputPopUp({
+		    header: Lang.get('editPartPrice'),
+		    headline: Lang.get('editPartChangePrice'),
+		    textPlaceholder: Lang.get('enterPrice'),
+		    textDefault: $('[name=showPrice]').val(),
+		    ok: function( newPrice ) {
+					// TODO Submit and save new name, then update GUI on success
+					$('[name=showPrice]').val(newPrice);
+				},
+				validatorRules: {
+					required: true,
+	      	number: true,
+	      	min: 0.0
+				}
+			});
+		});
+
+		$('[name=editTotal]').click(function(evt) {
+			inputPopUp({
+				header: Lang.get('editPartTotal'),
+				headline: Lang.get('editPartChangeTotal'),
+				textPlaceholder: Lang.get('enterAmount'),
+				textDefault: $('[name=showTotal]').val(),
+				ok: function( minstock ) {
+					// TODO Submit and save new name, then update GUI on success
+					$('[name=showTotal]').val(minstock);
+				},
+				validatorRules: {
+					required: true,
+					digits: true,
+					min: 0
+				}
+			});
+		});
+
+		$('[name=addTotal]').click(function(evt) {
+			debugger;
+		});
+
+		$('[name=subTotal]').click(function(evt) {
+			debugger;
+		});
+
+		$('[name=editStock]').click(function(evt) {
+			inputPopUp({
+		    header: Lang.get('editPartStock'),
+		    headline: Lang.get('editPartChangeStock'),
+		    textPlaceholder: Lang.get('enterAmount'),
+		    textDefault: $('[name=showStock]').val(),
+		    ok: function( minstock ) {
+					// TODO Submit and save new name, then update GUI on success
+					$('[name=showStock]').val(minstock);
+				},
+				validatorRules: {
+					required: true,
+	      	digits: true,
+	      	min: 0
+				}
+			});
+		});
+
+		$('[name=editMinStock]').click(function(evt) {
+			inputPopUp({
+		    header: Lang.get('editPartMinStock'),
+		    headline: Lang.get('editPartChangeMinStock'),
+		    textPlaceholder: Lang.get('enterAmount'),
+		    textDefault: $('[name=showMinStock]').val(),
+		    ok: function( minstock ) {
+					// TODO Submit and save new name, then update GUI on success
+					$('[name=showMinStock]').val(minstock);
+				},
+				validatorRules: {
+					required: true,
+	      	digits: true,
+	      	min: 0
 				}
 			});
 		});
@@ -268,7 +397,7 @@
             <h4 uilang="footprint"></h4>
 						<div class="flexBoxTextInputEditControl">
 							<a href="#popupimg" data-rel="popup" data-position-to="window">
-								<img data-other-src="<?php echo $partFootprintImageFile; ?>" src="<?php echo $partFootprintImageFile ?>" name="imgFootprint" style="max-height: 2.2em">
+								<img data-other-src="<?php echo $partFootprintImageFile; ?>" src="<?php echo $partFootprintImageFile ?>" name="imgFootprint" style="max-width: 2.2em; max-height: 2.2em; margin-right: 0.3em">
 							</a>
 							<input name="showFootprint" readonly="readonly" type=text value="<?php echo htmlentities($part['footprint'],ENT_HTML5,'UTF-8'); ?>">
 							<input name="editFootprint" type="button" data-icon="edit" data-iconpos="notext">
@@ -326,7 +455,10 @@
 						<div class="ui-grid-a">
 							<div class="ui-block-a" style="padding-right: 0.5em">
 								<div class="flexBoxTextInputEditControl">
-									<input name="showSupplier" type="text" readonly=readonly value="<?php echo $part['supplier_name']; ?>">
+									<a href="#popupimg" data-rel="popup" data-position-to="window">
+										<img data-other-src="<?php echo $partSupplierImageFile; ?>" src="<?php echo $partSupplierImageFile ?>" name="imgSupplier"  style="margin-right: 0.3em; max-width: 2.2em; max-height: 2.2em">
+									</a>
+									<input name="showSupplier" supplierId="<?php echo $part['id_supplier']; ?>" type="text" readonly=readonly value="<?php echo $part['supplier_name']; ?>">
 									<input name="editSupplier" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
@@ -334,6 +466,28 @@
 								<div class="flexBoxTextInputEditControl">
 									<input name="showPartNumber" type="text" readonly=readonly value="<?php echo $part['supplierpartnr']; ?>">
 									<input name="editPartNumber" type="button" data-icon="edit" data-iconpos="notext">
+								</div>
+							</div>
+						</div>
+						<div class="ui-grid-a">
+							<div class="ui-block-a" style="padding-right: 0.5em">
+								<h4 uilang="price"></h4>
+							</div>
+							<div class="ui-block-b" style="padding-left: 0.5em">
+								<h4 uilang="amountLeast"></h4>
+							</div>
+						</div>
+						<div class="ui-grid-a">
+							<div class="ui-block-a" style="padding-right: 0.5em">
+								<div class="flexBoxTextInputEditControl">
+									<input name="showPrice" type="text" readonly=readonly value="<?php echo $part['price']; ?>">
+									<input name="editPrice" type="button" data-icon="edit" data-iconpos="notext">
+								</div>
+							</div>
+							<div class="ui-block-b" style="padding-left: 0.5em">
+								<div class="flexBoxTextInputEditControl">
+									<input name="showMinStock" type="text" readonly=readonly value="<?php echo $part['mininstock']; ?>">
+									<input name="editMinStock" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
 						</div>
