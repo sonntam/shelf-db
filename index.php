@@ -330,7 +330,7 @@
           <h6 uilang="storageLocations"></h6>
           <ul data-role="listview">
             <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-editstorelocation.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
-            <li><a href="#"><i class="fa fa-square-o"></i> <span uilang="storageLocationShowEmpty"></span></a></li>
+            <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-showempty.php"><i class="fa fa-square-o"></i> <span uilang="storageLocationShowEmpty"></span></a></li>
             <li><a href="<?php echo $pdb->RelRoot(); ?>pages/page-shownonempty.php"><i class="fa fa-square"></i> <span uilang="storageLocationShowNonEmpty"></span></a></li>
           </ul>
         </div>
