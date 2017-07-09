@@ -2,12 +2,57 @@
 
   include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
 
-  $_GET += array("id" => null, "partNr" => null);
+  $data = array_replace_recursive(
+    array(
+      "id" => null,
+      "partNr" => null,
+      "partId" => null
+    ), $_GET, $_POST );
 
-  $fp = $pdb->Suppliers()->GetById($_GET["id"]);
-  $fp['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $fp['urlTemplate'], $_GET['partNr'] );
+  $response = array(
+    "success" => true
+  );
 
-  $json = json_encode($fp, JSON_PRETTY_PRINT);
+  $su = $pdb->Suppliers()->GetById($data['id']);
+
+  if( $su ) {
+
+    if( !$data['id'] ) { // Get all Suppliers
+
+      if( $data['partNr'] ) {
+        foreach( $su as &$s ) {
+          $s['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $s['urlTemplate'], $data['partNr'] );
+        }
+      }
+
+    } else {
+      // Single supplier
+      if( $data['partId'] ) {
+        $part = $pdb->Parts()->GetById($data['partId']);
+        if( !$part ) {
+          $response = array_replace_recursive($response,
+            array(
+              "message" => "partId does not exist.",
+              "success" => false
+            ));
+        } else {
+          $su['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $su['urlTemplate'], $part['supplierpartnr'] );
+        }
+      } elseif( $data['partNr'] ) {
+        $su['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $su['urlTemplate'], $data['partNr'] );
+      }
+    }
+  } else {
+    // $su invalid
+    $response = array_replace_recursive($response,
+      array(
+        "message" => "Error retrieving supplier.",
+        "success" => false
+      ));
+  }
+  $response = array_replace_recursive($response,$su);
+
+  $json = json_encode($response, JSON_PRETTY_PRINT);
 
   // Clear buffer and print JSON
   ob_clean();
