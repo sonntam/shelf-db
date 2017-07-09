@@ -217,7 +217,12 @@ namespace ShelfDB {
           $searchFilter[] = "p.id_category IN (".join(',', $ids ).")";
           break;
         case 'storeLocation':
-          $searchFilter[] = "p.id_storeloc = $id";
+          if( is_array( $id ) ) {
+            $searchFilter[] = "p.id_storeloc IN (".join(',',$id).")";
+          } else {
+            $searchFilter[] = "p.id_storeloc = $id";
+          }
+
           break;
         case 'footprint':
           $searchFilter[] = "p.id_footprint = $id";
@@ -260,6 +265,7 @@ namespace ShelfDB {
         ."COALESCE(mpf.pict_fname, fpr.pict_fname, 'default.png') AS mainPicFileName, "
         ."COALESCE(mtpf.pict_fname, tfpr.pict_fname) AS mainThumbnailPicFileName, "
         ."COALESCE(fpr.pict_fname,'default.png') AS f_pict_fname, "
+        ."COALESCE(sup.pict_fname,'default.png') AS su_pict_fname, "
         ."fpr.pict_width as f_pict_width, "
         ."fpr.pict_height as f_pict_height, "
         ."GROUP_CONCAT(pic.id) AS pict_id_arr, pic.parent_id, GROUP_CONCAT(pic.pict_fname SEPARATOR '/') AS pict_fname_arr, GROUP_CONCAT(pic.pict_height) AS pict_height_arr, "
@@ -278,10 +284,12 @@ namespace ShelfDB {
         ."LEFT JOIN pictures tpic ON tpic.parent_id = pic.id AND tpic.pict_type = 'T' "
         ."LEFT JOIN prices pr ON pr.part_id = p.id "
         ."LEFT JOIN pictures fpr ON f.id = fpr.parent_id AND fpr.pict_type = 'F' "
+        ."LEFT JOIN pictures sup ON su.id = sup.parent_id AND sup.pict_type = 'SU' "
         ."LEFT JOIN pictures tfpr ON tfpr.parent_id = fpr.id AND tfpr.pict_type = 'T' "
         ."WHERE ".join(" AND ", $searchFilter)." "
-        ."ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
+        ."GROUP BY p.id ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      \Log::LogSQLQuery($query);
       if( !$res )
       {
         return null;
@@ -308,7 +316,7 @@ namespace ShelfDB {
       return $this->GetSegmentByTypeId('supplier', $id, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
     }
 
-    public function GetSegmentByStoreLocationId( int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
+    public function GetSegmentByStoreLocationId( $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
       return $this->GetSegmentByTypeId('storeLocation', $id, $offset, $limit, $sortcol, $sortorder, $recursive, $search );
     }
 
@@ -324,7 +332,8 @@ namespace ShelfDB {
         ."pr.price AS price, "
         ."COALESCE(fpr.pict_fname,'default.png') AS f_pict_fname, "
         ."fpr.pict_width as f_pict_width, "
-        ."fpr.pict_height as f_pict_height "
+        ."fpr.pict_height as f_pict_height, "
+        ."COALESCE(sup.pict_fname,'default.png') AS su_pict_fname "
         ."FROM parts p "
         ."LEFT JOIN footprints f ON p.id_footprint = f.id "
         ."LEFT JOIN storeloc s ON p.id_storeloc = s.id "
@@ -340,6 +349,9 @@ namespace ShelfDB {
         ."LEFT JOIN ("
           ."SELECT * FROM pictures WHERE pict_type = 'F'"
         .") fpr ON f.id = fpr.parent_id "
+        ."LEFT JOIN ("
+          ."SELECT * FROM pictures WHERE pict_type = 'SU'"
+        .") sup ON su.id = sup.parent_id "
         ."WHERE p.id = $partid "
         ."LIMIT 1";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
