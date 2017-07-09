@@ -163,7 +163,9 @@ function inputPopUp(options) {
     textDefault: "",
     ok: null,
     cancel: null,
-    transition: "pop"
+    transition: "pop",
+    validatorRules: [],
+    closeManually: false
   };
 
   options = $.extend(defaults,options);
@@ -174,9 +176,19 @@ function inputPopUp(options) {
   var setupPopup = function($popup) {
     // Text replace and callback setup
     var $buttonresult = "";
-    var $input = $popup.find("[name='dialogText']");
+    var $input = $popup.find("[name='dialogValue']");
     var $okbtn = $popup.find("[name='popupOkBtn']");
     var $cancelbtn = $popup.find("[name='popupCancelBtn']");
+    var $form = $popup.find("#formInputDialog");
+    if( options.inputRequired ) $input.attr('required','');
+
+    // Reset validator to allow for new rulesets
+    $form.removeData('validator');
+    $form.validate({
+      rules: {
+        dialogValue: options.validatorRules
+      }
+    });
 
     $popup.find("[name='dialogHeader']").first().text(options.header);
     $popup.find("[name='dialogHeadline']").first().text(options.headline);
@@ -187,39 +199,58 @@ function inputPopUp(options) {
     $okbtn.text(options.confirmButtonText);
 
     // Keypress handlers
-    $input.off('keypress');
-    $input.one('keypress', function(e){
+    $popup.off('keypress');
+    $popup.on('keypress', function(e){
       if(e.keyCode == 13) {
         // Submit
         e.stopPropagation();
+        e.preventDefault();
         $okbtn.trigger("click");
       }
     });
 
-    $input.off('keyup');
-    $input.one('keyup', function(e){
+    $popup.off('keyup');
+    $popup.on('keyup', function(e){
       if(e.keyCode == 27) {
         e.stopPropagation();
+        e.preventDefault();
         $cancelbtn.trigger("click");
       }
     });
 
+    $form.off('submit');
+    $form.on('submit', function(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+
+      if( !$(evt.target).valid() )
+        return;
+
+      if( options.ok ) options.ok($input.val());
+
+      if( !options.closeManually )
+        $popup.popup('close');
+    });
+
     // Button click handlers
+    $popup.find('a').off('click');
     $popup.find('a').one('click', function(ev){
       // Return buttonresult
       $buttonresult = $(ev.target).attr('buttonresult');
       console.log($buttonresult);
     });
 
+    $popup.off('popupafteropen');
     $popup.one('popupafteropen', function(ev,ui) {
         $popup.find("input").first().focus().select();
     });
+
+    $popup.off('popupafterclose');
     $popup.one('popupafterclose', function(ev,ui) {
-      if( $buttonresult == "ok" && options.ok ) {
-        options.ok($input.val());
-      } else if ($buttonresult == "cancel" && options.cancel) {
+      if ($buttonresult == "cancel" && options.cancel) {
         options.cancel($input.val());
       }
+      $form.validate().resetForm();
     });
 
     return $popup;
