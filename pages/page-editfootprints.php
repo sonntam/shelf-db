@@ -192,7 +192,6 @@
 									case 'ok':
 										// Reload item
 										$.mobile.referencedLoading('show');
-										debugger;
 										$.ajax({
 											url: '/lib/json.footprints.php?id='+data.id,
 											cache: false,
