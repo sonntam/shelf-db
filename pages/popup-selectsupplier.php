@@ -4,18 +4,31 @@
   // Get suppliers
   $suppliers = $pdb->Suppliers()->GetAll();
 
+  $createListEntryFcn = function( $name, $pictureFilename, $id, $url ) {
+		ob_start();
+		?>
+		<li data-filtertext="<?php echo $name; ?>">
+      <!--<div class="ui-grid-a">
+        <div class="ui-block-a" style="max-width: 7em">
+          <img class="ui-center-element-absolute" style="max-width: 5em; max-height: 5em" src='/img/supplier/<?php echo $pictureFilename; ?>'>
+        </div>
+        <div class="ui-block-b">
+          <h2><?php echo $name; ?></h2>
+					<p><a name="supplierLink" target="_blank" href="<?php echo $url; ?>"><?php echo $url; ?></a></p>
+        </div>
+      </div> -->
+      <a data-rel='back' href='#' supplierid=<?php echo $id; ?> suppliername='<?php echo $name; ?>'>
+        <img class="ui-center-element-absolute" class="ui-center-element" src='/img/supplier/<?php echo $pictureFilename; ?>'>
+        <h2><?php echo $name; ?></h2>
+      </a>
+    </li>
+		<?php
+		return ob_get_clean();
+	};
+
   foreach( $suppliers as &$f ) {
     $name = htmlspecialchars($f['name']);
-    ob_start();
-    ?>
-      <li>
-        <a data-rel='back' href='#' supplierid=<?php echo $f['id']; ?> suppliername='<?php echo $name; ?>'>
-          <img class="ui-center-element-absolute" class="ui-center-element" src='/img/supplier/<?php echo $f['pict_fname']; ?>'>
-          <h2><?php echo $name; ?></h2>
-        </a>
-      </li>
-    <?php
-    $f = ob_get_clean();
+		$f = $createListEntryFcn($name, $f['pict_fname'], $f['id'], $pdb->Suppliers()->ExpandRawUrl($f['urlTemplate'], "example"));
   }
 ?>
 
