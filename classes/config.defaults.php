@@ -21,11 +21,11 @@ namespace ConfigFile {
 		/** @var string SQL Database Hostname */
 		static public $host = "localhost";
 		/** @var string SQL Database username */
-		static public $user = "partdb";
+		static public $user = "root";
 		/** @var string SQL Database password */
 		static public $password = "";
 		/** @var string SQL Database name to use */
-		static public $name = "partdb";
+		static public $name = "shelfdb";
 		/** @var int Port of SQL database */
 		static public $port = 30154;
 

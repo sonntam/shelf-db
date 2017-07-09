@@ -1,17 +1,20 @@
 <?php
 
   /**
-   * Generate PartDB tree of categories as JSON file
+   * Generate ShelfDB tree of categories as JSON file
    */
 
   include_once(dirname(__DIR__).'/classes/partdatabase.class.php');
 
-  $_GET += array("catid" => 0);
-  $_GET += array("withparent" => 0);
+  $data = array_replace_recursive(
+    array(
+      "catid"      => 0,
+      "withparent" => 0
+    ), $_GET, $_POST );
 
   // Get category ID
-  $catid      = $_GET["catid"];
-  $withparent = $_GET["withparent"];
+  $catid      = $data["catid"];
+  $withparent = $data["withparent"];
 
   $tree = $pdb->Categories()->GetAsArray($catid, $withparent == 1);
 

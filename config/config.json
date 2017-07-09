@@ -6,7 +6,7 @@
         "host": "localhost",
         "user": "root",
         "password": "",
-        "name": "partdb",
+        "name": "shelfdb",
         "port": 55555
     },
     "log": {

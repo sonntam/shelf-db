@@ -12,9 +12,9 @@ require_once(__DIR__.'/shelfdb.footprint.class.php');
 require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
 /**
- * PartDB-Database singleton class
+ * ShelfDB-Database singleton class
  */
-class PartDatabase
+class ShelfDatabase
 {
   private const VERSION = array("major" => 1, "minor" => 1);
 
@@ -57,16 +57,16 @@ class PartDatabase
   public function History()         { return $this->history; }
 
   /**
-   * Get the singleton instance of PartDatabase
-   * @return PartDatabase The singleton instance
+   * Get the singleton instance of ShelfDatabase
+   * @return ShelfDatabase The singleton instance
    */
-  public static function Instance() : PartDatabase
+  public static function Instance() : ShelfDatabase
   {
     static $db = null;
 
     if( is_null($db) )
     {
-      $db = new PartDatabase();
+      $db = new ShelfDatabase();
 
       $db->Connect();
       $db->InjectCustomSQL();
@@ -83,7 +83,7 @@ class PartDatabase
   }
 
   public static function RelRoot() {
-    return PartDatabase::GetRelativeRoot();
+    return ShelfDatabase::GetRelativeRoot();
   }
 
   public static function GetRelativeRoot() {
@@ -99,7 +99,7 @@ class PartDatabase
    */
   public static function InstanceSQL()
   {
-    return PartDatabase::Instance()->sql;
+    return ShelfDatabase::Instance()->sql;
   }
 
   /**
@@ -265,24 +265,24 @@ class PartDatabase
 
     if( $version === false )
     {
-      Log::Info("No installed PartDatabase SQL tables found.");
+      Log::Info("No installed ShelfDatabase SQL tables found.");
       $this->CreateTables();
       return;
     }
 
     // Check if this software is outdated
-    if( $version["major"] > PartDatabase::VERSION["major"]
-      || ( $version["major"] == PartDatabase::VERSION["major"]
-        && $version["minor"] > PartDatabase::VERSION["minor"]
+    if( $version["major"] > ShelfDatabase::VERSION["major"]
+      || ( $version["major"] == ShelfDatabase::VERSION["major"]
+        && $version["minor"] > ShelfDatabase::VERSION["minor"]
         )
     ) {
       Log::Error("The installed SQL database is too new for this software: "
-        .getversionstring($version)." versus ".getversionstring(PartDatabase::VERSION)."."
+        .getversionstring($version)." versus ".getversionstring(ShelfDatabase::VERSION)."."
       );
       throw new Exception("Installed SQL database is too new for this software.");
     }
 
-    if( sortn($version) == sortn(PartDatabase::VERSION) )
+    if( sortn($version) == sortn(ShelfDatabase::VERSION) )
     {
       Log::Info("Using database version ".getversionstring($version));
     }
@@ -291,7 +291,7 @@ class PartDatabase
 
   private function CreateTables()
   {
-    Log::Info("Creating PartDatabase SQL tables...");
+    Log::Info("Creating ShelfDatabase SQL tables...");
     $this->InjectCustomSQLFromFile("./sql/createtables.sql");
   }
 
@@ -308,7 +308,7 @@ class PartDatabase
 
 }
 
-$pdb = PartDatabase::Instance();
-$db  = PartDatabase::InstanceSQL();
+$pdb = ShelfDatabase::Instance();
+$db  = ShelfDatabase::InstanceSQL();
 
 ?>
