@@ -199,7 +199,7 @@ namespace ShelfDB {
       return $partcount;
     }
 
-    private function GetSegmentByTypeId( string $type, int $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
+    private function GetSegmentByTypeId( string $type, $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
 
       if( !$search || $search == "" ) {
         $searchFilter = array();
