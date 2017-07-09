@@ -3,14 +3,19 @@
 
   // Get storelocations
   $storelocations = $pdb->StoreLocations()->GetNonEmpty();
+	$storeLocationIds = array_map( function($x) {
+		return $x['id'];
+	}, $storelocations );
+  //$parts = $pdb->Parts()->GetSegmentByStoreLocationId($storeLocationIds, 0, 25, "storelocid", "asc", false, null);
 
 	$createListEntryFcn = function( $name, $id, $images ) {
 		ob_start();
 		?>
 		<li data-filtertext="<?php echo $name; ?>">
 
-          <h2 style="float: left"><?php echo $name; ?></h2>
-
+          <a href="#">
+						<h2 style="float: left"><?php echo $name; ?></h2>
+					</a>
     </li>
 		<?php
 		return ob_get_clean();
@@ -18,9 +23,10 @@
 
   foreach( $storelocations as &$s ) {
     $name = htmlspecialchars($s['name']);
-    $parts = $pdb->Parts()->GetSegmentByStoreLocationId($s['id'],0,15,"totalstock","desc",false,null);
+    //$parts = $pdb->Parts()->GetSegmentByStoreLocationId($s['id'],0,15,"totalstock","desc",false,null);
 
     // Build list of unique images
+    /*
     $o = 0;
     $lastPic = null;
     $images = array();
@@ -33,70 +39,36 @@
       }
     }
     $images = array_merge($images, array_fill($o,4-$o, $pdb->RelRoot()."img/footprint/default.png") );
-
-		$s = $createListEntryFcn($name, $s['id'],$images);
+		*/
+		$s = $createListEntryFcn($name, $s['id'],null);
   }
 ?>
 
-<script type="text/javascript">
-    window.location="index.php#page-showparts?catid=1";
-</script>
+<!--<script type="text/javascript">
+    window.location="index.php#page/page-shownonempty.php";
+</script>-->
 
-<div id=editstorelocations data-role="page">
+<div id=showNonEmptyStoreLocations data-role="page">
 
 	<script>
 		pageHookClear();
 
 		$.mobile.pageContainerBeforeShowTasks.push( function(event,ui) {
-			console.log("DEBUG: pageTask");
+			console.log("DEBUG: pageTask <?php echo $_SERVER["REQUEST_URI"]; ?>");
 
 			function addNewItem(data) {
 				// Add new item
 				var elementHtmlDummy = <?php echo json_encode($createListEntryFcn("","","")); ?>;
-				var el = $(elementHtmlDummy).prependTo('#storelocationList');
+				var el = $(elementHtmlDummy).prependTo('[name=storelocationList]');
 				el.attr('data-filtertext', data.name);
 				el.find('h2').text( data.name);
 				el.find('a').attr('value',data.id);
 				Lang.searchAndReplace();
 				el.enhanceWithin();
-				$('#storelocationList').listview('refresh');
+				$('[name=storelocationList]').listview('refresh');
 			}
 
-			$('#newStoreLocation').click( function(evt) {
-				openExternalPopup({
-					url: '/pages/popup-editstorelocation.php?method=add',
-					customEventName: "positiveResponse",
-					customEventHandler: function(evt, data) {
-						var action = data.buttonresult;
-						var newid  = data.id;
-
-						switch( action ) {
-							case 'cancel':
-								break;
-							case 'ok':
-								// Reload item
-								$.mobile.referencedLoading('show');
-
-								$.ajax({
-									url: '/lib/json.storelocations.php?id='+newid,
-									cache: false,
-									dataType: 'json',
-									success: function(data) {
-										addNewItem(data);
-										$.mobile.referencedLoading('hide');
-									},
-									error: function() {
-										$.mobile.referencedLoading('hide');
-									}
-								});
-								break;
-						}
-					},
-					forceReload: true
-				});
-			});
-
-      $('#storelocationList').on('click','[name=deleteStoreLocation]', function(evt) {
+      $('[name=storelocationList]').on('click','[name=deleteStoreLocation]', function(evt) {
         var id = $(evt.currentTarget).attr('value');
 
         if( id )
@@ -135,7 +107,7 @@
         }
       });
 
-      $('#storelocationList').on('click','[name=editStoreLocation]', function(evt) {
+      $('[name=storelocationList]').on('click','[name=editStoreLocation]', function(evt) {
 				var parent = $(evt.currentTarget).closest('li');
         var id = $(evt.currentTarget).attr('value');
 
@@ -162,7 +134,7 @@
 												// Rebuild
 												parent.attr('data-filtertext', data.name);
 												parent.find('h2').text( data.name);
-												$('#storelocationList').listview('refresh');
+												$('[name=storelocationList]').listview('refresh');
 												$.mobile.referencedLoading('hide');
 											},
 											error: function() {
@@ -181,19 +153,19 @@
 	</script>
 
   <div data-role="header" data-position="fixed">
-    <h1 uilang="editStoreLocations"></h1>
+    <h1 uilang="showNonEmptyStoreLocations"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
-		<button id="newStoreLocation" class="ui-btn ui-btn-right ui-btn-icon-notext ui-btn-inline ui-icon-fa-plus" uilang="add"></button>
+		<button name="newStoreLocation" class="ui-btn ui-btn-right ui-btn-icon-notext ui-btn-inline ui-icon-fa-plus" uilang="add"></button>
   </div>
 
   <div role="main" class="ui-content">
 
-		<h3 uilang="storelocations"></h3>
+		<h3 uilang="storeLocations"></h3>
 
     <div class="ui-grid-solo" style=" flex: 2; display: flex; flex-flow: column">
       <div class="ui-block-a"><p name="dialogMessage" uilang="popupStoreLocationFilterHint"></p></div>
       <div class="ui-block-a" style="flex: 3; display: flex; flex-flow: column">
-        <ul id="storelocationList" data-role="listview" data-inset="true" data-filter="true" uilang="data-filter-placeholder:popupStoreLocationFilterPlaceholder" data-autodividers="true" style="flex: 4; overflow-y: auto; padding: 10px">
+        <ul name="storelocationList" data-role="listview" data-inset="true" data-filter="true" uilang="data-filter-placeholder:popupStoreLocationFilterPlaceholder" data-autodividers="true" style="flex: 4; overflow-y: auto; padding: 10px">
           <?php echo join("\n", $storelocations); ?>
         </ul>
       </div>
