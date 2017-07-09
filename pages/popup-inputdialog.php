@@ -5,14 +5,18 @@
     <div role="main" class="ui-content">
         <h3 name="dialogHeadline" class="ui-title"></h3>
         <p name="dialogMessage"></p>
-        <label for="usertext" class="ui-hidden-accessible" name="dialogTextLabel"></label>
-        <input type="text" name="dialogText" value="" placeholder="" data-theme="a">
-        <div class="ui-grid-a">
-          <div class="ui-block-a">
-            <a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a>
+        <form id="formInputDialog" data-ajax="false">
+          <label for="usertext" class="ui-hidden-accessible" name="dialogTextLabel"></label>
+          <input type="text" name="dialogValue" value="" placeholder="" data-theme="a">
+          <div class="ui-grid-a">
+            <div class="ui-block-a">
+              <a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a>
+            </div>
+            <div class="ui-block-b">
+              <button type="submit" buttonresult="ok" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" data-rel="back" data-transition="flow" uilang="ok">
+              <!--<a href="#" buttonresult="ok" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" data-rel="back" data-transition="flow" uilang="ok"></a>-->
+            </div>
           </div>
-          <div class="ui-block-b">
-            <a href="#" buttonresult="ok" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" data-rel="back" data-transition="flow" uilang="ok"></a>
-          </div>
+        </form>
     </div>
 </div>
