@@ -27,7 +27,7 @@ namespace ShelfDB {
         return false; // Database my be inconsistent because footrprints have already been replaced
 
       // Update history
-      $pdb->History()->Add($id, 'P', "delete", 'object', '', $fp );
+      $this->db->History()->Add($id, 'P', "delete", 'object', '', $fp );
 
       // Now delete the image
       if( isset($fp['pict_id']) && $fp['pict_id'] ){

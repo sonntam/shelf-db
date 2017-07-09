@@ -17,7 +17,7 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       // Update history
-      $pdb->History()->Add(0, 'C', 'edit', 'parentnode', array(
+      $this->db->History()->Add(0, 'C', 'edit', 'parentnode', array(
         "parentnode" => $oldid,
         "parentname" => $this->GetNameById($oldid)
       ), array(
@@ -237,7 +237,7 @@ namespace ShelfDB {
         // Everything OK
         $oldParentName = $this->GetNameById($cat["parentnode"]);
         $newParentName = $this->GetNameById($newparentid);
-        
+
         $this->db->History()->Add($id,'C','edit','parentnode',array(
           "parentnode" => $cat["parentnode"],
           "parentname" => $oldParentName

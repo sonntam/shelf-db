@@ -17,7 +17,7 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       // Update history
-      $pdb->History()->Add(0, 'P', 'edit', 'footprint', array(
+      $this->db->History()->Add(0, 'P', 'edit', 'footprint', array(
         "id" => $oldid,
         "name" => $this->db->Footprints()->GetNameById($oldid)
       ), array(
@@ -33,7 +33,7 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       // Update history
-      $pdb->History()->Add(0, 'P', 'edit', 'supplier', array(
+      $this->db->History()->Add(0, 'P', 'edit', 'supplier', array(
         "id" => $oldid,
         "name" => $this->db->Suppliers()->GetNameById($oldid)
       ), array(
@@ -49,13 +49,15 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       // Update history
-      $pdb->History()->Add(0, 'P', 'edit', 'storeLocation', array(
-        "id" => $oldid,
-        "name" => $this->db->StoreLocations()->GetNameById($oldid)
-      ), array(
-        "id" => $newid,
-        "name" => $this->db->StoreLocations()->GetNameById($newid)
-      ) );
+      if( $this->db->affected_rows > 0 ) {
+        $this->db->History()->Add(0, 'P', 'edit', 'storeLocation', array(
+          "id" => $oldid,
+          "name" => $this->db->StoreLocations()->GetNameById($oldid)
+        ), array(
+          "id" => $newid,
+          "name" => $this->db->StoreLocations()->GetNameById($newid)
+        ) );
+      }
 
       return $res;
     }
@@ -89,7 +91,7 @@ namespace ShelfDB {
         return false; // Database my be inconsistent because footrprints have already been replaced
 
       // Update history
-      $pdb->History()->Add(0, 'P', 'delete', 'object', $fp, '');  
+      $this->db->History()->Add($id, 'P', 'delete', 'object', $fp, '');
 
       // Now delete the image
       if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){

@@ -77,7 +77,7 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       // Update history
-      $pdb->History()->Add(0, 'SL', 'delete', 'object', $fp, '' );
+      $this->db->History()->Add($id, 'SL', 'delete', 'object', $fp, '' );
 
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
@@ -127,7 +127,7 @@ namespace ShelfDB {
         $newid = $this->db->sql->insert_id;
 
         // Update history
-        $pdb->History()->Add(0, 'SL', 'create', 'object', '', array(
+        $this->db->History()->Add($newid, 'SL', 'create', 'object', '', array(
           "id" => $newid,
           "name" => $name
         ) );
@@ -154,7 +154,7 @@ namespace ShelfDB {
 
       if( $res ) {
         // Update history
-        $pdb->History()->Add(0, 'SL', 'edit', 'name', $oldname, $name);
+        $this->db->History()->Add($id, 'SL', 'edit', 'name', $oldname, $name);
       }
 
       return $res;
