@@ -294,13 +294,19 @@
           <?php
             if( $pdb->Users()->IsLoggedIn() ) {
               $loginClasses = "ui-screen-hidden";
+              if( !$pdb->Users()->IsAdmin() ) {
+                $adminClasses = "ui-screen-hidden";
+              }
             } else {
               $logoutClasses = "ui-screen-hidden";
+              $adminClasses = "ui-screen-hidden";
             }
           ?>
           <li data-group="loggedIn" class="<?php echo $logoutClasses; ?>" data-icon="false"><a id="userLogout" href="#"><i class="fa fa-sign-out"></i> <span uilang="logout"></span></a></li>
-          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>" ><a id="userLogin" href="#"><i class="fa fa-sign-in"></i> <span uilang="login"></span></a></li>
-          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>" ><a href="<?php echo $pdb->RelRoot(); ?>"><i class="fa fa-user"></i> <span uilang="register"></span></a></li>
+          <li data-group="loggedIn" class="<?php echo $adminClasses; ?>"><a id="userOpenAdministration" href="#"><i class="fa fa-cogs"></i> <span uilang="administration"></span></a></li>
+          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>"><a id="userLogin" href="#"><i class="fa fa-sign-in"></i> <span uilang="login"></span></a></li>
+          <li data-group="loggedOut" class="<?php echo $loginClasses; ?>"><a href="<?php echo $pdb->RelRoot(); ?>"><i class="fa fa-user"></i> <span uilang="register"></span></a></li>
+
         </ul>
       </div>
         <div id=categories data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-collapsed="false">
