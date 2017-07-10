@@ -1,11 +1,21 @@
 Shelf-DB
---------
+========
 
-A web application based on php/MySQL/Javascript to keep track of things.
+WIP Notice
+----------
+
+This project is still in an early development stage and not yet ready for production
+environments. Because of that there are no setup instructions present yet.
+
+Introduction
+------------
+
+Shelf-DB is a web application based on php/MySQL/Javascript to keep track of things.
 The design is mobile-first.
 
-Formally based on Part-DB https://github.com/sandboxgangster/Part-DB but now completely rewritten from scratch,
-offering new features and a different UI approach.
+It is formally based on Part-DB https://github.com/sandboxgangster/Part-DB but
+now completely rewritten from scratch, offering new features and a different
+UI approach.
 
 Used libraries
 --------------
@@ -19,6 +29,8 @@ Used libraries
  - jquery-mobile-font-awesome https://github.com/dotcastle/jquery-mobile-font-awesome - GNU GPLv3
  - jQueryFileUpload https://github.com/Abban/jQueryFileUpload - MIT License
  - simpledialog2 jquery mobile plugin https://github.com/jtsage/jquery-mobile-simpledialog - Creative Commons 3
+
+ Special thanks to all the people that contributed to these projects.
 
 TODOs
 -----
