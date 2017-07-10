@@ -312,7 +312,27 @@ this.get = function(key)
 }
 
  /**
-  * Cerco tutti gli elementi che hanno una certa classe
+  * Searches for the LANG_ATTRIBUTE_NAME attribute and uses it for
+  * text replacement. There are several valid forms. Suppose the attribute name
+  * is 'uilang':
+  *
+  * 1. uilang="langString" - This replaces the elements inner text with the
+  *    string associated with "langString" in the localization table
+  * 2. uilang="otherAttr:langString" - This sets the element's attribute
+  *    "otherAttr" to the
+  *    string associated with "langString" in the localization table
+  * 3. uilang=":langFuntion"  - This sets the element's text to the return value
+  *    of the function 'langFunction' from the localization table. The inner
+  *    text of the element is passed as argument to that function.
+  * 4. uilang="otherAttr:langFunction" - Similar to the above but now the
+  *    element's attribute 'otherAttr' is set to the return value of the
+  *    function 'langFunction'
+  * 5. uilang="otherAttr:langFunction:yetAnotherAttr" - This sets the element's
+  *    attribute "otherAttr" to the return value of the function 'langFunction'
+  *    from the localization table where the text within the element's attribute
+  *    'yetAnotherAttr' is passed as argument to that function.
+  * 6. uilang="spec1;spec2;..." is semi-colons to pass multiple of the
+  *    specifications from above to the localization engine.
   */
 this.searchAndReplace = function()
 {
@@ -347,7 +367,7 @@ this.searchAndReplace = function()
       // If the string is of function type, try to apply the inner Html as argument
       if( typeof txt === 'function' ) {
         if( strArg ) {
-          txt = txt(strArg);
+          txt = txt(item.attr(strArg));
         } else {
           txt = txt(item.text());
         }
