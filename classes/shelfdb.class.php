@@ -16,7 +16,7 @@ require_once(__DIR__.'/shelfdb.storelocation.class.php');
  */
 class ShelfDatabase
 {
-  private const VERSION = array("major" => 1, "minor" => 1);
+  private const VERSION = array("major" => 1, "minor" => 2);
 
   /**
    * @var mysqli $sql MySQL object
