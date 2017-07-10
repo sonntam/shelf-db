@@ -245,7 +245,7 @@ DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` int(11) NOT NULL UNIQUE,
   `name` tinytext NOT NULL,
-  `urlTemplate` text NULL DEFAULT NULL '' COMMENT 'This is the template url for the shop that can show items in the webbrowser by inserting the supplierpartnr'
+  `urlTemplate` text NULL DEFAULT NULL COMMENT 'This is the template url for the shop that can show items in the webbrowser by inserting the supplierpartnr'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
