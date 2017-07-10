@@ -204,7 +204,7 @@ namespace ShelfDB {
         $newid = $this->db->sql->insert_id;
 
         // Get parent
-        $parentName = $this->GetNameGetNameById($parentId);
+        $parentName = $this->GetNameById($parentId);
 
         // Add history
         $this->db->History()->Add($newid, 'C', 'create', 'object', '', array(
