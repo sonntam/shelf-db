@@ -124,6 +124,7 @@
 										$ctrl.detach();
 										$tree.tree('updateNode', node, data['newname'] );
 										$ctrl.prependTo($(node.element).find("span").first());
+										$tree.trigger('tree.init');
 
 										// Update main tree!
 										var $maintree = $('#categorytree');
