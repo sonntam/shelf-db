@@ -4,7 +4,7 @@ Shelf-DB
 WIP Notice
 ----------
 
-This project is still in an early development stage and *not yet ready for production environments*. Because of that there are no setup instructions present yet.
+This project is still in an early development stage and *not yet ready for production environments*. Because of that there are no setup instructions present yet. The code quality needs improvement, i.e. a more modular approach will be incorporated via code-refactoring in the near future.
 
 Introduction
 ------------
@@ -44,3 +44,4 @@ TODOs
  - add datasheets and images on detail page
  - allow adding of part from part table
  - show price information in part detail view including tooltip with timestamp of last update
+ - REST API
