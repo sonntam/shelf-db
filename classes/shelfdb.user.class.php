@@ -74,6 +74,29 @@ namespace ShelfDB {
       return $user;
     }
 
+    public function GetAllByGroupId($id) {
+      $query =
+        "SELECT u.id, u.name, u.email, u.isadmin FROM users_groups ug "
+        //."LEFT JOIN groups g ON g.id = ug.groupid "
+        ."LEFT JOIN users u ON u.id = ug.userid "
+        ."WHERE ug.groupid IN (".join(",",$id).")";
+
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        $data = $res->fetch_all(MYSQLI_ASSOC);
+        $res->free();
+
+        if( $data && !is_array($data[0]) ) {
+          $data = array($data);
+        }
+
+        return $data;
+      } else {
+        return null;
+      }
+    }
+
     public function GetLoggedInUserId() {
       return $_SESSION['userid'];
     }

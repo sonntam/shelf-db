@@ -106,12 +106,12 @@ namespace ShelfDB {
       }
     }
 
-    public function GetAllFromUserId(int $id) {
+    public function GetAllFromUserId($id) {
       $query =
         "SELECT g.id, g.name FROM users_groups ug "
         ."LEFT JOIN groups g ON g.id = ug.groupid "
         //."LEFT JOIN users u ON u.id = ug.userid "
-        ."WHERE ug.userid = $id";
+        ."WHERE ug.userid IN (".join(",",$id).")";
 
 
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
