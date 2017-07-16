@@ -12,6 +12,7 @@ namespace ShelfDB {
     }
 
     public function Add(int $itemId, $itemType, $action, $field, $oldValue, $newValue) {
+      // $itemType can be one of G, U, P, SU, F, SL, PIC
 
       $userId = $this->db->Users()->GetLoggedInUserId();
       if( !$userId ) $userId = 0; // No user is logged in

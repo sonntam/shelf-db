@@ -4,6 +4,7 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
 require_once(__DIR__.'/shelfdb.user.class.php');
+require_once(__DIR__.'/shelfdb.user.group.php');
 require_once(__DIR__.'/shelfdb.history.class.php');
 require_once(__DIR__.'/shelfdb.picture.class.php');
 require_once(__DIR__.'/shelfdb.supplier.class.php');
@@ -28,6 +29,10 @@ class ShelfDatabase
   private $footprints;
   private $storeLocations;
   private $pictures;
+  private $suppliers;
+  private $users;
+  private $history;
+  private $groups;
 
   private function sql(): mysqli
   {
@@ -45,6 +50,7 @@ class ShelfDatabase
     $this->suppliers        = new ShelfDB\Suppliers($this);
     $this->users            = new ShelfDB\Users($this);
     $this->history          = new ShelfDB\History($this);
+    $this->groups           = new ShelfDB\Groups($this);
   }
 
   public function Parts()           { return $this->parts; }
@@ -55,6 +61,7 @@ class ShelfDatabase
   public function Suppliers()       { return $this->suppliers; }
   public function Users()           { return $this->users; }
   public function History()         { return $this->history; }
+  public function Groups()          { return $this->groups; }
 
   /**
    * Get the singleton instance of ShelfDatabase
