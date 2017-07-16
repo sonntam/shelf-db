@@ -46,6 +46,8 @@ namespace ShelfDB {
         $newel = array($el);
         return $newel;
       }
+
+      return $el;
     }
 
     public function ExistsByName($name) {
