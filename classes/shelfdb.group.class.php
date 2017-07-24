@@ -35,6 +35,27 @@ namespace ShelfDB {
       }
     }
 
+    public function AddUserById(int $groupid, $userId) {
+      // TODO Block ambiguous requests
+      $existingUsers = $this->db->Users()->GetAllByGroupId($groupid);
+      $userId = array_diff($userId, $existingUsers);
+      $userId = array_unique($userId);
+      $values = "(".join(",$groupid),(", $userId).",$groupid)";
+
+      $query = "INSERT INTO users_groups (userid, groupid) VALUES $values;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        foreach($userId as $user) {
+          $this->History()->Add($groupid, 'G', 'adduser', 'userid', null, $user );
+        }
+        return true;
+      } else {
+        return false;
+      }
+
+    }
+
     public function GetById($id) {
 
       $query = "SELECT * FROM groups WHERE id = $id;";
