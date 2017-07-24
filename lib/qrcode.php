@@ -90,7 +90,7 @@ class QRCode {
         $qrDataList = array();
     }
 
-    function addDataImpl(&$qrData) {
+    function addDataImpl($qrData) {
         $this->qrDataList[] = $qrData;
     }
 
