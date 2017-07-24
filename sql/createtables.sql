@@ -154,7 +154,8 @@ CREATE TABLE IF NOT EXISTS `groups` (
 DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE IF NOT EXISTS `users_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY UNIQUE,
-  `userid` int(11) NOT NULL,
+  `objectId` int(11) NOT NULL,
+  `objectType` enum('U','G') NOT NULL COMMENT 'The type of object that is related to a group id. Can be either a user `U` or another group `G`',
   `groupid` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='The user and group relation table';
 

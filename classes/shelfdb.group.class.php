@@ -35,14 +35,41 @@ namespace ShelfDB {
       }
     }
 
+    public function AddGroupById(int $groupId, int $addedGroupId ) {
+      // Disallow cyclic dependancies
+      $srcDepGroups = $this->GetDependancyGroups( $addedGroupId );
+      $tgtDepGroups = $this->GetDependancyGroups( $groupId );
+
+      // Check if group to be added to is already somewhere in the dependancy path
+      if( in_array( $groupId, $srcDepGroups ) )
+        return false;
+
+      // Check if group to be addedd is already within the groups dependancy path
+      if( in_array( $addedGroupId, $tgtDepGroups ) )
+        return false;
+
+      // Add group to group's relations
+      $query = "INSERT INTO users_groups (objectId, objectType, groupid) VALUES ($addedGroupId, 'G', $groupId);";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        foreach($userId as $user) {
+          $this->History()->Add($groupid, 'G', 'addgroup', 'groupId', null, $addedGroupId );
+        }
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     public function AddUserById(int $groupid, $userId) {
       // TODO Block ambiguous requests
       $existingUsers = $this->db->Users()->GetAllByGroupId($groupid);
       $userId = array_diff($userId, $existingUsers);
       $userId = array_unique($userId);
-      $values = "(".join(",$groupid),(", $userId).",$groupid)";
+      $values = "(".join(",'U',$groupid),(", $userId).",'U',$groupid)";
 
-      $query = "INSERT INTO users_groups (userid, groupid) VALUES $values;";
+      $query = "INSERT INTO users_groups (objectId, objectType, groupid) VALUES $values;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       if( $res ) {
