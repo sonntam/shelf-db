@@ -28,6 +28,26 @@
 
 	pageHookClear();
 
+	function editPartField( fieldName, fieldData, success ) {
+		$.mobile.referencedLoading('show');
+		$.ajax({
+			url: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
+			data: {
+				id: <?php echo $data['partid']; ?>,
+				field: fieldName,
+				data: fieldData,
+				method: 'editDetail'
+			},
+			type: 'POST',
+			dataType: 'json'
+		}).done(function(data) {
+			if( data && data.success && success) {
+				success(data);
+			}
+			$.mobile.referencedLoading('hide');
+		});
+	}
+
 	function updateButtons() {
 		var total = $('[name=showTotal]');
 		var stock = $('[name=showStock]');
@@ -87,25 +107,32 @@
 					textPlaceholder: Lang.get('enterPartNumber'),
 					textDefault: $('[name=showPartNumber]').val(),
 					ok: function( newnumber ) {
-						$('[name=showPartNumber]').val(newnumber);
-						// Get url for part and update picture
-						//
-						$.mobile.referencedLoading('show');
-						$.ajax({
-							url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
-							type: 'POST',
-							dataType: 'json',
-							data: {
-								id: $('[name=showSupplier]').attr('supplierId'),
-								partNr: newnumber
+						// Apply new data in database
+						editPartField( 'supplierpartnr', newnumber,
+							function(data) {
+								if( data && data.success ) {
+									$('[name=showPartNumber]').val(newnumber);
+									// Get url for part and update picture
+									//
+									$.mobile.referencedLoading('show');
+									$.ajax({
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {
+											id: $('[name=showSupplier]').attr('supplierId'),
+											partNr: newnumber
+										}
+									}).done(function(data) {
+										// Update gui
+										if( data ) {
+											$('[name=showSupplier]').attr('url',data.urlTemplate);
+										}
+										$.mobile.referencedLoading('hide');
+									});
+								}
 							}
-						}).done(function(data) {
-							// Update gui
-							if( data ) {
-								$('[name=showSupplier]').attr('url',data.urlTemplate);
-							}
-							$.mobile.referencedLoading('hide');
-						});
+						);
 					}
 			});
 		});

@@ -15,7 +15,10 @@ $_REQUEST['id']"763"
 
   // Submitted data
   $data = array_replace_recursive(array(
-    'method' => 'none'
+    'method' => 'none',
+    'field' => '',
+    'data' => null,
+    'id' => null
   ), $_GET, $_POST );
 
   function jqGridTranslate($data) {
@@ -58,8 +61,21 @@ $_REQUEST['id']"763"
         }
       }
       break;
-    case 'edit':
-      # code...
+    case 'edit': // Edit command from table
+
+      break;
+
+    case 'editDetail':
+
+      if( $data['id'] ) {
+        $id = $data['id'];
+
+        switch( strtolower($data['field']) ) {
+            case 'supplierpartnr':
+              $response['success'] = $p->SetPartNumberById($id, $data['data']);
+              break;
+        }
+      }
       break;
 
     default:
