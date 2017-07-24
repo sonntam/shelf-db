@@ -1031,7 +1031,7 @@ class QRRSBlock {
 class QRNumber extends QRData {
 
     function __construct($data) {
-        QRData::QRData(QR_MODE_NUMBER, $data);
+        parent::__construct(QR_MODE_NUMBER, $data);
     }
 
     function write(&$buffer) {
@@ -1088,7 +1088,7 @@ class QRNumber extends QRData {
 class QRKanji extends QRData {
 
     function __construct($data) {
-        QRData::QRData(QR_MODE_KANJI, $data);
+        parent::__construct(QR_MODE_KANJI, $data);
     }
 
     function write(&$buffer) {
@@ -1133,7 +1133,7 @@ class QRKanji extends QRData {
 class QRAlphaNum extends QRData {
 
     function __construct($data) {
-        QRData::QRData(QR_MODE_ALPHA_NUM, $data);
+        parent::__construct(QR_MODE_ALPHA_NUM, $data);
     }
 
     function write(&$buffer) {
