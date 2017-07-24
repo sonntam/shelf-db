@@ -41,6 +41,7 @@ namespace ShelfDB {
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
 
       $data = $res->fetch_all(MYSQLI_ASSOC);
+      $res->free();
 
       $newData = array_map( function($el) {
         return $el['groupid'];
