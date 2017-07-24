@@ -25,6 +25,7 @@ Used libraries
  - [jquery-mobile-font-awesome](https://github.com/dotcastle/jquery-mobile-font-awesome) - GNU GPLv3
  - [jQueryFileUpload](https://github.com/Abban/jQueryFileUpload) - MIT License
  - [simpledialog2 jquery mobile plugin](https://github.com/jtsage/jquery-mobile-simpledialog) - Creative Commons 3
+ - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) - MIT License
 
  Special thanks to all the people that contributed to these projects.
 
