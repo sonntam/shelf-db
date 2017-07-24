@@ -12,6 +12,28 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    public function CreateQRCode( int $partId ) {
+      $qr = \QRCode::getMinimumQRCode("ShelfDB-PID:".$partId, QR_ERROR_CORRECT_LEVEL_Q);
+
+      $im = $qr->createImage(\ConfigFile\QRCode::$pixelWidth, \ConfigFile\QRCode::$qrMargin);
+      $data = "data:image/".strtolower(\ConfigFile\QRCode::$dataType).';base64,';
+
+      ob_start();
+      switch(strtolower(\ConfigFile\QRCode::$dataType)) {
+        case 'gif':
+          imagegif($im);
+          break;
+        case 'png':
+          imagepng($im);
+          break;
+      }
+      $data = $data.base64_encode(ob_get_clean());
+
+      @imagedestroy($im);
+
+      return $data;
+    }
+
     public function AllReplaceFootprintId( int $oldid, int $newid ) {
       $query = "UPDATE parts SET id_footprint = $newid WHERE id_footprint = $oldid;";
       $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
