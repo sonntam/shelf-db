@@ -12,8 +12,8 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
-    public function CreateQRCode( int $partId ) {
-      $qr = \QRCode::getMinimumQRCode("ShelfDB-PID:".$partId, QR_ERROR_CORRECT_LEVEL_Q);
+    public function CreateQRCode( $partId ) {
+      $qr = \QRCode::getMinimumQRCode($partId, QR_ERROR_CORRECT_LEVEL_Q);
 
       $im = $qr->createImage(\ConfigFile\QRCode::$pixelWidth, \ConfigFile\QRCode::$qrMargin);
       $data = "data:image/".strtolower(\ConfigFile\QRCode::$dataType).';base64,';
@@ -99,6 +99,61 @@ namespace ShelfDB {
         }
       }
       return $search;
+    }
+
+    private function GetDataColumnById(int $id, $column ) {
+      $query = "SELECT $column FROM parts WHERE id = $id;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        $data = $res->fetch_assoc();
+        $res->free();
+
+        return $data[$column];
+      }
+
+      return null;
+    }
+
+    private function SetDataColumnById(int $id, $column, $data) {
+      // Get current data
+      $oldData = $this->GetDataColumnById( $id, $column );
+
+      if( !$oldData ) return false;
+
+      $ecdata = $this->db->sql->real_escape_string($data);
+      $query = "UPDATE parts SET $column = '$ecdata' WHERE id = $id;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( $res ) {
+        // Add history
+        $this->db->History()->Add($id,'P','edit',$column, $oldData, $data);
+        return array('oldData' => $oldData);
+      }
+
+      return false;
+    }
+
+    public function SetPartNumberById( int $id, $newNumber ) {
+      return $this->SetDataColumnById( $id, "supplierpartnr", $newNumber );
+    }
+
+    public function SetSupplierById( int $id, $supplierId ) {
+
+      if( !$supplierId ) return false;
+
+      // Check if supplier EXISTS
+      $newSupplier = $this->db->Suppliers()->GetById($supplierId);
+      if( !$newSupplier ) return false;
+
+      if( $oldData = $this->SetDataColumnById( $id, "id_supplier", $supplierId ) ) {
+        $oldSupplier = $this->db->Suppliers()->GetById($oldData['oldData']);
+        $this->db->History()->Add($id, 'P', 'edit', 'supplier', $oldSupplier['name'], $newSupplier['name'] );
+
+        return true;
+      } else {
+        return false;
+      }
     }
 
     public function DeleteById(int $id) {
