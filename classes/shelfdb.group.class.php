@@ -35,6 +35,29 @@ namespace ShelfDB {
       }
     }
 
+    public function GetDependancyGroups( int $groupId ) {
+      // Get all groups that the given group is within directly or indirectly
+      $query = "SELECT groupid FROM users_group WHERE objectId = $groupId;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      $data = $res->fetch_all(MYSQLI_ASSOC);
+
+      $newData = array_map( function($el) {
+        return $el['groupid'];
+      }, $data);
+
+      foreach( $data as $group ) {
+        $nextGroupId = $group['groupid'];
+        $nextData = $this->GetDependandyGroups( $nextGroupId );
+
+        // Assemble
+        array_push($newData, $nextData );
+      }
+
+      return $newData;
+
+    }
+
     public function AddGroupById(int $groupId, int $addedGroupId ) {
       // Disallow cyclic dependancies
       $srcDepGroups = $this->GetDependancyGroups( $addedGroupId );
