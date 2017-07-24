@@ -12,6 +12,8 @@ require_once(__DIR__.'/shelfdb.category.class.php');
 require_once(__DIR__.'/shelfdb.footprint.class.php');
 require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
+require_once(__DIR__.'/../lib/qrcode.php');
+
 /**
  * ShelfDB-Database singleton class
  */

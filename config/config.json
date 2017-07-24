@@ -15,5 +15,10 @@
     },
     "filesystem": {
       "tempFileMaxAgeSecs": 30
+    },
+    "qrcode": {
+      "pixelWidth": 8,
+      "qrMargin": 4,
+      "dataType": "png"
     }
 }

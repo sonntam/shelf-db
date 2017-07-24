@@ -52,5 +52,14 @@ namespace ConfigFile {
 		static public $tempFileMaxAgeSecs = 30;
 	}
 
+	/**
+	 * QR Codes
+	 */
+	class QRCode {
+		static public $pixelWidth = 8;
+		static public $qrMargin   = 4;
+		static public $dataType   = 'png';
+	}
+
 }
 ?>
