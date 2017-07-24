@@ -4,7 +4,7 @@ require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
 require_once(__DIR__.'/shelfdb.user.class.php');
-require_once(__DIR__.'/shelfdb.user.group.php');
+require_once(__DIR__.'/shelfdb.group.class.php');
 require_once(__DIR__.'/shelfdb.history.class.php');
 require_once(__DIR__.'/shelfdb.picture.class.php');
 require_once(__DIR__.'/shelfdb.supplier.class.php');
