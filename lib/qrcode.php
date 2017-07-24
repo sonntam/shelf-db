@@ -1190,7 +1190,7 @@ class QRAlphaNum extends QRData {
 class QR8BitByte extends QRData {
 
     function __construct($data) {
-        QRData::QRData(QR_MODE_8BIT_BYTE, $data);
+        parent::__construct(QR_MODE_8BIT_BYTE, $data);
     }
 
     function write(&$buffer) {
