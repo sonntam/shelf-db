@@ -4,11 +4,14 @@
 	// http://www.trirand.com/jqgridwiki/doku.php?id=wiki%3acolmodel_options
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
-	$_GET 	+= array("partid" => null);
+	$data = array_replace_recursive(
+		array(
+			'partid' => null
+		), $_GET, $_POST );
 
-  if( $_GET["partid"] != null )
+  if( $data["partid"] != null )
 	{
-    $part = $pdb->Parts()->GetDetailsById($_GET["partid"]);
+    $part = $pdb->Parts()->GetDetailsById($data["partid"]);
 		$name = $part['name'];
 		$partFootprintImageFile = joinPaths( $pdb->RelRoot(), 'img/footprint', $part['f_pict_fname']);
 		$partSupplierImageFile = joinPaths( $pdb->RelRoot(), 'img/supplier', $part['su_pict_fname']);
@@ -379,6 +382,8 @@
 					<div class="partimagewrapper">
 						<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">
             	<img class="partimage" data-other-src="<?php echo $part['mainPicFile']; ?>" src="<?php echo $part['mainPicFile']; ?>">
+							<br>
+							<img data-other-src="<?php echo $qrImgData = $pdb->Parts()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
 						</a>
 					</div>
 					<!-- Popup image viewer -->
