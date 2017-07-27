@@ -138,6 +138,74 @@ namespace ShelfDB {
       return $this->SetDataColumnById( $id, "supplierpartnr", $newNumber );
     }
 
+    public function SetNameById( int $id, $newName ) {
+      if( trim($newName) == "" )
+        return false;
+
+      return $this->SetDataColumnById( $id, "name", $newName );
+    }
+
+    public function SetCommentById( int $id, $newComment ) {
+      return $this->SetDataColumnById( $id, 'comment', $newComment );
+    }
+
+    public function SetStorageLocationById( int $id, $storelocId ) {
+
+      if( !$storelocId ) return false;
+
+      // Check if supplier EXISTS
+      $newStoreLocation = $this->db->StoreLocations()->GetById($storelocId);
+      if( !$newStoreLocation ) return false;
+
+      if( $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId ) ) {
+        $oldStoreLocation = $this->db->StoreLocations()->GetById($oldData['oldData']);
+        $this->db->History()->Add($id, 'P', 'edit', 'storelocation',
+          $oldStoreLocation['name'], $newStoreLocation['name'] );
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function SetCategoryById( int $id, $categoryId ) {
+
+      if( !$categoryId ) return false;
+
+      // Check if supplier EXISTS
+      $newCategory = $this->db->Categories()->GetById($categoryId);
+      if( !$newCategory ) return false;
+
+      if( $oldData = $this->SetDataColumnById( $id, "id_category", $footprintId ) ) {
+        $oldCategory = $this->db->Categories()->GetById($oldData['oldData']);
+        $this->db->History()->Add($id, 'P', 'edit', 'category',
+          $oldCategory['name'], $newCategory['name'] );
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function SetFootprintById( int $id, $footprintId ) {
+
+      if( !$footprintId ) return false;
+
+      // Check if supplier EXISTS
+      $newFootprint = $this->db->Footprints()->GetById($footprintId);
+      if( !$newFootprint ) return false;
+
+      if( $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId ) ) {
+        $oldFootprint = $this->db->Footprints()->GetById($oldData['oldData']);
+        $this->db->History()->Add($id, 'P', 'edit', 'footprint',
+          $oldFootprint['name'], $newFootprint['name'] );
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     public function SetSupplierById( int $id, $supplierId ) {
 
       if( !$supplierId ) return false;
