@@ -55,6 +55,7 @@
     <link href="<?php echo $pdb->RelRoot(); ?>styles/shelfdb.css" rel="stylesheet"/>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/js.cookie.js"></script>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/custom.ext.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/shelfdb.class.js.php"></script>
 
     <!-- Localization -->
     <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=deDE"></script>
