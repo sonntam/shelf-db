@@ -167,6 +167,8 @@ function Lang(language, replaceText)
       storageLocationShowNonEmpty: 'Belegte Fächer',
       storageLocationShowEmpty: 'Leerfächer',
       noFootprintShow: 'Teile ohne Bauform',
+      noStorageLocationShow: 'Teile ohne Lagerort',
+      noSupplierShow: 'Teile ohne Lieferant',
       icLogosShow: 'IC Hersteller',
       orderItemsShow: 'Zu bestellende Teile',
       statisticsShow: 'Statistiken',

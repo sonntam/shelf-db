@@ -338,6 +338,8 @@
           <h6 uilang="tools"></h6>
           <ul data-role="listview">
             <li><a href="#"><i class="fa fa-th"></i> <span uilang="noFootprintShow"></span></a></li>
+            <li><a href="#"><i class="fa fa-archive"></i> <span uilang="noStorageLocationShow"></span></a></li>
+            <li><a href="#"><i class="fa fa-truck"></i> <span uilang="noSupplierShow"></span></a></li>
             <li><a href="#"><i class="fa fa-microchip"></i> <span uilang="icLogosShow"></span></a></li>
             <li><a href="#"><i class="fa fa-line-chart"></i> <span uilang="statisticsShow"></span></a></li>
             <li><a href="#"><i class="fa fa-shopping-cart"></i> <span uilang="orderItemsShow"></span></a></li>
