@@ -70,10 +70,24 @@ $_REQUEST['id']"763"
       if( $data['id'] ) {
         $id = $data['id'];
 
-        switch( strtolower($data['field']) ) {
-            case 'supplierpartnr':
-              $response['success'] = $p->SetPartNumberById($id, $data['data']);
-              break;
+        // Call table
+        $methodTable = array(
+          'supplierpartnr' => 'SetPartNumberById',
+          'supplierid' => 'SetSupplierById',
+          'name' => 'SetNameById',
+          'category' => 'SetCategoryById',
+          'footprint' => 'SetFootprintById',
+          'storelocation' => 'SetStorageLocationById',
+          'comment' => 'SetCommentById',
+        );
+
+        $field = strtolower($data['field']);
+
+        // Check if method exists then call and return result
+        if( array_key_exists( $field, $methodTable )
+          && is_callable( array($p, $methodTable[$field] ) ) ) {
+          $method = $methodTable[$field];
+          $response['success'] = $p->$method( $id, $data['data'] );
         }
       }
       break;

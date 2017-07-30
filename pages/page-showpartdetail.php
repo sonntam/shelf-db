@@ -114,21 +114,15 @@
 									$('[name=showPartNumber]').val(newnumber);
 									// Get url for part and update picture
 									//
-									$.mobile.referencedLoading('show');
-									$.ajax({
-										url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
-										type: 'POST',
-										dataType: 'json',
-										data: {
-											id: $('[name=showSupplier]').attr('supplierId'),
-											partNr: newnumber
+									$.shelfdb.getSupplierByIdAsync({
+										id: $('[name=showSupplier]').attr('supplierId'),
+										partNr: newnumber,
+										done: function(data) {
+											// Update gui
+											if( data ) {
+												$('[name=showSupplier]').attr('url',data.urlTemplate);
+											}
 										}
-									}).done(function(data) {
-										// Update gui
-										if( data ) {
-											$('[name=showSupplier]').attr('url',data.urlTemplate);
-										}
-										$.mobile.referencedLoading('hide');
 									});
 								}
 							}
@@ -143,9 +137,15 @@
 		    headline: Lang.get('editPartChangeName'),
 		    textPlaceholder: Lang.get('enterName'),
 		    textDefault: $('[name=showName]').text(),
-		    ok: function( newname ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showName]').text(newname);
+		    ok: function( newName ) {
+					// Apply new data in database
+					editPartField( 'name', newName,
+						function(data) {
+							if( data && data.success ) {
+								$('[name=showName]').text(newName);
+							}
+						}
+					);
 				}
 			});
 		});
