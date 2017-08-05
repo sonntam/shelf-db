@@ -322,7 +322,7 @@
 			}
 	</script>
 
-  <div data-role="header">
+  <div data-role="header" data-position="fixed">
     <h1>Kategorie <?php echo $catname; ?></a></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>

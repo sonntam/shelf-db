@@ -392,7 +392,7 @@
 
 	</script>
 
-  <div data-role="header">
+  <div data-role="header" data-position="fixed">
     <h1 uilang="partTitle"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
   </div>
