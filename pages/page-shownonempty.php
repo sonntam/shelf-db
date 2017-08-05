@@ -68,7 +68,41 @@
 				$('[name=storelocationList]').listview('refresh');
 			}
 
-      $('[name=storelocationList]').on('click','[name=deleteStoreLocation]', function(evt) {
+			$('[name=newStoreLocation]').click( function(evt) {
+				openExternalPopup({
+					url: '/pages/popup-editstorelocation.php?method=add',
+					customEventName: "positiveResponse",
+					customEventHandler: function(evt, data) {
+						var action = data.buttonresult;
+						var newid  = data.id;
+
+						switch( action ) {
+							case 'cancel':
+								break;
+							case 'ok':
+								// Reload item
+								$.mobile.referencedLoading('show');
+
+								$.ajax({
+									url: '/lib/json.storelocations.php?id='+newid,
+									cache: false,
+									dataType: 'json',
+									success: function(data) {
+										addNewItem(data);
+										$.mobile.referencedLoading('hide');
+									},
+									error: function() {
+										$.mobile.referencedLoading('hide');
+									}
+								});
+								break;
+						}
+					},
+					forceReload: true
+				});
+			});
+
+			$('[name=storelocationList]').on('click','[name=deleteStoreLocation]', function(evt) {
         var id = $(evt.currentTarget).attr('value');
 
         if( id )
