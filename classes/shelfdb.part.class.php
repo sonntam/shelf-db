@@ -290,6 +290,9 @@ namespace ShelfDB {
       // Update history
       $this->db->History()->Add($id, 'P', 'delete', 'object', $fp, '');
 
+      // Clear category cache as the part count changed
+      $this->db->Categories()->DefileCache();
+
       // Now delete the image
       if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){
         $picIds = explode(';',$fp['pict_id_arr']);

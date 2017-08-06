@@ -5,11 +5,61 @@ namespace ShelfDB {
   class Categories {
 
     private $db = null;
+    private $data = null;
 
     /** Constructor */
     function __construct($dbobj)
     {
       $this->db = $dbobj;
+    }
+
+    private function GetData() {
+
+      // 1. Check if it is in memory
+      if( $this->data )
+        return $this->data;
+
+      // 2. Get from cache
+      if( $this->db->GetCache()->isCached('categories') ) {
+        $this->data = $this->db->GetCache()->getCached('categories');
+        return $this->data;
+      }
+
+      // 3. Read from database
+      $query = "SELECT c.id, c.parentnode as parent, c.name, COUNT(p.id) as partcount FROM categories c LEFT JOIN parts p ON p.id_category = c.id GROUP BY c.id ORDER BY c.name ;";
+      //$query = "SELECT id, parentnode as parent, name FROM categories ORDER BY name ASC;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( !$res )
+        return null;
+
+      $data = $res->fetch_all(MYSQLI_ASSOC);
+      $res->free();
+
+      $this->data = new \BlueM\Tree($data);
+
+      // Propagate part counts to parent categories
+      $partCountSum = function( $node ) use ( &$partCountSum ) {
+
+        $children = $node->getChildren();
+
+        foreach( $children as $child ) {
+          $node->set('partcount', $node->get('partcount') + $partCountSum($child));
+        }
+        return $node->get('partcount');
+      };
+
+      $children = $this->data->getRootNodes();
+      foreach( $children as $child ) {
+          $partCountSum($child);
+      }
+
+      //$partCountSum($this->data);
+
+      // Cache this data
+      $this->db->GetCache()->storeCached("categories", $this->data);
+
+      return $this->data;
     }
 
     public function AllReplaceParentId( int $oldid, int $newid ) {
@@ -25,97 +75,71 @@ namespace ShelfDB {
         "parentname" => $this->GetNameById($newid)
       ) );
 
+      if( $res )
+        $this->DefileCache();
+
       return $res;
     }
 
     public function GetSubcategoryIdsFromId( int $rootcatid, $includeroot = false ) {
 
-      if( $includeroot ) {
-        $catids = array($rootcatid);
-      } else {
-        $catids = array();
-      }
+      $descendants =  $this->GetData()->getNodeById($rootcatid)->getDescendants($includeroot);
 
-      $query = "SELECT id FROM categories WHERE parentnode = $rootcatid ORDER BY name ASC";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $descendants = array_map(
+        function($x) {
+          return $x->get('id');
+        }, $descendants );
 
-      $data = $res->fetch_all(MYSQLI_ASSOC);
-      $res->free();
-
-      $data = array_map( function($el) {
-        return (int)($el['id']);
-      }, $data);
-
-      $catids = array_merge($catids, $data);
-
-      foreach( $data as $catid ) {
-        $subcats = $this->GetSubcategoryIdsFromId( $catid );
-        $catids = array_merge($catids,$subcats);
-      }
-
-      return $catids;
+      return $descendants;
     }
 
     public function GetParentFromId( int $catid = 0 ) {
-      $query = "SELECT id, name FROM categories WHERE id = (SELECT parentnode FROM categories WHERE id = $catid)";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $node = $this->GetData()->getNodeById($catid);
 
-      $parent = $res->fetch_assoc();
-      $res->free();
+      if( !$node ) return null;
 
-      if( $parent === null )
-      {
-        $parent['id'] = 0;
-        $parent['name'] = "root";
+      $parent = $node->getParent();
+
+      if( $parent ) {
+        return $parent->toArray();
+      } else {
+        return array( "id" => 0, "name" => "root" );
       }
+    }
 
-      return $parent;
+    public function GetAncestorsFromId( int $catid, $includeself = false ) {
+      if( $catid <= 0 )
+        return null;
+
+      $node = $this->GetData()->getNodeById($catid);
+
+      if( !$node ) return null;
+
+      $ancestors = $node->getAncestors($includeself);
+
+      return array_filter( array_map(
+        function($x) {
+          return $x->toArray();
+        }, $ancestors ),
+        function($x) {
+          return $x['id'] > 0;
+        });
     }
 
     public function GetAsArray( int $baseid = 0, bool $withparent = false ) {
 
-      // Get parent item
-      if( $withparent && $baseid != 0 )
-      {
-          $query = "SELECT c.id, c.name, COUNT(p.id) as partcount FROM categories c LEFT JOIN parts p ON p.id_category = c.id WHERE c.id = $baseid GROUP BY c.id";
+      $array = ($withparent ? array($this->GetData()->getNodeById($baseid)->toArray()) : array() );
 
-          $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $nodes = $this->GetData()->getNodeById($baseid)->getChildren();
 
-          $parent = $res->fetch_assoc();
-          $res->free();
-
-          $parent['id'] = intval($parent['id']);
-          $parent['partcount']  = intval($parent['partcount']);
+      foreach($nodes as $node) {
+        $el = $node->toArray();
+        $el['children'] = $this->GetAsArray($el['id']);
+        $array[] = $el;
       }
 
-      // Get all subitems
-      $tree = $this->GetDirectChildrenFromId($baseid);
-
-      if( $withparent && $baseid != 0 )
-      {
-        // Append
-        $newtree[0] = $parent;
-        $newtree[0]['children'] = $tree;
-        $tree = $newtree;
-      }
-
-      // Build tree recursively
-      foreach( $tree as &$node )
-      {
-          $node['id'] = intval($node['id']);
-          $node['partcount']  = intval($node['partcount']);
-
-          $children = $this->GetAsArray( (int)($node['id']), false );
-          if( $children ) {
-            $node['children'] = $children;
-            for( $i = 0; $i < count($children); $i++ ) {
-              $node['partcount'] += intval($children[$i]['partcount']);
-            }
-          }
-      }
-
-      return $tree;
+      return $array;
     }
 
     public function GetById( int $id ) {
@@ -158,6 +182,7 @@ namespace ShelfDB {
       if( $res === true ) {
         // Everything OK
         $this->db->History()->Add($id, 'C', 'edit', 'name', $oldname, $name );
+        $this->DefileCache();
 
         return true;
       } else {
@@ -178,7 +203,9 @@ namespace ShelfDB {
         // Delete siblings
         $siblings = $this->GetSubcategoryIdsFromId( $id, false );
         foreach( $siblings as $sibling ){
-          $this->DeleteById( $sibling, false );
+          if( !$this->DeleteById( $sibling, false ) ) {
+            return null;
+          }
         }
       }
 
@@ -189,6 +216,7 @@ namespace ShelfDB {
       if( $res ) {
         $cat = $this->GetById($id);
         $this->db->History()->Add($id, 'C', 'delete', 'object', $cat, '');
+        $this->DefileCache();
       }
 
       return $res;
@@ -214,6 +242,8 @@ namespace ShelfDB {
           "parentname" => $parentName
         ));
 
+        $this->DefileCache();
+
         return $newid;
 
       } else {
@@ -221,6 +251,10 @@ namespace ShelfDB {
         return false;
       }
 
+    }
+
+    public function DefileCache() {
+      $this->db->GetCache()->deleteCached("categories");
     }
 
     public function MoveToParentById( int $id, int $newparentid ) {
@@ -247,6 +281,8 @@ namespace ShelfDB {
           "parentname" => $newParentName
         ));
 
+        $this->DefileCache();
+
         return true;
       } else {
         // Error occured
@@ -257,15 +293,17 @@ namespace ShelfDB {
     }
 
     public function GetDirectChildrenFromId( int $catid = 0 ) {
-      // SELECT c.*, COUNT(p.id) FROM categories c LEFT JOIN parts p ON p.id_category = c.id WHERE c.id = 2 GROUP BY c.id
-      $query = "SELECT c.id, c.name, COUNT(p.id) as partcount FROM categories c LEFT JOIN parts p ON p.id_category = c.id WHERE c.parentnode = $catid GROUP BY c.id ORDER BY c.name ASC";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $node = $this->GetData()->getNodeById($catid);
 
-      $children = $res->fetch_all(MYSQLI_ASSOC);
-      $res->free();
+      if( !$node ) return null;
 
-      return $children;
+      $children = $node->getChildren();
+
+      return array_map(
+        function($x) {
+          return $x->toArray();
+        }, $children );
     }
   }
 } // END NAMESPACE
