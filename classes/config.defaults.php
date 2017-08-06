@@ -10,7 +10,7 @@ namespace ConfigFile {
 	 */
 	class Config {
 		/** @var string Version number of this configuration file */
-		static $version = "1.0";
+		static $version = "1.2";
 	}
 
 	/**
@@ -49,13 +49,14 @@ namespace ConfigFile {
 	 * Filesystem relevant configuration settings
 	 */
 	class FileSystem {
-		static public $tempFileMaxAgeSecs = 30;
+		static public $tempFileMaxAgeSecs = 3600;
 	}
 
 	/**
 	 * QR Codes
 	 */
 	class QRCode {
+		static public $enable     = true;
 		static public $pixelWidth = 8;
 		static public $qrMargin   = 4;
 		static public $dataType   = 'png';

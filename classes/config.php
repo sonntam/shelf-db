@@ -47,7 +47,7 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 		/**
 		 * @var string VERSION Version info
 		 */
-		public const VERSION = "1.0";
+		public const VERSION = "1.2";
 
 		/**
 		 * @var string $filename Path and filename to JSON config file
@@ -93,7 +93,7 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 			if( !isset($filename) || $filename == "" )
 			{
 				Log::Warning("Using default \"config.json\" configuration file.");
-				$filename = "config.json";
+				$filename = dirname(__DIR__)."/config/config.json";
 			}
 
 			if( !file_exists($filename) )
@@ -111,17 +111,8 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 			$version = get($cfg['config']['version'], null);
 			if( $version === null ) {
 				// Invalid
-				Log::Error("Configuration file $filename is mismatching the version of this software. Using defaults only.");
+				Log::Error("Configuration file $filename is invalíd. Using defaults only.");
 				return true;
-			} else {
-				// Check if versions differ
-				if( $version != ConfigFile::VERSION )
-				{
-					Log::Warning("Configuration file $filename version is $version which "
-						." differs from this software version ".ConfigFile::VERSION.". "
-					 	."Not all configuration properties may be set correctly or are set "
-						."to default values - check the documentation!");
-				}
 			}
 
 			// Set all fields
@@ -138,6 +129,22 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 							Log::Warning("Setting $key\\$name does not exist in this software. Ignoring...");
 						}
 				}
+			}
+
+			// Check if versions differ
+			if( $version != ConfigFile::VERSION )
+			{
+				Log::Warning("Configuration file $filename version is $version which "
+					." differs from this software version ".ConfigFile::VERSION.". "
+					."Not all configuration properties may be set correctly or are set "
+					."to default values - check the documentation!");
+				Log::Warning("Extending the original configuration file with the default new settings.");
+
+				// Set current version
+				ConfigFile\Config::$version = ConfigFile::VERSION;
+
+				// Overwrite
+				$this->SaveToNewFile($this->filename);
 			}
 
 			return true;
@@ -165,20 +172,20 @@ use PMA\libraries\properties\options\items\BoolPropertyItem;
 			$cfg = [];
 			foreach ($nsc as $key => $sectionpath) {
 				// The section name itself
-				$section = strtolower( endn(explode("\\",$sectionpath)) );
+				$section = lcfirst( endn(explode("\\",$sectionpath)) );
 				$class = new ReflectionClass($sectionpath);
 				$props = $class->getStaticProperties();
 
 				// Formatted configurations fit for JSON export
 				$props_f = $props;
-				foreach ($props as $propname => $propvalue) {
+				/*foreach ($props as $propname => $propvalue) {
 					$propname_l = strtolower($propname);
 					if( $propname != $propname_l )
 					{
 						$props_f[$propname_l] = $propvalue;
 						unset($props_f[$propname]);
 					}
-				}
+				}*/
 
 				$cfg[$section] = $props_f;
 			}
