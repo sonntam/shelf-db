@@ -6,28 +6,33 @@
 
   include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
-  $_GET += array("catid" => 0);
-  $_GET += array("partid" => null);
-  $_GET += array("rows" => 50);
-  $_GET += array("page" => 1);
-  $_GET += array("sidx" => "name");      // name of sorting column index
-  $_GET += array("sord" => "asc");       // "asc" or "desc"
-  $_GET += array("_search" => false);    // If true this is a search request
-  $_GET += array("searchField" => null); // Name of search field
-  $_GET += array("searchString" => null);// Value of search field
-  $_GET += array("searchOper" => null);  // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
-  $_GET += array("filters" => null);     // Filters
-  $_GET += array("globalSearchString" => "");
+  $defaults = array(
+    "catid"              => 0,
+    "partid"             => null,
+    "rows"               => 50,
+    "page"               => 1,
+    "sidx"               => "name",    // name of sorting column index
+    "sord"               => "asc",     // "asc" or "desc"
+    "_search"            => false,     // If true this is a search request
+    "searchField"        => null,      // Name of search field
+    "searchString"       => null,      // Value of search field
+    "searchOper"         => null,      // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
+    "filters"            => null,      // Filters
+    "globalSearchString" => "",
+    "getDetailed"        => false
+  );
+
+  $options = array_replace_recursive( $defaults, $_GET, $_POST );
 
   // Get category ID
-  $catid      = $_GET["catid"];
-  $partid     = $_GET["partid"];
-  $search     = trim($_GET["globalSearchString"]);
+  $catid      = $options["catid"];
+  $partid     = $options["partid"];
+  $search     = trim($options["globalSearchString"]);
 
   if( $partid === null ) { // Get list of all parts of category
 
-    $limit      = $_GET["rows"];
-    $page       = $_GET["page"];
+    $limit      = $options["rows"];
+    $page       = $options["page"];
 
     // http://www.trirand.com/blog/jqgrid/jqgrid.html
     $numparts = $pdb->Parts()->GetCountByCategoryId($catid, $search, true);
@@ -36,7 +41,7 @@
 
     $offset   = $limit*($page - 1);
 
-    $parts = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $_GET["sidx"], $_GET["sord"], true, $search);
+    $parts = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], true, $search);
 
     // Copy
     $newparts = array();
@@ -62,9 +67,12 @@
     echo $json;
 
   } else {  // Single part information
-    $parts = array( $pdb->Parts()->GetById($partid) );
+    if( $options["getDetailed"] )
+      $parts = array( $pdb->Parts()->GetDetailsById($partid) );
+    else
+      $parts = array( $pdb->Parts()->GetById($partid) );
 
-    $json = json_encode($parts, JSON_PRETTY_PRINT);
+    $json = json_encode($parts[0], JSON_PRETTY_PRINT);
 
     // Clear buffer and print JSON
     ob_clean();
