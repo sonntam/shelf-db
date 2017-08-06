@@ -71,5 +71,13 @@ namespace ConfigFile {
 		static public $decimal = ',';
 		static public $thousandsDelimiter = '.';
 	}
+
+	/**
+	 * Cache settings
+	 */
+	 class Cache {
+		 static public $folder = __DIR__.'/../cache';
+		 static public $expireSeconds = 3600;
+	 }
 }
 ?>
