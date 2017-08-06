@@ -41,6 +41,7 @@ Used libraries
  - [jQueryFileUpload](https://github.com/Abban/jQueryFileUpload) - MIT License
  - [simpledialog2 jquery mobile plugin](https://github.com/jtsage/jquery-mobile-simpledialog) - Creative Commons 3
  - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) - MIT License
+ - [NameSpaceFinder php class](https://stackoverflow.com/a/22762333) - Creative Commons BY-SA 2.5 License (Share & Adapt)
 
  Special thanks to all the people that contributed to these projects.
 
