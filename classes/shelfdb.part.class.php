@@ -124,7 +124,7 @@ namespace ShelfDB {
       // Get current data
       $oldData = $this->GetDataColumnById( $id, $column );
 
-      if( !$oldData ) return false;
+      if( $oldData === null ) return false;
 
       $ecdata = $this->db->sql->real_escape_string($data);
       $query = "UPDATE parts SET $column = '$ecdata' WHERE id = $id;";
@@ -192,7 +192,8 @@ namespace ShelfDB {
       $newStoreLocation = $this->db->StoreLocations()->GetById($storelocId);
       if( !$newStoreLocation ) return false;
 
-      if( $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId ) ) {
+      $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId );
+      if( $oldData ) {
         $oldStoreLocation = $this->db->StoreLocations()->GetById($oldData['oldData']);
         $this->db->History()->Add($id, 'P', 'edit', 'storelocation',
           $oldStoreLocation['name'], $newStoreLocation['name'] );
@@ -211,7 +212,9 @@ namespace ShelfDB {
       $newCategory = $this->db->Categories()->GetById($categoryId);
       if( !$newCategory ) return false;
 
-      if( $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId ) ) {
+      $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId );
+
+      if( $oldData ) {
         $oldCategory = $this->db->Categories()->GetById($oldData['oldData']);
         $this->db->History()->Add($id, 'P', 'edit', 'category',
           $oldCategory['name'], $newCategory['name'] );
@@ -247,15 +250,21 @@ namespace ShelfDB {
       $newFootprint = $this->db->Footprints()->GetById($footprintId);
       if( !$newFootprint ) return false;
 
-      if( $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId ) ) {
-        $oldFootprint = $this->db->Footprints()->GetById($oldData['oldData']);
-        $this->db->History()->Add($id, 'P', 'edit', 'footprint',
-          $oldFootprint['name'], $newFootprint['name'] );
+      $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId );
 
-        return true;
+      if( $oldData ) {
+        if( $oldData['oldData'] > 0 ) {
+          $oldFootprint = $this->db->Footprints()->GetById($oldData['oldData']);
+        } else {
+          $oldFootprint = array("name" => "none");
+        }
       } else {
         return false;
       }
+      $this->db->History()->Add($id, 'P', 'edit', 'footprint',
+        $oldFootprint['name'], $newFootprint['name'] );
+
+      return true;
     }
 
     public function SetSupplierById( int $id, $supplierId ) {
