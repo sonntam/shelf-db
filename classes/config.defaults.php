@@ -62,5 +62,14 @@ namespace ConfigFile {
 		static public $dataType   = 'png';
 	}
 
+	/**
+	 * Currency and price information
+	 */
+	class Currency {
+		static public $symbol = '€';
+		static public $symbolPosition = 'behind';
+		static public $decimal = ',';
+		static public $thousandsDelimiter = '.';
+	}
 }
 ?>
