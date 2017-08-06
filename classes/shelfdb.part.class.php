@@ -16,6 +16,11 @@ namespace ShelfDB {
       $qr = \QRCode::getMinimumQRCode($partId, QR_ERROR_CORRECT_LEVEL_Q);
 
       $im = $qr->createImage(\ConfigFile\QRCode::$pixelWidth, \ConfigFile\QRCode::$qrMargin);
+      if( !$im ) {
+        \Log::Error("Error creating QR code.");
+        return;
+      }
+
       $data = "data:image/".strtolower(\ConfigFile\QRCode::$dataType).';base64,';
 
       ob_start();

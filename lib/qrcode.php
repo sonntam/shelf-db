@@ -499,6 +499,10 @@ class QRCode {
     // updated 2015.07.27 ~ DoktorJ
     function createImage($size = 2, $margin = 2, $fg = 0x000000, $bg = 0xFFFFFF, $bgtrans = false) {
 
+        // Check if method EXISTS
+        if( !function_exists("imagecreatetruecolor") )
+          return null;
+
         // size/margin EC
         if (!is_numeric($size)) $size = 2;
         if (!is_numeric($margin)) $margin = 2;
