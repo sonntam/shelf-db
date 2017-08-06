@@ -15,6 +15,18 @@
 		$name = $part['name'];
 		$partFootprintImageFile = joinPaths( $pdb->RelRoot(), 'img/footprint', $part['f_pict_fname']);
 		$partSupplierImageFile = joinPaths( $pdb->RelRoot(), 'img/supplier', $part['su_pict_fname']);
+		$parentCategories = array_reverse( $pdb->Categories()->GetAncestorsFromId($part['id_category'], true) );
+
+		$parentCategoryNames = array_map( function($x) { return $x['name']; }, $parentCategories );
+		$parentCategoryLinks = array_map( function($x) {
+			return '<a href="page-showparts.php?catid='.$x['id'].'&catrecurse=1">'.$x['name'].'</a>';
+		}, $parentCategories );
+
+		// Build category string
+		$categoryString = join( " <i class='fa fa-arrow-right'></i> ", $parentCategoryLinks);
+
+		// Link to supplier
+		$url = $pdb->Suppliers()->GetUrlFromId($part['id_supplier'], $part['supplierpartnr']);
 	}
 
 ?>
@@ -430,7 +442,7 @@
 			<div class="flexBoxTextInputEditControl">
 				<div class="flexContainer">
       		<h3 name="showName" style="margin-bottom: 0.1em"><?php echo $name; ?></h3>
-					<h5 style="margin-top: 0em">in <a href="#"><?php echo $part["category_name"]; ?></a></h5>
+					<h5 style="margin-top: 0em">in <?php echo $categoryString; ?></h5>
 			  </div>
 				<input name="editName" type="button" data-icon="edit" data-iconpos="notext">
 				<input name="copyPart" type="button" data-icon="fa-clone" data-iconpos="notext">
