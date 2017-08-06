@@ -13,6 +13,21 @@ Shelf-DB is a web application based on php/MySQL/Javascript to keep track of thi
 
 It is formally based on [Part-DB](https://github.com/sandboxgangster/Part-DB) but now completely rewritten from scratch, offering new features and a different UI approach.
 
+Server Requirements
+-------------------
+
+ - php >= 7.0
+   php extensions: mysqli, gd2 (for QR codes), mbstring
+ - MySQL >= 5.0
+
+Installation
+------------
+
+ 1. Extract the repository contents into any folder of a webserver meeting the requirements above.
+ 2. Go into the `./config` folder and edit the `config.json` to meet your desired sql server settings.
+ 3. Launch the `index.php` main page in a web browser. A standard database structure will be created where the database name given in the config file is used.
+ 4. Ready for use!
+
 Used libraries
 --------------
 
