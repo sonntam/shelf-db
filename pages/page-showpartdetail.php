@@ -220,7 +220,25 @@
 								if( data && data.success ) {
 									// Load store location name and store in database
 									$('[name=showFootprint]').attr('value',$(evt.currentTarget).attr('footprintname'));
-									// Update picture
+									// Update pictures
+									$.ajax({	// Main picture if necessary
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {
+											partid: <?php echo $data["partid"]; ?>,
+											getDetailed: true
+										}
+									}).done(function(data) {
+										// Update gui
+										if( data ) {
+											var imgFile = data.mainPicFile;
+											$('.partimage').attr({
+												src: imgFile,
+												'data-other-src': imgFile
+											});
+										}
+									});
 									$.ajax({
 										url: '<?php echo $pdb->RelRoot(); ?>lib/json.footprints.php',
 										type: 'POST',
