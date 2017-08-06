@@ -149,6 +149,36 @@ namespace ShelfDB {
       return $this->SetDataColumnById( $id, 'comment', $newComment );
     }
 
+    public function SetPriceById( int $id, $price ) {
+      // Getg old price
+      $oldPrice = $this->GetPriceById( $id );
+
+      if( !$oldPrice ) { // None has been given yet
+        $query = "INSERT INTO prices (part_id, ma, price, t) VALUES ($id, 1.0, $price, NOW());";
+        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+        if( !$res )
+          return false;
+
+        $newId = $this->db->sql->insert_id;
+
+        $this->db->History()->Add($id, "P", "add", "price", null, array(
+          "priceId" => $newId,
+          "price" => $price ) );
+
+      } else {
+        $query = "UPDATE prices SET price = $price, ma = 1.0, t = NOW() WHERE part_id = $id;";
+        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+        if( !$res )
+          return false;
+
+        $this->db->History()->Add($id, "P", "edit", "price", $oldPrice, $price);
+      }
+
+      return true;
+    }
+
     public function SetStorageLocationById( int $id, $storelocId ) {
 
       if( !$storelocId ) return false;
@@ -172,11 +202,11 @@ namespace ShelfDB {
 
       if( !$categoryId ) return false;
 
-      // Check if supplier EXISTS
+      // Check if category EXISTS
       $newCategory = $this->db->Categories()->GetById($categoryId);
       if( !$newCategory ) return false;
 
-      if( $oldData = $this->SetDataColumnById( $id, "id_category", $footprintId ) ) {
+      if( $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId ) ) {
         $oldCategory = $this->db->Categories()->GetById($oldData['oldData']);
         $this->db->History()->Add($id, 'P', 'edit', 'category',
           $oldCategory['name'], $newCategory['name'] );
@@ -185,6 +215,23 @@ namespace ShelfDB {
       } else {
         return false;
       }
+    }
+
+    public function GetPriceById( int $id ) {
+
+      $query = "SELECT price, ma FROM prices WHERE part_id = $id;";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( !$res )
+        return false;
+
+      $data = $res->fetch_assoc();
+      $res->free();
+
+      if( !$data )
+        return null;
+
+      return $data["price"] * $data["ma"];
     }
 
     public function SetFootprintById( int $id, $footprintId ) {
@@ -589,7 +636,6 @@ namespace ShelfDB {
       $data["mainPicFile"] = $pfname;
       $data["mainPicThumbFile"] = $tpfname;
     }
-
   }
 } // END NAMESPACE
 ?>

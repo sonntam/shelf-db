@@ -176,9 +176,15 @@
 					var storeClicked = $(evt.currentTarget).attr('storeid');
 					if( storeClicked )
 					{
-						//evt.preventDefault();
-						// Load store location name and store in database
-						$('[name=showStoreloc]').attr('value',$(evt.currentTarget).attr('storename'));
+						editPartField( 'storelocation', storeClicked,
+							function(data) {
+								if( data && data.success ) {
+									//evt.preventDefault();
+									// Load store location name and store in database
+									$('[name=showStoreloc]').attr('value',$(evt.currentTarget).attr('storename'));
+								}
+							}
+						);
 					}
 				}
 			});
@@ -197,26 +203,32 @@
 					var fpClicked = $(evt.currentTarget).attr('footprintid');
 					if( fpClicked )
 					{
-						// Load store location name and store in database
-						$('[name=showFootprint]').attr('value',$(evt.currentTarget).attr('footprintname'));
-						// Update picture
-						$.ajax({
-							url: '<?php echo $pdb->RelRoot(); ?>lib/json.footprints.php',
-							type: 'POST',
-							dataType: 'json',
-							data: {
-								id: fpClicked
+						editPartField( 'footprint', fpClicked,
+							function(data) {
+								if( data && data.success ) {
+									// Load store location name and store in database
+									$('[name=showFootprint]').attr('value',$(evt.currentTarget).attr('footprintname'));
+									// Update picture
+									$.ajax({
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.footprints.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {
+											id: fpClicked
+										}
+									}).done(function(data) {
+										// Update gui
+										if( data ) {
+											var imgFile = '<?php echo $pdb->RelRoot(); ?>img/footprint/'+data['pict_fname'];
+											$('[name=imgFootprint]').attr({
+												src: imgFile,
+												'data-other-src': imgFile
+											});
+										}
+									});
+								}
 							}
-						}).done(function(data) {
-							// Update gui
-							if( data ) {
-								var imgFile = '<?php echo $pdb->RelRoot(); ?>img/footprint/'+data['pict_fname'];
-								$('[name=imgFootprint]').attr({
-									src: imgFile,
-									'data-other-src': imgFile
-								});
-							}
-						});
+						);
 					}
 				}
 			});
@@ -235,33 +247,38 @@
 					var fpClicked = $(evt.currentTarget).attr('supplierid');
 					if( fpClicked )
 					{
-						// Load store location name and store in database
-						$('[name=showSupplier]')
-							.attr('value',$(evt.currentTarget).attr('suppliername'))
-							.attr('supplierId', fpClicked);
+						editPartField( 'supplierid', fpClicked,
+							function(data) {
+								if( data && data.success ) {
+									// Load store location name and store in database
+									$('[name=showSupplier]')
+										.attr('value',$(evt.currentTarget).attr('suppliername'))
+										.attr('supplierId', fpClicked);
 
-						// Get url for part and update picture
-						$.ajax({
-							url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
-							type: 'POST',
-							dataType: 'json',
-							data: {
-								id: fpClicked,
-								partNr: $('[name=showPartNumber]').val()
+									// Get url for part and update picture
+									$.ajax({
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.suppliers.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {
+											id: fpClicked,
+											partNr: $('[name=showPartNumber]').val()
+										}
+									}).done(function(data) {
+										// Update gui
+										if( data ) {
+											var imgFile = '<?php echo $pdb->RelRoot(); ?>img/supplier/'+data['pict_fname'];
+											$('[name=imgSupplier]').attr({
+												src: imgFile,
+												'data-other-src': imgFile
+											});
+
+											$('[name=showSupplier]').attr('url',data.urlTemplate);
+										}
+									});
+								}
 							}
-						}).done(function(data) {
-							// Update gui
-							if( data ) {
-								var imgFile = '<?php echo $pdb->RelRoot(); ?>img/supplier/'+data['pict_fname'];
-								$('[name=imgSupplier]').attr({
-									src: imgFile,
-									'data-other-src': imgFile
-								});
-
-								$('[name=showSupplier]').attr('url',data.urlTemplate);
-							}
-						});
-
+						);
 					}
 				}
 			});
@@ -274,8 +291,14 @@
 		    textPlaceholder: Lang.get('enterPrice'),
 		    textDefault: $('[name=showPrice]').val(),
 		    ok: function( newPrice ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showPrice]').val(newPrice);
+					editPartField( 'price', newPrice,
+						function(data) {
+							if( data && data.success ) {
+								// Submit and save new name, then update GUI on success
+								$('[name=showPrice]').val(newPrice);
+							}
+						}
+					);
 				},
 				validatorRules: {
 					required: true,
@@ -357,8 +380,14 @@
 	      textPlaceholder: Lang.get('enterDescription'),
 	      textDefault: $('[name=showDescription]').text(),
 	      ok: function( newdescription ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showDescription]').text(newdescription);
+					editPartField( 'comment', newdescription,
+						function(data) {
+							if( data && data.success ) {
+								// Submit and save new name, then update GUI on success
+								$('[name=showDescription]').text(newdescription);
+							}
+						}
+					);
 				}
 			});
 		});
@@ -399,7 +428,10 @@
   <div role="main" class="ui-content">
     <div class="partinfo ui-body ui-body-a ui-corner-all ui-shadow">
 			<div class="flexBoxTextInputEditControl">
-      	<h3 name="showName"><?php echo $name; ?></h3>
+				<div class="flexContainer">
+      		<h3 name="showName" style="margin-bottom: 0.1em"><?php echo $name; ?></h3>
+					<h5 style="margin-top: 0em">in <a href="#"><?php echo $part["category_name"]; ?></a></h5>
+			  </div>
 				<input name="editName" type="button" data-icon="edit" data-iconpos="notext">
 				<input name="copyPart" type="button" data-icon="fa-clone" data-iconpos="notext">
 				<input name="deletePart" type="button" data-icon="delete" data-iconpos="notext">
@@ -409,8 +441,12 @@
 					<div class="partimagewrapper">
 						<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">
             	<img class="partimage" data-other-src="<?php echo $part['mainPicFile']; ?>" src="<?php echo $part['mainPicFile']; ?>">
-							<br>
-							<img data-other-src="<?php echo $qrImgData = $pdb->Parts()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
+							<?php
+								if( \ConfigFile\QRCode::$enable ) { ?>
+									<br>
+									<img data-other-src="<?php echo $qrImgData = $pdb->Parts()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
+								<?php }
+							?>
 						</a>
 					</div>
 					<!-- Popup image viewer -->

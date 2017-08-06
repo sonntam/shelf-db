@@ -317,7 +317,8 @@ div.editcontrols.editcontrols-hidden {
   align-items: center;
 }
 .flexBoxTextInputEditControl .ui-input-text,
-.flexBoxTextInputEditControl h3 {
+.flexBoxTextInputEditControl h3,
+.flexBoxTextInputEditControl .flexContainer {
   flex: 1
 }
 
