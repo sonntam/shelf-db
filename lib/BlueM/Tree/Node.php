@@ -204,6 +204,28 @@ class Node
     }
 
     /**
+     * Sets a single node property by its name.
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return mixed
+     */
+    public function set($name, $value)
+    {
+        $lowerName = strtolower($name);
+        if (isset($this->properties[$lowerName])) {
+            $this->properties[$lowerName] = $value;
+            return true;
+        }
+        throw new \InvalidArgumentException(
+            "Undefined property: $name (Node ID: ".$this->properties['id'].')'
+        );
+    }
+
+    /**
      * @param string $name
      * @param mixed  $args
      *
