@@ -538,7 +538,7 @@
 									<a href="#popupimg" data-rel="popup" data-position-to="window">
 										<img data-other-src="<?php echo $partSupplierImageFile; ?>" src="<?php echo $partSupplierImageFile ?>" name="imgSupplier"  style="margin-right: 0.3em; max-width: 2.2em; max-height: 2.2em">
 									</a>
-									<input name="showSupplier" supplierId="<?php echo $part['id_supplier']; ?>" type="text" readonly=readonly value="<?php echo $part['supplier_name']; ?>">
+									<input name="showSupplier" url="<?php echo $url; ?>" supplierId="<?php echo $part['id_supplier']; ?>" type="text" readonly=readonly value="<?php echo $part['supplier_name']; ?>">
 									<input name="editSupplier" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
