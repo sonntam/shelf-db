@@ -20,7 +20,7 @@ $.shelfdb = {
       dataType: 'json',
       data: {
         id: opts.id,
-        partNr: opts.partNumber
+        partNr: opts.partNr
       }
     }).done(function(data) {
       if( opts.done )
