@@ -2,6 +2,7 @@
 
 require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/config.php');
+require_once(__DIR__.'/cache.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
 require_once(__DIR__.'/shelfdb.user.class.php');
 require_once(__DIR__.'/shelfdb.group.class.php');
@@ -13,6 +14,9 @@ require_once(__DIR__.'/shelfdb.footprint.class.php');
 require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
 require_once(__DIR__.'/../lib/qrcode.php');
+require_once(__DIR__.'/../lib/BlueM/Tree.php');
+require_once(__DIR__.'/../lib/BlueM/Tree/Node.php');
+require_once(__DIR__.'/../lib/BlueM/Tree/InvalidParentException.php');
 
 /**
  * ShelfDB-Database singleton class
@@ -80,6 +84,10 @@ class ShelfDatabase
       $db->Connect();
       $db->InjectCustomSQL();
       $db->CheckTables();
+
+      $db->SetupEnvironment();
+
+      \Log::Debug("Include path is \"".get_include_path()."\"");
 
       $db->Users()->ResumeSession();
     }
@@ -152,6 +160,10 @@ class ShelfDatabase
       }
       $this->sql->next_result();
     }
+  }
+
+  private function SetupEnvironment() {
+    set_include_path(get_include_path() . PATH_SEPARATOR . $this->AbsRoot() . DIRECTORY_SEPARATOR . 'lib');
   }
 
   /**
@@ -315,6 +327,9 @@ class ShelfDatabase
 
   }
 
+  public function GetCache() {
+    return Cache::Instance();
+  }
 }
 
 $pdb = ShelfDatabase::Instance();
