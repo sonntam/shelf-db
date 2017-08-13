@@ -2,7 +2,7 @@
 
 require_once(__DIR__.'/log.php');
 require_once(__DIR__.'/config.php');
-require_once(__DIR__.'/cache.php');
+require_once(__DIR__.'/cache.class.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
 require_once(__DIR__.'/shelfdb.user.class.php');
 require_once(__DIR__.'/shelfdb.group.class.php');
