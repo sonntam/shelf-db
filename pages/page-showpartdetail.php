@@ -344,24 +344,42 @@
 				headline: Lang.get('editPartChangeTotal'),
 				textPlaceholder: Lang.get('enterAmount'),
 				textDefault: $('[name=showTotal]').val(),
-				ok: function( minstock ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showTotal]').val(minstock);
+				ok: function( total ) {
+					// Submit and save new name, then update GUI on success
+					editPartField( 'totalstock', total,
+						function(data) {
+							if( data && data.success ) {
+								$('[name=showTotal]').val(total);
+							}
+						}
+					);
 				},
 				validatorRules: {
 					required: true,
 					digits: true,
-					min: 0
+					min: parseInt($('[name=showStock]').val())
 				}
 			});
 		});
 
 		$('[name=addTotal]').click(function(evt) {
 			debugger;
+			// TODO Implement add total
 		});
 
 		$('[name=subTotal]').click(function(evt) {
 			debugger;
+			// TODO Implement sub total
+		});
+
+		$('[name=addStock]').click(function(evt) {
+			debugger;
+			// TODO Implement add stock
+		});
+
+		$('[name=subStock]').click(function(evt) {
+			debugger;
+			// TODO Implement sub stock
 		});
 
 		$('[name=editStock]').click(function(evt) {
@@ -370,14 +388,22 @@
 		    headline: Lang.get('editPartChangeStock'),
 		    textPlaceholder: Lang.get('enterAmount'),
 		    textDefault: $('[name=showStock]').val(),
-		    ok: function( minstock ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showStock]').val(minstock);
+		    ok: function( stock ) {
+					// Submit and save new name, then update GUI on success
+					editPartField( 'instock', stock,
+						function(data) {
+							if( data && data.success ) {
+								$('[name=showStock]').val(stock);
+							}
+						}
+					);
 				},
 				validatorRules: {
 					required: true,
 	      	digits: true,
-	      	min: 0
+					number: true,
+	      	min: 0,
+					max: parseInt($('[name=showTotal]').val())
 				}
 			});
 		});
@@ -389,8 +415,14 @@
 		    textPlaceholder: Lang.get('enterAmount'),
 		    textDefault: $('[name=showMinStock]').val(),
 		    ok: function( minstock ) {
-					// TODO Submit and save new name, then update GUI on success
-					$('[name=showMinStock]').val(minstock);
+					// Submit and save new name, then update GUI on success
+					editPartField( 'mininstock', minstock,
+						function(data) {
+							if( data && data.success ) {
+								$('[name=showMinStock]').val(minstock);
+							}
+						}
+					);
 				},
 				validatorRules: {
 					required: true,
