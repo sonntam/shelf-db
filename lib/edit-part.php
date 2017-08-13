@@ -79,7 +79,10 @@ $_REQUEST['id']"763"
           'footprint' => 'SetFootprintById',
           'storelocation' => 'SetStorageLocationById',
           'comment' => 'SetCommentById',
-          'price' => 'SetPriceById'
+          'price' => 'SetPriceById',
+          'totalstock' => 'SetTotalStockById',
+          'instock' => 'SetInStockById',
+          'mininstock' => 'SetMinInStockById'
         );
 
         $field = strtolower($data['field']);
