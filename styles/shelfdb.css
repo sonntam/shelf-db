@@ -360,6 +360,15 @@ div.editcontrols.editcontrols-hidden {
   margin-top: 0.1em;
 }
 
+.partinfo .partImageListItem {
+  max-width: 10em;
+  max-height: 10em;
+  border-style: dashed;
+  border-color: orange;
+  border-width: 2px;
+  margin: 0.3em;
+}
+
 /* 2nd breakpoint - Float all, 20em/25/25 */
 @media (min-width: 40em) {
     .partinfo .partimageblock {

@@ -118,6 +118,7 @@ function Lang(language, replaceText)
       image: 'Bild',
       price: 'Preis',
       images: 'Bilder',
+      masterImage: 'Hauptbild',
       input: 'Eingabe',
       copyOf: function(name) {
         return 'Kopie von '+name;
@@ -194,6 +195,7 @@ function Lang(language, replaceText)
       editPartMinStock: 'Mindestmenge ändern',
       editPartChangeMinStock: 'Geben Sie eine Mindestmenge für das Teil ein.',
       editPartDelete: 'Teil löschen',
+      editPartDeletePicture: 'Teilebild löschen',
       editPartDescriptionEdit: 'Beschreibung bearbeiten',
       editPartDescriptionEditHint: 'Ändern Sie hier die bestehende Beschreibung.',
       editCategoryNewName: 'Neuer Name',

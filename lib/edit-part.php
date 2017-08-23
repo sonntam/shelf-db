@@ -41,7 +41,9 @@ $_REQUEST['id']"763"
   $data = jqGridTranslate($data);
 
   $response = array(
-    'success' => false
+    'success' => false,
+    'method' => $data['method'],
+    'id' => $data['id']
   );
 
   // Actions
@@ -54,14 +56,37 @@ $_REQUEST['id']"763"
         $id = $data['id'];
         if( $p->DeleteById($id) ) {
           $response = array_replace_recursive($response, array(
-            'success' => true,
-            'id' => $id,
-            'method' => 'delete'
+            'success' => true
           ));
         }
       }
       break;
+
+    case 'deletePicture':
+      if( isset($data['pictureId']) ) {
+        $res = $pdb->Pictures()->DeleteById($data['pictureId']);
+
+        if( $res ) {
+          $response = array_replace_recursive($response, array(
+            'success' => true,
+            'pictureId' => $data['pictureId']
+          ));
+        }
+      }
+      break;
+
     case 'edit': // Edit command from table
+
+      break;
+
+    case 'setMasterPic':
+      $picId = $data['id'];
+
+      $res = $pdb->Pictures()->SetPartMasterById($picId);
+
+      $response = array_replace_recursive($response, array(
+        'success' => ($res ? true : false)
+      ));
 
       break;
 

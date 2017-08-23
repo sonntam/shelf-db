@@ -49,6 +49,46 @@ namespace ShelfDB {
       return $data;
     }
 
+    public function SetPartMasterById(int $id) {
+
+      $picInfo = $this->GetById($id);
+
+      if( !$picInfo ) return null;
+
+      // Get list of group images
+      $query = "SELECT * FROM pictures WHERE NOT id = $id AND pict_type = 'P' AND parent_id = ".$picInfo['parent_id'].";";
+
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      if( !$res ) return null;
+
+      $data = $res->fetch_all(MYSQLI_ASSOC);
+      $res->free();
+
+      // Set master
+      if( $picInfo['pict_masterpict'] != '1' ) {
+        $query = "UPDATE pictures SET pict_masterpict = 1 WHERE id = $id;";
+        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        if( !$res ) return null;
+
+        $this->db->History()->Add($id, 'PIC', 'edit', 'pict_masterpict', 0, 1 );
+      }
+
+      // Finished
+      if( sizeof($data) == 0 ) return true;
+
+      // Remove master from all other pictures
+      $query = "UPDATE pictures SET pict_masterpict = 0 WHERE id IN (".join(',', array_map(function($x){ return $x['id']; },$data) ).");";
+      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+
+      foreach( $data as $pic ) {
+        if( $pic['pict_masterpict'] != '0' )
+          $this->db->History()->Add($pic['id'], 'PIC', 'edit', 'pict_masterpict', 1, 0 );
+      }
+
+      return $res;
+    }
+
     public function GetById(int $id) {
 
       $query = "SELECT p.*, t.* FROM pictures p "

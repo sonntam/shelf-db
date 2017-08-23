@@ -22,6 +22,34 @@
 			return '<a href="page-showparts.php?catid='.$x['id'].'&catrecurse=1">'.$x['name'].'</a>';
 		}, $parentCategories );
 
+		$picFnames = explode("/", $part['pict_fname_arr']);
+		$picIds    = explode(",", $part['pict_id_arr']);
+		$picMaster = explode(",", $part['pict_masterpict_arr']);
+
+		$arrPics = array();
+		for( $i = 0; $i < sizeof($picFnames); $i++ ) {
+			$arrPics[] = array('id' => $picIds[$i], 'fname' => $picFnames[$i], 'master' => $picMaster[$i] );
+		}
+
+		$partImageHtml = array_map( function($x) use ($pdb) {
+			$imgPath = $pdb->RelRoot().'img/parts/'.$x['fname'];
+			ob_start();
+			?>
+				<div name="pictureContainer" value="<?php echo $x['id']; ?>" style="display: inline-block; text-align: center">
+				<a href="#popupimg" data-rel="popup" data-position-to="window">
+					<img id="picture-<?php echo $x['id']; ?>" class="partinfo partImageListItem" data-other-src="<?php echo $imgPath; ?>" src="<?php echo $imgPath; ?>">
+				</a>
+				<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+					<input type="checkbox" <?php if($x['master']) { echo 'checked="checked"'; } ?> altname="masterPicCheckbox" name="masterPicSelect-<?php echo $x['id']; ?>" id="masterPicSelect-<?php echo $x['id']; ?>">
+					<label for="masterPicSelect-<?php echo $x['id']; ?>" uilang="masterImage"></label>
+					<a href="#" name="deletePicture" value="<?php echo $x['id']; ?>" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left" uilang="delete"></a>
+				</div>
+			</div>
+			<?php
+			$el = ob_get_clean();
+			return $el;
+		}, $arrPics);
+
 		// Build category string
 		$categoryString = join( " <i class='fa fa-arrow-right'></i> ", $parentCategoryLinks);
 
@@ -103,6 +131,73 @@
 				var $tn = $(evt.target);
 
 				$( ".photopopup img" ).attr('src', $tn.attr('data-other-src'));
+
+		});
+
+		$('[name=deletePicture]').click( function(e) {
+
+			var id = $(this).attr('value');
+
+			confirmPopUp({
+		    header: Lang.get('editPartDeletePicture'),
+		    text: Lang.get('noUndoHint'),
+		    confirmButtonText: Lang.get('delete'),
+		    confirm: function() {
+					$.mobile.referencedLoading('show');
+					$.ajax({
+						url: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							id: '<?php echo $part['id']; ?>',
+							method: 'deletePicture',
+							pictureId: id
+						}
+					}).done(function(data) {
+						// Update gui
+						if( data && data.success ) {
+
+							$('[name=pictureContainer][value='+data.pictureId+']').remove();
+						}
+						$.mobile.referencedLoading('hide');
+					});
+				}
+			});
+
+		});
+
+		$('[altname=masterPicCheckbox]').change( function (e) {
+			this.checked = !this.checked;
+
+			e.preventDefault();
+			e.stopPropagation();
+
+			if( this.checked ) return;
+
+			var that = this;
+
+			$.mobile.referencedLoading('show');
+			$.ajax({
+				url: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					id: $(this).attr('id').split('-')[1],
+					method: 'setMasterPic'
+				}
+			}).done(function(data) {
+				// Update gui
+				if( data && data.success ) {
+					// Remove checks from all other checkboxes and check own
+					$('[altname=masterPicCheckbox]').prop('checked', false).checkboxradio('refresh');
+					$(that).prop('checked', true).checkboxradio('refresh');
+
+					// Update main image right away
+					$('.partimage').attr('src',$('#picture-'+data.id).attr('src'));
+					$('.partimage').attr('data-other-src',$('#picture-'+data.id).attr('data-other-src'));
+				}
+				$.mobile.referencedLoading('hide');
+			});
 
 		});
 
@@ -645,7 +740,7 @@
 				</div>
 				<div data-role="collapsible">
 			    <h4 uilang="images"></h4>
-					<p>TODO: IMG</p>
+					<?php echo  join("",$partImageHtml); ?>
 				</div>
 			</div>
     </div>
