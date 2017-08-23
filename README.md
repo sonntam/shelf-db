@@ -63,3 +63,4 @@ TODOs
  - allow adding of part from part table
  - show price information in part detail view including tooltip with timestamp of last update
  - REST API
+ - Refactor all the JavaScript code
