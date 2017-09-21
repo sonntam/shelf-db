@@ -240,6 +240,9 @@ function Lang(language, replaceText)
       popupFootprintFilterHint: 'Mit dem Filter kann in den Formen gesucht werden',
       popupFootprintFilterPlaceholder: 'Einträge filtern...',
 
+      popupUploadFile: 'Datei hochladen',
+      popupUploadFileUserAction: 'Wählen Sie eine Datei zum Hochladen aus.',
+
       showEmptyStoreLocations: "Leerfächer anzeigen",
       showNonEmptyStoreLocations: "Belegte Fächer anzeigen",
 
