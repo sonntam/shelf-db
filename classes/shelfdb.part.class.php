@@ -150,7 +150,17 @@ namespace ShelfDB {
       return $this->SetDataColumnById( $id, "name", $newName );
     }
 
+    public function GetInStockById( int $id ) {
+      return $this->GetDataColumnById($id, "instock" );
+    }
+
     public function SetTotalStockById( int $id, int $newTotalStock ) {
+
+      $inStock = $this->GetInStockById($id);
+
+      if( $newTotalStock < $inStock )
+        return false;
+
       return $this->SetDataColumnById( $id, "totalstock", $newTotalStock );
     }
 
