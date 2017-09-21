@@ -35,7 +35,7 @@
 			$imgPath = $pdb->RelRoot().'img/parts/'.$x['fname'];
 			ob_start();
 			?>
-				<div name="pictureContainer" value="<?php echo $x['id']; ?>" style="display: inline-block; text-align: center">
+				<div name="pictureContainer" value="<?php echo $x['id']; ?>" style="vertical-align: top; display: inline-block; text-align: center">
 				<a href="#popupimg" data-rel="popup" data-position-to="window">
 					<img id="picture-<?php echo $x['id']; ?>" class="partinfo partImageListItem" data-other-src="<?php echo $imgPath; ?>" src="<?php echo $imgPath; ?>">
 				</a>
@@ -149,7 +149,7 @@
 						type: 'POST',
 						dataType: 'json',
 						data: {
-							id: '<?php echo $part['id']; ?>',
+							id: '<?php echo $data["partid"]; ?>',
 							method: 'deletePicture',
 							pictureId: id
 						}
@@ -158,6 +158,22 @@
 						if( data && data.success ) {
 
 							$('[name=pictureContainer][value='+data.pictureId+']').remove();
+							// Update main picture
+							$.mobile.referencedLoading('show');
+							$.ajax({
+								url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									partid: '<?php echo $data["partid"]; ?>',
+									getDetailed: true
+								}
+							}).done(function(data) {
+								$('.partimage').attr('src',data.mainPicFile);
+								$('.partimage').attr('data-other-src',data.mainPicFile);
+
+								$.mobile.referencedLoading('hide');
+							});
 						}
 						$.mobile.referencedLoading('hide');
 					});
@@ -741,6 +757,13 @@
 				<div data-role="collapsible">
 			    <h4 uilang="images"></h4>
 					<?php echo  join("",$partImageHtml); ?>
+					<div name="pictureContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
+					<a href="#">
+						<div class="partinfo partImageListItem" style="font-size: 1em; width: 10em; height: 10em">
+							<i class="fa fa-plus" style="font-size: 10em"></i>
+						</div>
+					</a>
+				</div>
 				</div>
 			</div>
     </div>
