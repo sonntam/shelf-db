@@ -14,6 +14,7 @@
   $formData['id'] = $data['id'];
   $formData['imageId'] = null;
   $formData['imageUrl'] = '/img/supplier/default.png';
+  $formData['method'] = $data['method'];
 
 ?>
 <script>
@@ -175,6 +176,7 @@
     <form id="uploadFileForm" data-ajax="false">
       <input type="hidden" name="imageFileName" id="imageFileName" value="">
       <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
+      <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
       <div class="ui-grid-solo">
         <div class="ui-block-a">
           <div style="display: flex; flex-flow: row">
