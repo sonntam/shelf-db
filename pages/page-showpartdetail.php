@@ -36,15 +36,15 @@
 			ob_start();
 			?>
 				<div name="pictureContainer" value="<?php echo $x['id']; ?>" style="vertical-align: top; display: inline-block; text-align: center">
-				<a href="#popupimg" data-rel="popup" data-position-to="window">
-					<img id="picture-<?php echo $x['id']; ?>" class="partinfo partImageListItem" data-other-src="<?php echo $imgPath; ?>" src="<?php echo $imgPath; ?>">
-				</a>
-				<div data-role="controlgroup" data-type="horizontal" data-mini="true">
-					<input type="checkbox" <?php if($x['master']) { echo 'checked="checked"'; } ?> altname="masterPicCheckbox" name="masterPicSelect-<?php echo $x['id']; ?>" id="masterPicSelect-<?php echo $x['id']; ?>">
-					<label for="masterPicSelect-<?php echo $x['id']; ?>" uilang="masterImage"></label>
-					<a href="#" name="deletePicture" value="<?php echo $x['id']; ?>" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left" uilang="delete"></a>
+					<a href="#popupimg" data-rel="popup" data-position-to="window">
+						<img id="picture-<?php echo $x['id']; ?>" class="partinfo partImageListItem" data-other-src="<?php echo $imgPath; ?>" src="<?php echo $imgPath; ?>">
+					</a>
+					<div data-role="controlgroup" data-type="horizontal" data-mini="true">
+						<input type="checkbox" <?php if($x['master']) { echo 'checked="checked"'; } ?> altname="masterPicCheckbox" name="masterPicSelect-<?php echo $x['id']; ?>" id="masterPicSelect-<?php echo $x['id']; ?>">
+						<label for="masterPicSelect-<?php echo $x['id']; ?>" uilang="masterImage"></label>
+						<a href="#" name="deletePicture" value="<?php echo $x['id']; ?>" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left" uilang="delete"></a>
+					</div>
 				</div>
-			</div>
 			<?php
 			$el = ob_get_clean();
 			return $el;
@@ -67,6 +67,55 @@
 	<script>
 
 	pageHookClear();
+
+	function addPictureContainer( id, imgPath, thumbPath ) {
+		$('<div/>', {
+			name: "pictureContainer",
+			value: id,
+			style: "vertical-align: top; display: inline-block; text-align: center"
+		}).append(
+			$('<a/>',{
+				href: "#popupimg",
+				"data-rel": "popup",
+				"data-position-to": "window"
+			}).append(
+				$('<img/>', {
+					id: "picture-" + id,
+					class: "partinfo partImageListItem",
+					"data-other-src": <?php echo '"'.$pdb->RelRoot().'img/parts/"'; ?>+imgPath,
+					src: <?php echo '"'.$pdb->RelRoot().'img/parts/"'; ?>+thumbPath
+				})
+			),
+			$('<div/>',{
+				"data-role": "controlgroup",
+				"data-type": "horizontal",
+				"data-mini": true
+			}).append(
+				$('<input/>',{
+					type: "checkbox",
+					altname: "masterPicCheckbox",
+					name: "masterPicSelect-"+id,
+					id: "masterPicSelect-"+id
+				}),
+				$('<label/>',{
+					for: "masterPicSelect-"+id,
+					uilang: "masterImage"
+				}),
+				$('<a/>',{
+					href: "#",
+					name: "deletePicture",
+					value: id,
+					class: "ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left",
+					uilang: "delete"
+				})
+			)
+		).insertBefore($('[name=pictureContainer][value=add]'));
+
+		// Refresh
+		Lang.searchAndReplace();
+		$('[name=partPictureListView]').enhanceWithin();
+
+	}
 
 	function editPartField( fieldName, fieldData, success ) {
 		$.mobile.referencedLoading('show');
@@ -134,7 +183,34 @@
 
 		});
 
-		$('[name=deletePicture]').click( function(e) {
+		$('[name=pictureContainerAddButton]').click( function(e) {
+			// Show upload image dialog
+			debugger;
+			openExternalPopup({
+				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-uploadfile.php',
+				forceReload: true,
+				fixedMaxWidth: '600px',
+				postdata: {
+					id: <?php echo $data['partid']; ?>,
+		    	method: 'addPicture',
+					itemtype: 'part',
+		   		type: 'picture'
+				},
+				customEventName: 'positiveResponse',
+				customEventHandler: function( e, data ) {
+					if( data && data.success ) {
+						// Dynamically add picture to list (before plus button)
+						// data.imageFileName
+						// data.pictureId
+						// data.thumbFileName
+						debugger;
+						addPictureContainer(data.pictureId, data.imageFileName, data.imageFileName);
+					}
+				}
+			});
+		});
+
+		$('[name=partPictureListView]').on('click','a[name=deletePicture]', function(e) {
 
 			var id = $(this).attr('value');
 
@@ -182,7 +258,7 @@
 
 		});
 
-		$('[altname=masterPicCheckbox]').change( function (e) {
+		$('[name=partPictureListView]').on('change','input[altname=masterPicCheckbox]', function (e) {
 			this.checked = !this.checked;
 
 			e.preventDefault();
@@ -288,7 +364,7 @@
 		$('[name=editStoreloc]').click(function(evt) {
 			openExternalPopup({
 				forceReload: true,
-				url: '/pages/popup-selectstorelocation.php',
+				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectstorelocation.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
 				},
@@ -316,7 +392,7 @@
 		$('[name=editFootprint]').click(function(evt) {
 			openExternalPopup({
 				forceReload: true,
-				url: '/pages/popup-selectfootprint.php',
+				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectfootprint.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
 				},
@@ -378,7 +454,7 @@
 		$('[name=editSupplier]').click(function(evt) {
 			openExternalPopup({
 				forceReload: true,
-				url: '/pages/popup-selectsupplier.php',
+				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectsupplier.php',
 				afteropen: function(evt) {
 					$(evt.target).find("input").first().focus().select();
 				},
@@ -754,11 +830,12 @@
 			    <h4 uilang="datasheets"></h4>
 					<p>TODO: DS</p>
 				</div>
-				<div data-role="collapsible">
+				<div name="partPictureListView" data-role="collapsible">
 			    <h4 uilang="images"></h4>
+					<!-- Part pictures -->
 					<?php echo  join("",$partImageHtml); ?>
 					<div name="pictureContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
-					<a href="#">
+						<a name="pictureContainerAddButton" href="#">
 						<div class="partinfo partImageListItem" style="font-size: 1em; width: 10em; height: 10em">
 							<i class="fa fa-plus" style="font-size: 10em"></i>
 						</div>
