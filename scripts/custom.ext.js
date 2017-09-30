@@ -373,6 +373,7 @@ function openExternalPopup(options) {
   // Get options
   var defaults = {
     url: null,
+    postdata: null,
     afteropen: undefined,
     afterclose: undefined,
     click: undefined,
@@ -426,7 +427,7 @@ function openExternalPopup(options) {
 
     $.mobile.referencedLoading('show');
 
-    $popuptarget.load(options.url + (urlParams?"?"+urlParams:""), function() {
+    $popuptarget.load(options.url + (urlParams?"?"+urlParams:""), options.postdata, function() {
 
       var dialogId = $(this).find('[data-role="popup"]').first();
       dialogId.attr({
