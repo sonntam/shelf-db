@@ -51,12 +51,28 @@ $_REQUEST['id']"763"
     case 'add':
       # code...
       break;
+
     case 'delete':
       if( isset($data['id']) ) {
         $id = $data['id'];
         if( $p->DeleteById($id) ) {
           $response = array_replace_recursive($response, array(
             'success' => true
+          ));
+        }
+      }
+      break;
+
+    case 'addPicture':
+      if( isset($data['imageFileName']) && isset($data['id']) ) {
+        $id = $data['id'];
+        $newid = $pdb->Pictures()->Create($id, 'P', $data['imageFileName'], false);
+
+        if( $newid ) {
+          $response = array_replace_recursive($response, array(
+            'success' => true,
+            'pictureId' => $newid,
+            'imageFileName' => $data['imageFileName']
           ));
         }
       }
