@@ -13,6 +13,10 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     private function GetData() {
 
       // 1. Check if it is in memory
@@ -20,15 +24,15 @@ namespace ShelfDB {
         return $this->data;
 
       // 2. Get from cache
-      if( $this->db->GetCache()->isCached('categories') ) {
-        $this->data = $this->db->GetCache()->getCached('categories');
+      if( $this->db()->GetCache()->isCached('categories') ) {
+        $this->data = $this->db()->GetCache()->getCached('categories');
         return $this->data;
       }
 
       // 3. Read from database
       $query = "SELECT c.id, c.parentnode as parent, c.name, COUNT(p.id) as partcount FROM categories c LEFT JOIN parts p ON p.id_category = c.id GROUP BY c.id ORDER BY c.name ;";
       //$query = "SELECT id, parentnode as parent, name FROM categories ORDER BY name ASC;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
         return null;
@@ -57,17 +61,17 @@ namespace ShelfDB {
       //$partCountSum($this->data);
 
       // Cache this data
-      $this->db->GetCache()->storeCached("categories", $this->data);
+      $this->db()->GetCache()->storeCached("categories", $this->data);
 
       return $this->data;
     }
 
     public function AllReplaceParentId( int $oldid, int $newid ) {
       $query = "UPDATE categories SET parentnode = $newid WHERE parentnode = $oldid";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // Update history
-      $this->db->History()->Add(0, 'C', 'edit', 'parentnode', array(
+      $this->db()->History()->Add(0, 'C', 'edit', 'parentnode', array(
         "parentnode" => $oldid,
         "parentname" => $this->GetNameById($oldid)
       ), array(
@@ -161,7 +165,7 @@ namespace ShelfDB {
 
       $query = "SELECT `name` FROM `categories` WHERE `id` = $id";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $name = $res->fetch_assoc();
       $res->free();
@@ -174,20 +178,20 @@ namespace ShelfDB {
       $oldname = $this->GetNameById($id);
       if( !$oldname ) return false;
 
-      $esname  = $this->db->sql->real_escape_string( $name );
+      $esname  = $this->db()->sql->real_escape_string( $name );
       $query = "UPDATE `categories` SET `name` = '$esname' WHERE `id` = $id";
 
-      $res = $this->db->sql->query($query) ;
+      $res = $this->db()->sql->query($query) ;
 
       if( $res === true ) {
         // Everything OK
-        $this->db->History()->Add($id, 'C', 'edit', 'name', $oldname, $name );
+        $this->db()->History()->Add($id, 'C', 'edit', 'name', $oldname, $name );
         $this->DefileCache();
 
         return true;
       } else {
         // Error occured
-        \Log::WarningSQLQuery($query, $this->db->sql);
+        \Log::WarningSQLQuery($query, $this->db()->sql);
 
         return false;
       }
@@ -211,11 +215,11 @@ namespace ShelfDB {
 
       // Delete this
       $query = "DELETE FROM categories WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $cat = $this->GetById($id);
-        $this->db->History()->Add($id, 'C', 'delete', 'object', $cat, '');
+        $this->db()->History()->Add($id, 'C', 'delete', 'object', $cat, '');
         $this->DefileCache();
       }
 
@@ -223,19 +227,19 @@ namespace ShelfDB {
     }
 
     public function Create( int $parentId, string $name ) {
-      $name = $this->db->sql->real_escape_string( $name );
+      $name = $this->db()->sql->real_escape_string( $name );
       $query = "INSERT INTO `categories` (`name`, `parentnode`) VALUES ('$name', $parentId)";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res === true ) {
-        $newid = $this->db->sql->insert_id;
+        $newid = $this->db()->sql->insert_id;
 
         // Get parent
         $parentName = $this->GetNameById($parentId);
 
         // Add history
-        $this->db->History()->Add($newid, 'C', 'create', 'object', '', array(
+        $this->db()->History()->Add($newid, 'C', 'create', 'object', '', array(
           "id" => $newid,
           "name" => $name,
           "parentnode" => $parentId,
@@ -247,14 +251,14 @@ namespace ShelfDB {
         return $newid;
 
       } else {
-        \Log::WarningSQLQuery($query, $this->db->sql);
+        \Log::WarningSQLQuery($query, $this->db()->sql);
         return false;
       }
 
     }
 
     public function DefileCache() {
-      $this->db->GetCache()->deleteCached("categories");
+      $this->db()->GetCache()->deleteCached("categories");
     }
 
     public function MoveToParentById( int $id, int $newparentid ) {
@@ -265,15 +269,15 @@ namespace ShelfDB {
 
       $query = "UPDATE `categories` SET `parentnode` = $newparentid WHERE `id` = $id";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res === true ) {
         // Everything OK
         $oldParentName = $this->GetNameById($cat["parentnode"]);
         $newParentName = $this->GetNameById($newparentid);
 
-        $this->db->History()->Add($id,'C','edit','parentnode',array(
-          "parentnode" => $cat["parentnode"],
+        $this->db()->History()->Add($id,'C','edit','parentnode',array(
+          "parentnode" => $cat["parent"],
           "parentname" => $oldParentName
         ),
         array(
@@ -286,7 +290,7 @@ namespace ShelfDB {
         return true;
       } else {
         // Error occured
-        \Log::WarningSQLQuery($query, $this->db->sql);
+        \Log::WarningSQLQuery($query, $this->db()->sql);
 
         return false;
       }

@@ -21,7 +21,7 @@ require_once(__DIR__.'/../lib/BlueM/Tree/InvalidParentException.php');
 /**
  * ShelfDB-Database singleton class
  */
-class ShelfDatabase
+class ShelfDB
 {
   private const VERSION = array("major" => 1, "minor" => 2);
 
@@ -59,27 +59,27 @@ class ShelfDatabase
     $this->groups           = new ShelfDB\Groups($this);
   }
 
-  public function Parts()           { return $this->parts; }
-  public function Categories()      { return $this->categories; }
-  public function Footprints()      { return $this->footprints; }
-  public function StoreLocations()  { return $this->storeLocations; }
-  public function Pictures()        { return $this->pictures; }
-  public function Suppliers()       { return $this->suppliers; }
-  public function Users()           { return $this->users; }
-  public function History()         { return $this->history; }
-  public function Groups()          { return $this->groups; }
+  public function Parts()          : ShelfDB\Parts          { return $this->parts; }
+  public function Categories()     : ShelfDB\Categories     { return $this->categories; }
+  public function Footprints()     : ShelfDB\Footprints     { return $this->footprints; }
+  public function StoreLocations() : ShelfDB\StoreLocations { return $this->storeLocations; }
+  public function Pictures()       : ShelfDB\Pictures       { return $this->pictures; }
+  public function Suppliers()      : ShelfDB\Suppliers      { return $this->suppliers; }
+  public function Users()          : ShelfDB\Users          { return $this->users; }
+  public function History()        : ShelfDB\History        { return $this->history; }
+  public function Groups()         : ShelfDB\Groups         { return $this->groups; }
 
   /**
-   * Get the singleton instance of ShelfDatabase
-   * @return ShelfDatabase The singleton instance
+   * Get the singleton instance of ShelfDB
+   * @return ShelfDB The singleton instance
    */
-  public static function Instance() : ShelfDatabase
+  public static function Instance() : ShelfDB
   {
     static $db = null;
 
     if( is_null($db) )
     {
-      $db = new ShelfDatabase();
+      $db = new ShelfDB();
 
       $db->Connect();
       $db->InjectCustomSQL();
@@ -100,7 +100,7 @@ class ShelfDatabase
   }
 
   public static function RelRoot() {
-    return ShelfDatabase::GetRelativeRoot();
+    return ShelfDB::GetRelativeRoot();
   }
 
   public static function GetRelativeRoot() {
@@ -116,7 +116,7 @@ class ShelfDatabase
    */
   public static function InstanceSQL()
   {
-    return ShelfDatabase::Instance()->sql;
+    return ShelfDB::Instance()->sql;
   }
 
   /**
@@ -286,24 +286,24 @@ class ShelfDatabase
 
     if( $version === false )
     {
-      Log::Info("No installed ShelfDatabase SQL tables found.");
+      Log::Info("No installed ShelfDB SQL tables found.");
       $this->CreateTables();
       return;
     }
 
     // Check if this software is outdated
-    if( $version["major"] > ShelfDatabase::VERSION["major"]
-      || ( $version["major"] == ShelfDatabase::VERSION["major"]
-        && $version["minor"] > ShelfDatabase::VERSION["minor"]
+    if( $version["major"] > ShelfDB::VERSION["major"]
+      || ( $version["major"] == ShelfDB::VERSION["major"]
+        && $version["minor"] > ShelfDB::VERSION["minor"]
         )
     ) {
       Log::Error("The installed SQL database is too new for this software: "
-        .getversionstring($version)." versus ".getversionstring(ShelfDatabase::VERSION)."."
+        .getversionstring($version)." versus ".getversionstring(ShelfDB::VERSION)."."
       );
       throw new Exception("Installed SQL database is too new for this software.");
     }
 
-    if( sortn($version) == sortn(ShelfDatabase::VERSION) )
+    if( sortn($version) == sortn(ShelfDB::VERSION) )
     {
       Log::Info("Using database version ".getversionstring($version));
     }
@@ -312,7 +312,7 @@ class ShelfDatabase
 
   private function CreateTables()
   {
-    Log::Info("Creating ShelfDatabase SQL tables...");
+    Log::Info("Creating ShelfDB SQL tables...");
     $this->InjectCustomSQLFromFile("./sql/createtables.sql");
   }
 
@@ -332,7 +332,7 @@ class ShelfDatabase
   }
 }
 
-$pdb = ShelfDatabase::Instance();
-$db  = ShelfDatabase::InstanceSQL();
+$pdb = ShelfDB::Instance();
+$db  = ShelfDB::InstanceSQL();
 
 ?>

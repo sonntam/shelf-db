@@ -11,6 +11,10 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     public function ExpandRawUrl( $rawurl, $partNr ) {
 
       $match = array();
@@ -30,7 +34,7 @@ namespace ShelfDB {
 
     public function GetUrlFromId(int $id, $partNr) {
       $query = "SELECT urlTemplate FROM suppliers WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_assoc();
@@ -48,22 +52,22 @@ namespace ShelfDB {
       if( !$su ) return false;
 
       // Delete the supplier and update all parts to use the default supplier id = 0
-      if( !($this->db->Parts()->AllReplaceSupplierId($id, 0)) )
+      if( !($this->db()->Parts()->AllReplaceSupplierId($id, 0)) )
         return false;
 
       $query = "DELETE FROM suppliers WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
 
       // Update history
-      $this->db->History()->Add($id, 'SU', 'delete', 'object', $su, '' );
+      $this->db()->History()->Add($id, 'SU', 'delete', 'object', $su, '' );
 
       // Now delete the image
       if( isset($su['pict_id']) && $su['pict_id'] ){
         \Log::Info("Trying to delete the image entry for supplier id = $id");
-        $this->db->Pictures()->DeleteById($su['pict_id']);
+        $this->db()->Pictures()->DeleteById($su['pict_id']);
       }
       return true;
     }
@@ -77,7 +81,7 @@ namespace ShelfDB {
         $newel = array($el);
         return $newel;
       }
-      
+
       return $el;
     }
 
@@ -86,9 +90,9 @@ namespace ShelfDB {
       if( $name == "" )
         return false;
 
-      $name = $this->db->sql->real_escape_string($name);
+      $name = $this->db()->sql->real_escape_string($name);
       $query = "SELECT f.name FROM suppliers f WHERE f.name = '$name';";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $result = $res->num_rows > 0;
 
@@ -109,7 +113,7 @@ namespace ShelfDB {
         if( !$su ); // error but ignore for now
 
         if( $su['pict_id'] ) {
-          $newId['picId'] = $this->db->Pictures()->CreateCopyFromId($su['pict_id'], $newId['id']);
+          $newId['picId'] = $this->db()->Pictures()->CreateCopyFromId($su['pict_id'], $newId['id']);
         }
 
         return $newId;
@@ -120,30 +124,30 @@ namespace ShelfDB {
     public function Create($name, $pictureFileName, $url = "") {
 
       $name = trim($name);
-      $esname = $this->db->sql->real_escape_string( $name );
-      $esurl  = $this->db->sql->real_escape_string( $url );
+      $esname = $this->db()->sql->real_escape_string( $name );
+      $esurl  = $this->db()->sql->real_escape_string( $url );
 
       $query = "INSERT INTO `suppliers` (`name`, `urlTemplate`) VALUES ('$esname', '$esurl')";
 
-      $res = $this->db->sql->query($query);
+      $res = $this->db()->sql->query($query);
 
       if( $res === true ) {
-        $newid = $this->db->sql->insert_id;
+        $newid = $this->db()->sql->insert_id;
 
         // Create picture
         $picid = null;
         if( $pictureFileName != "" )
-          $picid = $this->db->Pictures()->Create($newid, 'SU', $pictureFileName, false);
+          $picid = $this->db()->Pictures()->Create($newid, 'SU', $pictureFileName, false);
 
         $fp = array('id' => $newid, 'name' => $name, 'picId' => $picid, 'urlTemplate' => $url);
 
         // Update history
-        $this->db->History()->Add($newid, 'SU', 'create', 'object', '', $fp);
+        $this->db()->History()->Add($newid, 'SU', 'create', 'object', '', $fp);
 
         return $fp;
 
       } else {
-        \Log::WarningSQLQuery($query, $this->db->sql);
+        \Log::WarningSQLQuery($query, $this->db()->sql);
         return false;
       }
     }
@@ -153,9 +157,9 @@ namespace ShelfDB {
       if( $name == "" )
         return null;
 
-      $name = $this->db->sql->real_escape_string($name);
+      $name = $this->db()->sql->real_escape_string($name);
       $query = "SELECT f.id, f.name, f.urlTemplate, COALESCE(p.pict_fname,'default.png') as pict_fname, p.id as pict_id FROM suppliers f LEFT JOIN pictures p ON p.parent_id = f.id AND p.pict_type = 'SU' WHERE f.name = '$name';";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $su = $res->fetch_assoc();
       $res->free();
@@ -170,12 +174,12 @@ namespace ShelfDB {
 
       $oldname = $this->GetNameById($id);
 
-      $esname = $this->db->sql->real_escape_string($name);
+      $esname = $this->db()->sql->real_escape_string($name);
       $query = "UPDATE suppliers SET name = '$esname' WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // History
-      $this->db->History()->Add($id, 'SU', 'edit', 'name', $oldname, $name);
+      $this->db()->History()->Add($id, 'SU', 'edit', 'name', $oldname, $name);
 
       return $res;
     }
@@ -183,7 +187,7 @@ namespace ShelfDB {
     public function GetNameById($id) {
 
       $query = "SELECT name FROM suppliers WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $su = $res->fetch_assoc();
       $res->free();
@@ -195,12 +199,12 @@ namespace ShelfDB {
 
       $oldurl = $this->GetUrlById($id);
 
-      $esurl = $this->db->sql->real_escape_string($url);
+      $esurl = $this->db()->sql->real_escape_string($url);
       $query = "UPDATE suppliers SET urlTemplate = '$esurl' WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // History
-      $this->db->History()->Add($id, 'SU', 'edit', 'urlTemplate', $oldurl, $url);
+      $this->db()->History()->Add($id, 'SU', 'edit', 'urlTemplate', $oldurl, $url);
 
       return $res;
     }
@@ -208,7 +212,7 @@ namespace ShelfDB {
     public function GetUrlById($id) {
 
       $query = "SELECT urlTemplate FROM suppliers WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $su = $res->fetch_assoc();
       $res->free();
@@ -225,7 +229,7 @@ namespace ShelfDB {
         $query = "SELECT f.id, f.name, f.urlTemplate, COALESCE(p.pict_fname,'default.png') as pict_fname, p.id as pict_id FROM suppliers f LEFT JOIN pictures p ON p.parent_id = f.id AND p.pict_type = 'SU' WHERE f.id = $id ORDER BY udf_NaturalSortFormat(f.name, 10, \".,\") LIMIT 1";
       }
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       if( !$res ) return false;
 
       $children = $res->fetch_all(MYSQLI_ASSOC);

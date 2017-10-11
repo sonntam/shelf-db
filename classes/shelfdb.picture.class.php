@@ -34,9 +34,9 @@ namespace ShelfDB {
     }
 
     public function GetByFilename($fileName, $elementType) {
-      $fileName = $this->db->sql->real_escape_string($fileName);
+      $fileName = $this->db()->sql->real_escape_string($fileName);
       $query = "SELECT id FROM pictures WHERE pict_type = '$elementType' AND pict_fname = '$fileName';";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       if( !$res ) return null;
 
       $data = $res->fetch_all(MYSQLI_ASSOC);
@@ -58,7 +58,7 @@ namespace ShelfDB {
       // Get list of group images
       $query = "SELECT * FROM pictures WHERE NOT id = $id AND pict_type = 'P' AND parent_id = ".$picInfo['parent_id'].";";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res ) return null;
 
@@ -68,10 +68,10 @@ namespace ShelfDB {
       // Set master
       if( $picInfo['pict_masterpict'] != '1' ) {
         $query = "UPDATE pictures SET pict_masterpict = 1 WHERE id = $id;";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
         if( !$res ) return null;
 
-        $this->db->History()->Add($id, 'PIC', 'edit', 'pict_masterpict', 0, 1 );
+        $this->db()->History()->Add($id, 'PIC', 'edit', 'pict_masterpict', 0, 1 );
       }
 
       // Finished
@@ -79,11 +79,11 @@ namespace ShelfDB {
 
       // Remove master from all other pictures
       $query = "UPDATE pictures SET pict_masterpict = 0 WHERE id IN (".join(',', array_map(function($x){ return $x['id']; },$data) ).");";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       foreach( $data as $pic ) {
         if( $pic['pict_masterpict'] != '0' )
-          $this->db->History()->Add($pic['id'], 'PIC', 'edit', 'pict_masterpict', 1, 0 );
+          $this->db()->History()->Add($pic['id'], 'PIC', 'edit', 'pict_masterpict', 1, 0 );
       }
 
       return $res;
@@ -98,7 +98,7 @@ namespace ShelfDB {
             ."WHERE i.pict_type = 'T' GROUP BY i.tn_pictid"
           .") t ON t.tn_pictid = p.id WHERE p.id = $id";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
       {
@@ -138,7 +138,7 @@ namespace ShelfDB {
             ."WHERE i.pict_type = 'T' GROUP BY i.tn_pictid"
           .") t ON t.tn_pictid = p.id WHERE p.parent_id = $id AND p.pict_type = '$elementType';";
           \Log::Info($query);
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
       {
@@ -181,7 +181,7 @@ namespace ShelfDB {
       $removeImageFun = function($fullPath, $id, $img) {
         // Delete from DB
         $query = "DELETE FROM pictures WHERE id = $id;";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
         if( $res ) {
           // Delete from FS
           if( $fullPath != "" && file_exists( $fullPath ) ) {
@@ -192,7 +192,7 @@ namespace ShelfDB {
           }
 
           // History
-          $this->db->History()->Add($id, 'PIC', 'delete', 'object', $img ,'');
+          $this->db()->History()->Add($id, 'PIC', 'delete', 'object', $img ,'');
 
           return true;
         } else {
@@ -205,12 +205,12 @@ namespace ShelfDB {
       $imgInstances = $this->GetByFilename($img['pict_fname'], $img['pict_type']);
       $deleteFiles  = !$imgInstances || ( sizeof($imgInstances) <= 1 );
 
-      $fullImagePath = joinPaths($this->db->AbsRoot(), $imgDir, $img['pict_fname']);
+      $fullImagePath = joinPaths($this->db()->AbsRoot(), $imgDir, $img['pict_fname']);
 
       $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['id'], $img );
 
       for( $i = 0; $i < sizeof( $img['thumbnails']); $i++ ) {
-        $fullImagePath = joinPaths($this->db->AbsRoot(), '/img/thumb', $img['thumbnails'][$i]['filename']);
+        $fullImagePath = joinPaths($this->db()->AbsRoot(), '/img/thumb', $img['thumbnails'][$i]['filename']);
         $removeImageFun( $deleteFiles ? $fullImagePath : "", $img['thumbnails'][$i]['id'], $img['thumbnails'][$i] );
       }
 
@@ -221,18 +221,18 @@ namespace ShelfDB {
         $query = "CREATE TEMPORARY TABLE tempTable AS SELECT * FROM pictures WHERE id=$picId;
                   UPDATE tempTable SET parent_id=$parentId, id=0;
                   INSERT INTO pictures SELECT * FROM tempTable;";
-        $res = $this->db->sql->multi_query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->multi_query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
         // TODO create thumbnails
         //
         if( $res ) {
           do {
-            if( $res = $this->db->sql->store_result() ) {
+            if( $res = $this->db()->sql->store_result() ) {
               $res->fetch_all(MYSQLI_ASSOC);
               $res->free();
             }
-          } while($this->db->sql->more_results() && $this->db->sql->next_result() );
-          $newid = $this->db->sql->insert_id;
+          } while($this->db()->sql->more_results() && $this->db()->sql->next_result() );
+          $newid = $this->db()->sql->insert_id;
           \Log::Info("Created new picture entry (id = $newid, parent_id = $parentId) as copy of id $picId");
 
           return $newid;
@@ -255,14 +255,14 @@ namespace ShelfDB {
         // Check if the file exists
         if( file_exists( joinPaths(dirname(__DIR__), $path, $fileName) ) ) {
           // Create entry
-          $fn = $this->db->sql->real_escape_string($fileName);
+          $fn = $this->db()->sql->real_escape_string($fileName);
           $query = "INSERT INTO pictures (parent_id, pict_fname, pict_width, pict_height, pict_type) VALUES ($elementId, '$fn', 0, 0, '$elementType');";
-          $res = $this->db->sql->query($query);
+          $res = $this->db()->sql->query($query);
 
           // TODO create thumbnails
           //
           if( $res === true ) {
-            $newid = $this->db->sql->insert_id;
+            $newid = $this->db()->sql->insert_id;
             \Log::Info("Created new picture entry (id = $newid, type = $elementType, fileName = \"$fn\")");
 
             // Delete old picture and its thumbnails
@@ -279,7 +279,7 @@ namespace ShelfDB {
 
           } else {
             \Log::Error("Error creating new picture entry (type = $elementId, fileName = \"$fn\")");
-            \Log::WarningSQLQuery($query, $this->db->sql);
+            \Log::WarningSQLQuery($query, $this->db()->sql);
             return false;
           }
         } else {

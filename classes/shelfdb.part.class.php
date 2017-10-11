@@ -12,6 +12,10 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     public function CreateQRCode( $partId ) {
       $qr = \QRCode::getMinimumQRCode($partId, QR_ERROR_CORRECT_LEVEL_Q);
 
@@ -41,15 +45,15 @@ namespace ShelfDB {
 
     public function AllReplaceFootprintId( int $oldid, int $newid ) {
       $query = "UPDATE parts SET id_footprint = $newid WHERE id_footprint = $oldid;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // Update history
-      $this->db->History()->Add(0, 'P', 'edit', 'footprint', array(
+      $this->db()->History()->Add(0, 'P', 'edit', 'footprint', array(
         "id" => $oldid,
-        "name" => $this->db->Footprints()->GetNameById($oldid)
+        "name" => $this->db()->Footprints()->GetNameById($oldid)
       ), array(
         "id" => $newid,
-        "name" => $this->db->Footprints()->GetNameById($newid)
+        "name" => $this->db()->Footprints()->GetNameById($newid)
       ) );
 
       return $res;
@@ -57,15 +61,15 @@ namespace ShelfDB {
 
     public function AllReplaceSupplierId( int $oldid, int $newid ) {
       $query = "UPDATE parts SET id_supplier = $newid WHERE id_supplier = $oldid;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // Update history
-      $this->db->History()->Add(0, 'P', 'edit', 'supplier', array(
+      $this->db()->History()->Add(0, 'P', 'edit', 'supplier', array(
         "id" => $oldid,
-        "name" => $this->db->Suppliers()->GetNameById($oldid)
+        "name" => $this->db()->Suppliers()->GetNameById($oldid)
       ), array(
         "id" => $newid,
-        "name" => $this->db->Suppliers()->GetNameById($newid)
+        "name" => $this->db()->Suppliers()->GetNameById($newid)
       ) );
 
       return $res;
@@ -73,16 +77,16 @@ namespace ShelfDB {
 
     public function AllReplaceStorelocationId( int $oldid, int $newid ) {
       $query = "UPDATE parts SET id_storeloc = $newid WHERE id_storeloc = $oldid;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // Update history
-      if( $this->db->affected_rows > 0 ) {
-        $this->db->History()->Add(0, 'P', 'edit', 'storeLocation', array(
+      if( $this->db()->affected_rows > 0 ) {
+        $this->db()->History()->Add(0, 'P', 'edit', 'storeLocation', array(
           "id" => $oldid,
-          "name" => $this->db->StoreLocations()->GetNameById($oldid)
+          "name" => $this->db()->StoreLocations()->GetNameById($oldid)
         ), array(
           "id" => $newid,
-          "name" => $this->db->StoreLocations()->GetNameById($newid)
+          "name" => $this->db()->StoreLocations()->GetNameById($newid)
         ) );
       }
 
@@ -93,7 +97,7 @@ namespace ShelfDB {
       if( !is_array($search) ) {
         $search = str_getcsv( $search, " ");
         foreach( $search as &$el) {
-          $escapedSearch = '%'.$this->db->sql->real_escape_string($el).'%';
+          $escapedSearch = '%'.$this->db()->sql->real_escape_string($el).'%';
           $el = "("
             ."f.name LIKE '$escapedSearch' OR "
             ."s.name LIKE '$escapedSearch' OR "
@@ -108,7 +112,7 @@ namespace ShelfDB {
 
     private function GetDataColumnById(int $id, $column ) {
       $query = "SELECT $column FROM parts WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_assoc();
@@ -126,13 +130,13 @@ namespace ShelfDB {
 
       if( $oldData === null ) return false;
 
-      $ecdata = $this->db->sql->real_escape_string($data);
+      $ecdata = $this->db()->sql->real_escape_string($data);
       $query = "UPDATE parts SET $column = '$ecdata' WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         // Add history
-        $this->db->History()->Add($id,'P','edit',$column, $oldData, $data);
+        $this->db()->History()->Add($id,'P','edit',$column, $oldData, $data);
         return array('oldData' => $oldData);
       }
 
@@ -182,25 +186,25 @@ namespace ShelfDB {
 
       if( !$oldPrice ) { // None has been given yet
         $query = "INSERT INTO prices (part_id, ma, price, t) VALUES ($id, 1.0, $price, NOW());";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
         if( !$res )
           return false;
 
-        $newId = $this->db->sql->insert_id;
+        $newId = $this->db()->sql->insert_id;
 
-        $this->db->History()->Add($id, "P", "add", "price", null, array(
+        $this->db()->History()->Add($id, "P", "add", "price", null, array(
           "priceId" => $newId,
           "price" => $price ) );
 
       } else {
         $query = "UPDATE prices SET price = $price, ma = 1.0, t = NOW() WHERE part_id = $id;";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
         if( !$res )
           return false;
 
-        $this->db->History()->Add($id, "P", "edit", "price", $oldPrice, $price);
+        $this->db()->History()->Add($id, "P", "edit", "price", $oldPrice, $price);
       }
 
       return true;
@@ -211,13 +215,13 @@ namespace ShelfDB {
       if( !$storelocId ) return false;
 
       // Check if supplier EXISTS
-      $newStoreLocation = $this->db->StoreLocations()->GetById($storelocId);
+      $newStoreLocation = $this->db()->StoreLocations()->GetById($storelocId);
       if( !$newStoreLocation ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId );
       if( $oldData ) {
-        $oldStoreLocation = $this->db->StoreLocations()->GetById($oldData['oldData']);
-        $this->db->History()->Add($id, 'P', 'edit', 'storelocation',
+        $oldStoreLocation = $this->db()->StoreLocations()->GetById($oldData['oldData']);
+        $this->db()->History()->Add($id, 'P', 'edit', 'storelocation',
           $oldStoreLocation['name'], $newStoreLocation['name'] );
 
         return true;
@@ -231,14 +235,14 @@ namespace ShelfDB {
       if( !$categoryId ) return false;
 
       // Check if category EXISTS
-      $newCategory = $this->db->Categories()->GetById($categoryId);
+      $newCategory = $this->db()->Categories()->GetById($categoryId);
       if( !$newCategory ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId );
 
       if( $oldData ) {
-        $oldCategory = $this->db->Categories()->GetById($oldData['oldData']);
-        $this->db->History()->Add($id, 'P', 'edit', 'category',
+        $oldCategory = $this->db()->Categories()->GetById($oldData['oldData']);
+        $this->db()->History()->Add($id, 'P', 'edit', 'category',
           $oldCategory['name'], $newCategory['name'] );
 
         return true;
@@ -250,7 +254,7 @@ namespace ShelfDB {
     public function GetPriceById( int $id ) {
 
       $query = "SELECT price, ma FROM prices WHERE part_id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
         return false;
@@ -269,21 +273,21 @@ namespace ShelfDB {
       if( !$footprintId ) return false;
 
       // Check if supplier EXISTS
-      $newFootprint = $this->db->Footprints()->GetById($footprintId);
+      $newFootprint = $this->db()->Footprints()->GetById($footprintId);
       if( !$newFootprint ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId );
 
       if( $oldData ) {
         if( $oldData['oldData'] > 0 ) {
-          $oldFootprint = $this->db->Footprints()->GetById($oldData['oldData']);
+          $oldFootprint = $this->db()->Footprints()->GetById($oldData['oldData']);
         } else {
           $oldFootprint = array("name" => "none");
         }
       } else {
         return false;
       }
-      $this->db->History()->Add($id, 'P', 'edit', 'footprint',
+      $this->db()->History()->Add($id, 'P', 'edit', 'footprint',
         $oldFootprint['name'], $newFootprint['name'] );
 
       return true;
@@ -294,12 +298,11 @@ namespace ShelfDB {
       if( !$supplierId ) return false;
 
       // Check if supplier EXISTS
-      $newSupplier = $this->db->Suppliers()->GetById($supplierId);
+      $newSupplier = $this->db()->Suppliers()->GetById($supplierId);
       if( !$newSupplier ) return false;
 
       if( $oldData = $this->SetDataColumnById( $id, "id_supplier", $supplierId ) ) {
-        $oldSupplier = $this->db->Suppliers()->GetById($oldData['oldData']);
-        $this->db->History()->Add($id, 'P', 'edit', 'supplier', $oldSupplier['name'], $newSupplier['name'] );
+        $this->db()->History()->Add($id, 'P', 'edit', 'supplier', $oldSupplier['name'], $newSupplier['name'] );
 
         return true;
       } else {
@@ -313,23 +316,23 @@ namespace ShelfDB {
       if( !$fp ) return false;
 
       $query = "DELETE FROM parts WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
         return false; // Database my be inconsistent because footrprints have already been replaced
 
       // Update history
-      $this->db->History()->Add($id, 'P', 'delete', 'object', $fp, '');
+      $this->db()->History()->Add($id, 'P', 'delete', 'object', $fp, '');
 
       // Clear category cache as the part count changed
-      $this->db->Categories()->DefileCache();
+      $this->db()->Categories()->DefileCache();
 
       // Now delete the image
       if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){
         $picIds = explode(';',$fp['pict_id_arr']);
         foreach($picIds as $picId) {
             \Log::Info("Trying to delete the image id = $picId entry for part id = $id");
-            $this->db->Pictures()->DeleteById($picId);
+            $this->db()->Pictures()->DeleteById($picId);
         }
       }
       return true;
@@ -358,7 +361,7 @@ namespace ShelfDB {
           ."LEFT JOIN categories c ON p.id_category = c.id "
         ."WHERE ". join(' AND ', $clauses) .";";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_assoc();
       $res->free();
@@ -370,7 +373,7 @@ namespace ShelfDB {
       {
         // Get child categories
         $query = "SELECT id FROM categories WHERE parentnode = $catid";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
         $children = $res->fetch_all(MYSQLI_ASSOC);
         $res->free();
 
@@ -386,7 +389,7 @@ namespace ShelfDB {
 
     public function GetCountByStoreLocationId( int $storelocId ) {
       $query = "SELECT COUNT(id) as numParts FROM parts WHERE id_storeloc = $storelocId";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_assoc();
       $res->free();
@@ -405,7 +408,7 @@ namespace ShelfDB {
 
       $query = "SELECT COUNT(p.id) as partcount FROM parts p WHERE p.id_category = $catid";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_assoc();
       $res->free();
@@ -417,7 +420,7 @@ namespace ShelfDB {
       {
         // Get child categories
         $query = "SELECT id FROM categories WHERE parentnode = $catid";
-        $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
         $children = $res->fetch_all(MYSQLI_ASSOC);
         $res->free();
 
@@ -441,7 +444,7 @@ namespace ShelfDB {
       switch($type) {
         case 'category':
           if( $recursive ) {
-            $ids = $this->db->Categories()->GetSubcategoryIdsFromId( $id, true );
+            $ids = $this->db()->Categories()->GetSubcategoryIdsFromId( $id, true );
           } else {
             $ids = array($id);
           }
@@ -518,8 +521,8 @@ namespace ShelfDB {
         ."LEFT JOIN pictures sup ON su.id = sup.parent_id AND sup.pict_type = 'SU' "
         ."LEFT JOIN pictures tfpr ON tfpr.parent_id = fpr.id AND tfpr.pict_type = 'T' "
         ."WHERE ".join(" AND ", $searchFilter)." "
-        ."GROUP BY p.id ORDER BY udf_NaturalSortFormat($sortname, 10, \".,\") $sortorder LIMIT $limit OFFSET $offset";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        ."GROUP BY p.id ORDER BY $sortOptions LIMIT $limit OFFSET $offset";
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       \Log::LogSQLQuery($query);
       if( !$res )
       {
@@ -585,7 +588,7 @@ namespace ShelfDB {
         .") sup ON su.id = sup.parent_id "
         ."WHERE p.id = $partid "
         ."LIMIT 1";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
       {
@@ -603,7 +606,7 @@ namespace ShelfDB {
     public function GetById( int $partid ) {
 
       $query = "SELECT * FROM parts WHERE id = $partid";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       $data = $res->fetch_assoc();
       $res->free();
 

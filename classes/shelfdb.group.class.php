@@ -10,18 +10,22 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     public function Create($name) {
       // Names must be unique
       if( $this->ExistsByName($name) )
         return null;
 
-      $esname = $this->db->sql->real_escape_string($name);
+      $esname = $this->db()->sql->real_escape_string($name);
       $query = "INSERT INTO groups (name) VALUES ('$esname');";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
-        $newid = $this->db->sql->insert_id;
+        $newid = $this->db()->sql->insert_id;
 
         // Add history
         $this->History()->Add($newid, 'G', 'create', 'object', null, array(
@@ -38,7 +42,7 @@ namespace ShelfDB {
     public function GetDependancyGroups( int $groupId ) {
       // Get all groups that the given group is within directly or indirectly
       $query = "SELECT groupid FROM users_group WHERE objectId = $groupId;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_all(MYSQLI_ASSOC);
       $res->free();
@@ -74,7 +78,7 @@ namespace ShelfDB {
 
       // Add group to group's relations
       $query = "INSERT INTO users_groups (objectId, objectType, groupid) VALUES ($addedGroupId, 'G', $groupId);";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         foreach($userId as $user) {
@@ -88,13 +92,13 @@ namespace ShelfDB {
 
     public function AddUserById(int $groupid, $userId) {
       // TODO Block ambiguous requests
-      $existingUsers = $this->db->Users()->GetAllByGroupId($groupid);
+      $existingUsers = $this->db()->Users()->GetAllByGroupId($groupid);
       $userId = array_diff($userId, $existingUsers);
       $userId = array_unique($userId);
       $values = "(".join(",'U',$groupid),(", $userId).",'U',$groupid)";
 
       $query = "INSERT INTO users_groups (objectId, objectType, groupid) VALUES $values;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         foreach($userId as $user) {
@@ -110,7 +114,7 @@ namespace ShelfDB {
     public function GetById($id) {
 
       $query = "SELECT * FROM groups WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_assoc();
@@ -125,7 +129,7 @@ namespace ShelfDB {
     public function GetAll() {
 
       $query = "SELECT * FROM groups ORDER BY name ASC;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_all(MYSQLI_ASSOC);
@@ -140,7 +144,7 @@ namespace ShelfDB {
     public function GetNameById($id) {
 
       $query = "SELECT name FROM groups WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $fp = $res->fetch_assoc();
       $res->free();
@@ -166,9 +170,9 @@ namespace ShelfDB {
       } else {
         // Change name
         $oldname   = $this->GetNameById($id);
-        $esnewname = $this->db->sql->real_escape_string($newname);
+        $esnewname = $this->db()->sql->real_escape_string($newname);
         $query = "UPDATE groups SET name = ''$esnewname' WHERE id = $id;";
-        $res   = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res   = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
         if( $res ) {
           $this->History()->Add( $id, 'G', 'edit', 'name', $oldname, $newname );
           return true;
@@ -186,7 +190,7 @@ namespace ShelfDB {
         ."WHERE ug.userid IN (".join(",",$id).")";
 
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_all(MYSQLI_ASSOC);
@@ -207,9 +211,9 @@ namespace ShelfDB {
       if( $name == "" )
         return false;
 
-      $name = $this->db->sql->real_escape_string($name);
+      $name = $this->db()->sql->real_escape_string($name);
       $query = "SELECT id FROM groups WHERE name = '$name';";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res->num_rows > 0 ) {
         $result = $res->fetch_all(MYSQLI_ASSOC);

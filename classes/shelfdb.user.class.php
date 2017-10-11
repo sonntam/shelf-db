@@ -14,6 +14,10 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     public function ResumeSession() {
       // Obtain session ID
       if( session_start() ) {
@@ -52,7 +56,7 @@ namespace ShelfDB {
 
       $query = "SELECT * FROM users WHERE id = $id;";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       if( !$res ) return false;
 
       $user = $res->fetch_assoc();
@@ -62,10 +66,10 @@ namespace ShelfDB {
     }
 
     public function GetByName($username) {
-      $username = $this->db->sql->real_escape_string(strtolower($username));
+      $username = $this->db()->sql->real_escape_string(strtolower($username));
       $query = "SELECT * FROM users WHERE name = '$username';";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
       if( !$res ) return false;
 
       $user = $res->fetch_assoc();
@@ -81,7 +85,7 @@ namespace ShelfDB {
         ."LEFT JOIN users u ON u.id = ug.userid "
         ."WHERE ug.groupid IN (".join(",",$id).")";
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( $res ) {
         $data = $res->fetch_all(MYSQLI_ASSOC);
@@ -117,9 +121,9 @@ namespace ShelfDB {
     }
 
     public function GetUserIdByName($username) {
-      $username = $this->db->sql->real_escape_string($username);
+      $username = $this->db()->sql->real_escape_string($username);
       $query = "SELECT id FROM users WHERE name = '$username'";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_assoc();
 
@@ -134,7 +138,7 @@ namespace ShelfDB {
     public function GetUserPasswordHashById(int $id) {
 
       $query = "SELECT passhash FROM users WHERE id = $id";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       $data = $res->fetch_assoc();
 
@@ -144,9 +148,9 @@ namespace ShelfDB {
     }
 
     public function SetUserPasswordHashById(int $id, $pwHash) {
-      $pwHash   = $this->db->sql->real_escape_string($pwHash);
+      $pwHash   = $this->db()->sql->real_escape_string($pwHash);
       $query = "UPDATE users SET passhash = '$pwHash' WHERE id = $id;";
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       return $res;
     }
@@ -158,7 +162,7 @@ namespace ShelfDB {
         $_SESSION['userid']   = $user['id'];
         session_write_close();
 
-        $this->db->History()->Add($user['id'],'U','login','none','','');
+        $this->db()->History()->Add($user['id'],'U','login','none','','');
 
         return $this->ResumeSession();
       }
@@ -216,7 +220,7 @@ namespace ShelfDB {
       if( $this->IsLoggedIn() ) {
         $id    = $this->GetLoggedInUserId();
         $query = "SELECT isadmin FROM users WHERE id = $id;";
-        $res   = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+        $res   = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
         if( !$res ) return false;
 
