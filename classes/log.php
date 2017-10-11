@@ -71,6 +71,22 @@ namespace {
       return true;
     }
 
+    public static function LogPhpException( Throwable $e ) {
+      /*Log::print_messages_without_template('Part-DB: Schwerwiegender Fehler!', "§WOW",
+                                      '<font color="red"><strong>Es ist ein schwerwiegender Fehler aufgetreten:'.
+                                      '<br><br>'.nl2br($e->getMessage()).'</strong><br><br>'.
+                                      '(Exception wurde geworfen in '.$e->getFile().', Zeile '.$e->getLine().')</font>');
+                                    */
+      //exit;
+      Log::LogPhpError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), null );
+      Log::PrintTerminationMessage("Shelf-DB Critical error",
+        "Critical error...",
+        "A critical error occured in file ". $e->getFile() ." on line ".$e->getLine() .":\n\n".
+        $e->getMessage()."\n\nHere is the full log:\n\n".Log::FetchLogContent()
+      );
+      exit;
+    }
+
     private static function BuildTracePrefix($step) {
       $tr = debug_backtrace();
       return $tr[$step]["file"].":".$tr[$step]["line"].":".$tr[$step+1]["function"]."()";
@@ -80,10 +96,73 @@ namespace {
       return $errfile.":".$errline;
     }
 
+    public static function PrintTerminationMessage($title, $subtitle, $message)
+    {
+        echo
+            '<html>'.
+            '<head>'.
+            '<title>'.htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'</title>'.
+            '<meta http-equiv="content-type" content="text/html; charset=utf-8">
+                <style type="text/css">
+                body {
+                  background-color: #ffffff;
+                  font-family: sans-serif;
+                  font-size: 1em;
+                  margin: 0;
+                }
+                .wrapper {
+                  display: grid;
+                  width: 100vw;
+                  height: 100vh;
+                  grid-gap: 0;
+                  grid-template-columns: 1fr;
+                  grid-template-rows: 4em 3em 1fr;
+                }
+                .header {
+                  background-color: #2980B9;
+                  font-size: 2em;
+                  font-weight: bold;
+                  grid-column: 1;
+                  grid-row: 1;
+                  color: #fff;
+                  padding: 12px;
+                  text-shadow: 0 0.1em 0 #000;
+                }
+                .subheader {
+                  background-color: #2980B9;
+                  font-size: 1.5em;
+                  grid-column: 1;
+                  grid-row: 2;
+                  color: #fff;
+                  padding: 12px;
+                }
+                .inner {
+                  grid-column: 1;
+                  grid-row: 3;
+                  padding: 12px;
+                }
+                </style>'.
+              '</head>'.
+              '<body>'.
+                '<div class=wrapper>
+                  <div class=header>
+                    Shelf-DB
+                  </div>
+                  <div class=subheader>'.
+                    htmlspecialchars($subtitle, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').
+                  '</div>
+                  <div class=inner>'.
+                    nl2br(htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')).
+                  '</div>
+                </div>'.
+              '</body>'.
+              '</html>';
+    }
   }
 
   // Set php error handlers
   set_error_handler("Log::LogPhpError");
+  set_exception_handler("Log::LogPhpException");
 
 }
 
