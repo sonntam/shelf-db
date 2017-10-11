@@ -259,6 +259,13 @@ div.editcontrols.editcontrols-hidden {
 /**
  * jqgrid styles
  */
+
+/* labels */
+.ui-jqgrid label {
+  font-size: 11px;
+  display: inline;
+}
+
 .ui-jqgrid-title {
     font-size: 1em;
     margin: 0 15px;
