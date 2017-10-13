@@ -14,12 +14,6 @@
     <!--<script src="./js/jquery-3.2.0.js"></script>-->
     <!--<script src="https://code.jquery.com/jquery-migrate-3.0.0.js"></script>-->
 
-    <!-- JQUERY MOBILE -->
-    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.mobile-1.4.5.js"></script>
-    <script src="<?php echo $pdb->RelRoot(); ?>scripts/jquery.mobile-1.4.5.menupanel.js"></script>
-    <link href="<?php echo $pdb->RelRoot(); ?>styles/jquery.mobile-1.4.5.css" rel="stylesheet"/>
-    <!--<link rel="stylesheet" href="./css/jquery-ui.min.css">-->
-
     <!-- JQTREE -->
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/tree.jquery.js"></script>
     <link href="<?php echo $pdb->RelRoot(); ?>styles/jqtree.css" rel="stylesheet"/>
@@ -44,6 +38,16 @@
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/jquery.validate.js"></script>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery-validation/localization/messages_de.min.js"></script>
 
+    <!-- Localization -->
+    <!-- This has to be loaded BEFORE jQuery mobile! -->
+    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=deDE&replace=true"></script>
+
+    <!-- JQUERY MOBILE -->
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.mobile-1.4.5.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/jquery.mobile-1.4.5.menupanel.js"></script>
+    <link href="<?php echo $pdb->RelRoot(); ?>styles/jquery.mobile-1.4.5.css" rel="stylesheet"/>
+    <!--<link rel="stylesheet" href="./css/jquery-ui.min.css">-->
+
     <!-- jquery-mobile-font-awesome -->
     <link rel="stylesheet" href="<?php echo $pdb->RelRoot(); ?>styles/jqm-font-awesome-usvg-upng.css" />
 
@@ -54,85 +58,39 @@
     <!-- CUSTOM EXTENSIONS -->
     <link href="<?php echo $pdb->RelRoot(); ?>styles/shelfdb.css" rel="stylesheet"/>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/js.cookie.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/sdb-core.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/sdb-db-parts.js"></script>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/sdb-gui-popup.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/sdb-gui-nav.js"></script>
+    <script src="<?php echo $pdb->RelRoot(); ?>scripts/sdb-gui-editcategory.js"></script>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/custom.ext.js"></script>
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/shelfdb.class.js.php"></script>
 
-    <!-- Localization -->
-    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=deDE"></script>
-
     <script>
-      (pageHookClear = function() {
-        console.log("DEBUG: clearing page hooks");
-        $.mobile.pageCreateTasks = [];
-        $.mobile.pageContainerBeforeShowTasks = [];
-        $.mobile.pageContainerBeforeLoadTasks = [];
-        $.mobile.pageContainerBeforeChangeTasks = [];
-        $.mobile.pageContainerChangeTasks = [];
-      })();
-
       $(function(){
         // Document ready
         //
         //$.mobile.linkBindingEnabled = true;
         //$.mobile.ajaxEnabled = true;
+        console.log("DEBUG: document ready");
+
+        ShelfDB.GUI.Nav.CategoryTree.setup({
+          treeSelector: '#categorytree',
+          btnCollapseSelector: '#collapse',
+          btnExpandSelector: '#expand'
+        });
 
         // Search
-        $('#searchbar').keypress(function(e){
-        if(e.which == 13) {//Enter key pressed
-            if( $(e.target).val().trim() != "" ) {
-              $(':mobile-pagecontainer').pagecontainer("change",
-                "<?php echo $pdb->RelRoot(); ?>pages/page-showsearchresults.php?catid=0&search="+encodeURIComponent($(e.target).val()),
-                {
-                  allowSamePageTransition: true,
-                  reload: true
-                });
-            }
-          }
+        ShelfDB.GUI.Nav.Search.setup({
+          searchBoxSelector: '#searchbar'
         });
 
         // Panel
         $panel = $("body>[data-role='menupanel']");
         $panel.menupanel({'_transitionClose': false}).enhanceWithin();
 
-        // jqTree
-        var $tree = $('#categorytree');
-
-        $tree.tree({
-          saveState: true
-        });
-
-        // Tree callback
-        $tree.bind('tree.click', function(e) {
-          // e.node.name - Name string
-          // e.node.id   - ID string
-          $(':mobile-pagecontainer').pagecontainer("change","<?php echo $pdb->RelRoot(); ?>pages/page-showparts.php?catid=" + e.node.id + "&catrecurse=" + Number(e.node.children.length > 0));
-        });
-
-        $('#collapse').click(function() {
-          var tree = $tree.tree('getTree');
-          tree.iterate(function(node) {
-
-            if (node.hasChildren()) {
-              $tree.tree('closeNode', node, true);
-            }
-            return true;
-          });
-        });
-
-        $('#expand').click(function() {
-          var tree = $tree.tree('getTree');
-          tree.iterate(function(node) {
-
-            if (node.hasChildren()) {
-              $tree.tree('openNode', node, true);
-            }
-            return true;
-          });
-        });
-
         $('a#userLogin').click( function() {
-          openExternalPopup({
+          ShelfDB.GUI.Popup.openExternalPopup({
             url: '<?php echo $pdb->RelRoot(); ?>pages/popup-login.php',
             submit: function(evt) {
               evt.preventDefault();
@@ -210,9 +168,18 @@
         });
       });
 
-      $(document).on("pagebeforecreate", function(evt) {
-        // Apply language
-        Lang.searchAndReplace();
+      $(document).on('updatelayout',function() {
+        console.log("DEBUG: updatelayout");
+      });
+
+      $(document).on('menupanelopen',function() {
+        console.log("DEBUG: menupanelopen");
+        $(window).trigger('resize');
+      });
+
+      $(document).on('menupanelclose',function() {
+        console.log("DEBUG: menupanelclose");
+        $(window).trigger('resize');
       });
 
       $(document).one('pagecreate', function() {
@@ -228,6 +195,8 @@
             console.log("DEBUG: pagecontainer - beforeload");
 
             $.mobile.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
+
+            ShelfDB.Core.pageHookClear();
           });
 
           $(':mobile-pagecontainer').on('pagecontainerchange', function(event,ui) {
@@ -235,7 +204,7 @@
 
             $.mobile.pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
 
-            pageHookClear();
+            ShelfDB.Core.pageHookClear();
           });
 
           $(':mobile-pagecontainer').on('pagecontainerbeforechange', function(event,ui) {
@@ -246,10 +215,13 @@
       });
       $(document).on('popupcreate', function() {
         console.log("DEBUG: popup - create");
-        Lang.searchAndReplace();
       });
       $(document).on('pagecreate', function() {
           console.log("DEBUG: page - create");
+
+          $(document).on( "panelclose", "#navpanel", function() {
+            console.log('Panel close');
+          });
 
           $.mobile.pageCreateTasks.forEach(function(fun) { fun(); });
 

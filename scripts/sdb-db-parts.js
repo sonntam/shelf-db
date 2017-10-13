@@ -1,0 +1,283 @@
+// This is the main ShelfDB javascript framework namespace
+var ShelfDB = (function(sdb, $) {
+
+  // The Parts submodule
+  var partsModule = (function() {
+
+    var getListViewModel = function(opts) {
+
+      defaults = {
+        imageFormatter: null,
+        footprintFilterString: "undefined",
+        storeLocationFilterString: "undefined",
+        categoryFilterString: "undefined"
+      };
+
+      opts = $.extend(defaults, opts)
+
+      var _linkFormatterFactory = function(parameter, dataFieldName) {
+        return function (cellvalue, options, rowObject) {
+
+  				var retstr = '';
+
+  				retstr = '<a href="' + sdb.Core.basePath + 'pages/page-showsearchresults.php?searchMode='+parameter+'&search='+rowObject[dataFieldName]+'">'
+  									+ cellvalue + '</a>';
+
+  				return retstr;
+  			}
+      }
+
+      return [
+          {
+            name: 'image',
+            label: Lang.get('image'),
+            index: 'mainpicfile',
+            fixed: true,
+            width: 32+5 /*2+2+1 padding + border*/,
+            sortable: false,
+            editable: false,
+            align: 'center',
+            formatter: opts.imageFormatter,
+            search: false,
+          },
+          {
+            name: 'name',
+            label: Lang.get('name'),
+            index: 'name',
+            sortable: true,
+            align: 'left',
+            editrules: {
+              required: true
+            },
+            formatter: 'showlink',
+            formatoptions: {
+              idName: 'partid',
+              baseLinkUrl: sdb.Core.basePath + 'pages/page-showpartdetail.php',
+            },
+            width: 40
+          },
+          {
+            name: 'instock',
+            label: 'Lager',
+            index: 'instock',
+            sortable: true,
+            align: 'right',
+            template: 'integer',
+            width: 40,
+            fixed: true,
+            editable: function(opts) {
+              return (opts.mode == 'edit' ? false : true);
+            },
+            editrules: {
+              integer: true,
+              minValue: 0,
+              edithidden: true
+            }
+          },
+          {
+            name: 'totalstock',
+            label: 'Vorh.',
+            index: 'totalstock',
+            sortable: true,
+            align: 'right',
+            template: 'integer',
+            width: 40,
+            fixed: true,
+            editable: function(opts) {
+              return (opts.mode == 'edit' ? false : true);
+            },
+            editrules: {
+              integer: true,
+              minValue: 0,
+              edithidden: true
+            }
+          },
+          {
+            name: 'mininstock',
+            label: 'Min.',
+            index: 'mininstock',
+            sortable: true,
+            align: 'right',
+            template: 'integer',
+            width: 40,
+            fixed: true,
+            editrules: {
+              required: true,
+              minValue: 0,
+              integer: true
+            }
+          },
+          {
+            name: 'footprint',
+            label: Lang.get('footprint'),
+            index: 'footprint',
+            sortable: true,
+            align: 'right',
+            edittype: 'select',
+            formatter: _linkFormatterFactory('footprintId', 'id_footprint'),
+            stype: 'select',
+            searchoptions: {
+              sopt: ['eq','ne'],
+              value: ":Any;"+opts.footprintFilterString
+            },
+            editoptions: {
+              value: opts.footprintFilterString
+            },
+            width: 10
+          },
+          {
+            name: 'storeloc',
+            label: 'Lagerort',
+            index: 'storelocid',
+            sortable: true,
+            align: 'right',
+            edittype: 'select',
+            //formatter: 'select',
+            formatter: _linkFormatterFactory('storageLocationId', 'id_storeloc'),
+            stype: 'select',
+            searchoptions: {
+              sopt: ['eq','ne'],
+              value: ":Any;"+opts.storeLocationFilterString
+            },
+            editoptions: {
+              value: opts.storeLocationFilterString
+            },
+            width: 10,
+          },
+          /*
+          {
+
+            name: 'datasheet',
+            label: 'Datenblätter',
+            template: 'datasheet',
+            sortable: false,
+            align: 'left',
+            width: 80,
+            fixed: true,
+            editable: function(opts) {
+              return (opts.mode == 'edit' ? false : true);
+            },
+            search: false,
+          },
+          */
+          {
+            name: 'actions',
+            label: 'Aktionen',
+            template: 'actions',
+            align: 'center',
+            formatter: 'actions',
+            formatoptions: {
+              keys: true
+            }
+          },
+          {
+            label: 'Kategorie',
+            name: 'category_name',
+            index: 'category_name',
+            hidden: true,
+            sortable: true,
+            editable: true,
+            edittype: 'select',
+            formatter: 'select',
+            stype: 'select',
+            searchoptions: {
+              sopt: ['eq','ne'],
+              value: ":Any;"+opts.categoryFilterString,
+              searchhidden: true
+            },
+            editrules: {
+              edithidden: true
+            },
+            editoptions: {
+              value: opts.categoryFilterString
+            }
+          }
+      ]
+    };
+
+    var editPartFieldData = function( id, fieldName, fieldData, success ) {
+  		$.mobile.referencedLoading('show');
+  		$.ajax({
+  			url: sdb.Core.basePath + 'lib/edit-part.php',
+  			data: {
+  				id: id,
+  				field: fieldName,
+  				data: fieldData,
+  				method: 'editDetail'
+  			},
+  			type: 'POST',
+  			dataType: 'json'
+  		}).done(function(data) {
+  			if( data && data.success && success) {
+  				success(data);
+  			}
+  			$.mobile.referencedLoading('hide');
+  		});
+  	}
+
+    var getPartFieldData = function( id, fieldName, success ) {
+  		$.mobile.referencedLoading('show');
+  		$.ajax({
+  			url: sdb.Core.basePath + 'lib/json.parts.php',
+  			data: {
+  				partid: id,
+  				getDetailed: true,
+  			},
+  			type: 'POST',
+  			dataType: 'json'
+  		}).done(function(data) {
+  			if( data  && success && data.hasOwnProperty(fieldName)) {
+			    success(data[fieldName]);
+  			}
+  			$.mobile.referencedLoading('hide');
+  		});
+  	}
+
+    var _addPartCount = function(opts) {
+      var defaults = {
+        id: null,
+        type: "",
+        inc: 0,
+        success: null
+      };
+
+      opts = $.extend(defaults,opts);
+      opts.type = opts.type.toLowerCase()
+
+      if( opts.id === null ) return false;
+
+      switch( opts.type ) {
+        case 'totalstock':
+        case 'instock':
+        case 'mininstock':
+          getPartFieldData(opts.id, opts.type, function(oldData) {
+              var newData = parseInt(oldData) + parseInt(opts.inc);
+              editPartFieldData(opts.id, opts.type, newData, function() {
+                if( opts.success )
+                  opts.success(newData);
+              } );
+          });
+        default:
+          return false;
+      }
+
+      return newval;
+    }
+
+    // Return the column model for jqGrid for the parts view
+    return  {
+      getListViewModel: getListViewModel,
+      incrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:1, success:success})},
+      decrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:-1, success:success})},
+      incrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:1, success:success})},
+      decrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:-1, success:success})},
+      editPartFieldData: editPartFieldData
+    };
+  })();
+
+  $.extend(sdb, {
+    Parts: partsModule,
+  });
+
+  return sdb;
+})(typeof ShelfDB !== 'undefined' ? ShelfDB : {}, jQuery);
