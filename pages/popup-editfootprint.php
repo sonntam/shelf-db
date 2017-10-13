@@ -21,7 +21,7 @@
         if( $footprint ) {
             $formData['name'] = $footprint['name'];
             $formData['imageUrl'] = "/img/footprint/".$footprint['pict_fname'];
-			$formData['imageId'] = $footprint['pict_id'];
+			      $formData['imageId'] = $footprint['pict_id'];
         } else {
           return;
         }
