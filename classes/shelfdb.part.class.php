@@ -183,6 +183,7 @@ namespace ShelfDB {
       $oldData = $this->GetDataColumnById( $id, $column );
 
       if( $oldData === null ) return false;
+      if( $oldData == $data ) return array('oldData' => $data);
 
       $ecdata = $this->db()->sql->real_escape_string($data);
       $query = "UPDATE parts SET $column = '$ecdata' WHERE id = $id;";
@@ -274,6 +275,7 @@ namespace ShelfDB {
 
       $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId );
       if( $oldData ) {
+        if( $oldData['oldData'] == $storelocId ) return true;
         $oldStoreLocation = $this->db()->StoreLocations()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'storelocation',
           $oldStoreLocation['name'], $newStoreLocation['name'] );
@@ -295,6 +297,7 @@ namespace ShelfDB {
       $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId );
 
       if( $oldData ) {
+        if( $oldData['oldData'] == $categoryId ) return true;
         $oldCategory = $this->db()->Categories()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'category',
           $oldCategory['name'], $newCategory['name'] );
@@ -333,6 +336,7 @@ namespace ShelfDB {
       $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId );
 
       if( $oldData ) {
+        if( $oldData['oldData'] == $footprintId ) return true;
         if( $oldData['oldData'] > 0 ) {
           $oldFootprint = $this->db()->Footprints()->GetById($oldData['oldData']);
         } else {
@@ -356,6 +360,7 @@ namespace ShelfDB {
       if( !$newSupplier ) return false;
 
       if( $oldData = $this->SetDataColumnById( $id, "id_supplier", $supplierId ) ) {
+        $oldSupplier = $this->db()->Suppliers()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'supplier', $oldSupplier['name'], $newSupplier['name'] );
 
         return true;
