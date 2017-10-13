@@ -8,12 +8,12 @@
 	}, $storelocations );
   //$parts = $pdb->Parts()->GetSegmentByStoreLocationId($storeLocationIds, 0, 25, "storelocid", "asc", false, null);
 
-	$createListEntryFcn = function( $name, $id, $images ) {
+	$createListEntryFcn = function( $name, $id, $images ) use(&$pdb) {
 		ob_start();
 		?>
 		<li data-filtertext="<?php echo $name; ?>">
 
-          <a href="#">
+          <a href="<?php echo $pdb->RelRoot(); ?>pages/page-showsearchresults.php?searchMode=storageLocationId&search=<?php echo $id ?>">
 						<h2 style="float: left"><?php echo $name; ?></h2>
 					</a>
     </li>
