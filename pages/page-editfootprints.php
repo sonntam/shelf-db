@@ -4,13 +4,14 @@
   // Get footprints
   $footprints = $pdb->Footprints()->GetAll();
 
-	$createListEntryFcn = function( $name, $pictureFilename, $id ) {
+	$createListEntryFcn = function( $name, $pictureFilename, $id ) use (&$pdb) {
 		ob_start();
 		?>
 		<li data-icon="false" data-filtertext="<?php echo $name; ?>">
       <div class="ui-grid-a">
-        <div class="ui-block-a" style="max-width: 7em">
-          <img class="ui-center-element-absolute" style="max-width: 5em; max-height: 5em" src='/img/footprint/<?php echo $pictureFilename; ?>'>
+        <div class="ui-block-a" style="width: 5em; height: 5em; margin: 5px; display: table-cell; vertical-align:middle; text-align:center">
+					<!-- class="ui-center-element-absolute" -->
+          <img style="max-width: 5em; max-height: 5em" src='<?php echo $pdb->RelRoot();?>img/footprint/<?php echo $pictureFilename; ?>'>
         </div>
         <div class="ui-block-b">
           <h2><?php echo $name; ?></h2>
