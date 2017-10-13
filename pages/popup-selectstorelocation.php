@@ -38,7 +38,7 @@
 <script type="text/javascript">
   $('[name=popupAddBtn]').click( function(evt) {
 
-    inputPopUp({
+    ShelfDB.GUI.Popup.inputPopUp({
       header: Lang.get('editFootprintAdd'),
       headline: Lang.get('editFootprintNewName'),
       message: Lang.get('editFootprintAddHint'),

@@ -65,8 +65,7 @@
 
 <div id=showpartdetail data-role="page">
 	<script>
-
-	pageHookClear();
+	var partId = <?php echo $data['partid']; ?>;
 
 	function addPictureContainer( id, imgPath, thumbPath ) {
 		$('<div/>', {
@@ -117,26 +116,6 @@
 
 	}
 
-	function editPartField( fieldName, fieldData, success ) {
-		$.mobile.referencedLoading('show');
-		$.ajax({
-			url: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
-			data: {
-				id: <?php echo $data['partid']; ?>,
-				field: fieldName,
-				data: fieldData,
-				method: 'editDetail'
-			},
-			type: 'POST',
-			dataType: 'json'
-		}).done(function(data) {
-			if( data && data.success && success) {
-				success(data);
-			}
-			$.mobile.referencedLoading('hide');
-		});
-	}
-
 	function updateButtons() {
 		var total = $('[name=showTotal]');
 		var stock = $('[name=showStock]');
@@ -185,8 +164,7 @@
 
 		$('[name=pictureContainerAddButton]').click( function(e) {
 			// Show upload image dialog
-			debugger;
-			openExternalPopup({
+			ShelfDB.GUI.Popup.openExternalPopup({
 				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-uploadfile.php',
 				forceReload: true,
 				fixedMaxWidth: '600px',
@@ -203,7 +181,6 @@
 						// data.imageFileName
 						// data.pictureId
 						// data.thumbFileName
-						debugger;
 						addPictureContainer(data.pictureId, data.imageFileName, data.imageFileName);
 					}
 				}
@@ -213,8 +190,8 @@
 		$('[name=partPictureListView]').on('click','a[name=deletePicture]', function(e) {
 
 			var id = $(this).attr('value');
-
-			confirmPopUp({
+			debugger;
+			ShelfDB.GUI.Popup.confirmPopUp({
 		    header: Lang.get('editPartDeletePicture'),
 		    text: Lang.get('noUndoHint'),
 		    confirmButtonText: Lang.get('delete'),
@@ -300,14 +277,14 @@
 		});
 
 		$('[name=editPartNumber]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 					header: Lang.get('editPartPartNumber'),
 					headline: Lang.get('editPartChangePartNumber'),
 					textPlaceholder: Lang.get('enterPartNumber'),
 					textDefault: $('[name=showPartNumber]').val(),
 					ok: function( newnumber ) {
 						// Apply new data in database
-						editPartField( 'supplierpartnr', newnumber,
+						ShelfDB.Parts.editPartFieldData( partId, 'supplierpartnr', newnumber,
 							function(data) {
 								if( data && data.success ) {
 									$('[name=showPartNumber]').val(newnumber);
@@ -331,14 +308,14 @@
 		});
 
 		$('[name=editName]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 		    header: Lang.get('editPartNewName'),
 		    headline: Lang.get('editPartChangeName'),
 		    textPlaceholder: Lang.get('enterName'),
 		    textDefault: $('[name=showName]').text(),
 		    ok: function( newName ) {
 					// Apply new data in database
-					editPartField( 'name', newName,
+					ShelfDB.Parts.editPartFieldData( partId, 'name', newName,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showName]').text(newName);
@@ -350,7 +327,7 @@
 		});
 
 		$('[name=deletePart]').click(function(evt) {
-			confirmPopUp({
+			ShelfDB.GUI.Popup.confirmPopUp({
 		    header: Lang.get('editPartDelete'),
 		    text: Lang.get('noUndoHint'),
 		    confirmButtonText: Lang.get('delete'),
@@ -362,7 +339,7 @@
 		});
 
 		$('[name=editStoreloc]').click(function(evt) {
-			openExternalPopup({
+			ShelfDB.GUI.Popup.openExternalPopup({
 				forceReload: true,
 				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectstorelocation.php',
 				afteropen: function(evt) {
@@ -375,7 +352,7 @@
 					var storeClicked = $(evt.currentTarget).attr('storeid');
 					if( storeClicked )
 					{
-						editPartField( 'storelocation', storeClicked,
+						ShelfDB.Parts.editPartFieldData( partId, 'storelocation', storeClicked,
 							function(data) {
 								if( data && data.success ) {
 									//evt.preventDefault();
@@ -390,7 +367,7 @@
 		});
 
 		$('[name=editFootprint]').click(function(evt) {
-			openExternalPopup({
+			ShelfDB.GUI.Popup.openExternalPopup({
 				forceReload: true,
 				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectfootprint.php',
 				afteropen: function(evt) {
@@ -402,7 +379,7 @@
 					var fpClicked = $(evt.currentTarget).attr('footprintid');
 					if( fpClicked )
 					{
-						editPartField( 'footprint', fpClicked,
+						ShelfDB.Parts.editPartFieldData( partId, 'footprint', fpClicked,
 							function(data) {
 								if( data && data.success ) {
 									// Load store location name and store in database
@@ -452,7 +429,7 @@
 		});
 
 		$('[name=editSupplier]').click(function(evt) {
-			openExternalPopup({
+			ShelfDB.GUI.Popup.openExternalPopup({
 				forceReload: true,
 				url: '<?php echo $pdb->RelRoot(); ?>pages/popup-selectsupplier.php',
 				afteropen: function(evt) {
@@ -464,7 +441,7 @@
 					var fpClicked = $(evt.currentTarget).attr('supplierid');
 					if( fpClicked )
 					{
-						editPartField( 'supplierid', fpClicked,
+						ShelfDB.Parts.editPartFieldData( partId, 'supplierid', fpClicked,
 							function(data) {
 								if( data && data.success ) {
 									// Load store location name and store in database
@@ -502,13 +479,13 @@
 		});
 
 		$('[name=editPrice]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 		    header: Lang.get('editPartPrice'),
 		    headline: Lang.get('editPartChangePrice'),
 		    textPlaceholder: Lang.get('enterPrice'),
 		    textDefault: $('[name=showPrice]').val(),
 		    ok: function( newPrice ) {
-					editPartField( 'price', newPrice,
+					ShelfDB.Parts.editPartFieldData( partId, 'price', newPrice,
 						function(data) {
 							if( data && data.success ) {
 								// Submit and save new name, then update GUI on success
@@ -526,14 +503,14 @@
 		});
 
 		$('[name=editTotal]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 				header: Lang.get('editPartTotal'),
 				headline: Lang.get('editPartChangeTotal'),
 				textPlaceholder: Lang.get('enterAmount'),
 				textDefault: $('[name=showTotal]').val(),
 				ok: function( total ) {
 					// Submit and save new name, then update GUI on success
-					editPartField( 'totalstock', total,
+					ShelfDB.Parts.editPartFieldData( partId, 'totalstock', total,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showTotal]').val(total);
@@ -550,34 +527,42 @@
 		});
 
 		$('[name=addTotal]').click(function(evt) {
-			debugger;
-			// TODO Implement add total
+			ShelfDB.Parts.incrementTotal(<?php echo $data['partid']; ?>, function(newval) {
+				$('[name=showTotal]').val(newval);
+				updateButtons();
+			});
 		});
 
 		$('[name=subTotal]').click(function(evt) {
-			debugger;
-			// TODO Implement sub total
+			ShelfDB.Parts.decrementTotal(<?php echo $data['partid']; ?>, function(newval) {
+				$('[name=showTotal]').val(newval);
+				updateButtons();
+			});
 		});
 
 		$('[name=addStock]').click(function(evt) {
-			debugger;
-			// TODO Implement add stock
+			ShelfDB.Parts.incrementStock(<?php echo $data['partid']; ?>, function(newval) {
+				$('[name=showStock]').val(newval);
+				updateButtons();
+			});
 		});
 
 		$('[name=subStock]').click(function(evt) {
-			debugger;
-			// TODO Implement sub stock
+			ShelfDB.Parts.decrementStock(<?php echo $data['partid']; ?>, function(newval) {
+				$('[name=showStock]').val(newval);
+				updateButtons();
+			});
 		});
 
 		$('[name=editStock]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 		    header: Lang.get('editPartStock'),
 		    headline: Lang.get('editPartChangeStock'),
 		    textPlaceholder: Lang.get('enterAmount'),
 		    textDefault: $('[name=showStock]').val(),
 		    ok: function( stock ) {
 					// Submit and save new name, then update GUI on success
-					editPartField( 'instock', stock,
+					ShelfDB.Parts.editPartFieldData( partId, 'instock', stock,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showStock]').val(stock);
@@ -596,14 +581,14 @@
 		});
 
 		$('[name=editMinStock]').click(function(evt) {
-			inputPopUp({
+			ShelfDB.GUI.Popup.inputPopUp({
 		    header: Lang.get('editPartMinStock'),
 		    headline: Lang.get('editPartChangeMinStock'),
 		    textPlaceholder: Lang.get('enterAmount'),
 		    textDefault: $('[name=showMinStock]').val(),
 		    ok: function( minstock ) {
 					// Submit and save new name, then update GUI on success
-					editPartField( 'mininstock', minstock,
+					ShelfDB.Parts.editPartFieldData( partId, 'mininstock', minstock,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showMinStock]').val(minstock);
@@ -623,13 +608,13 @@
 			evt.preventDefault();
 			evt.stopPropagation();
 
-			inputMultilinePopUp({
+			ShelfDB.GUI.Popup.inputMultilinePopUp({
 	      header: Lang.get('editPartDescriptionEdit'),
 	      headline: Lang.get('editPartDescriptionEditHint'),
 	      textPlaceholder: Lang.get('enterDescription'),
 	      textDefault: $('[name=showDescription]').text(),
 	      ok: function( newdescription ) {
-					editPartField( 'comment', newdescription,
+					ShelfDB.Parts.editPartFieldData( partId, 'comment', newdescription,
 						function(data) {
 							if( data && data.success ) {
 								// Submit and save new name, then update GUI on success
