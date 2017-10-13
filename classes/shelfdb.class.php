@@ -13,6 +13,7 @@ require_once(__DIR__.'/shelfdb.category.class.php');
 require_once(__DIR__.'/shelfdb.footprint.class.php');
 require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
+require_once(__DIR__.'/../lib/utils.php');
 require_once(__DIR__.'/../lib/qrcode.php');
 require_once(__DIR__.'/../lib/BlueM/Tree.php');
 require_once(__DIR__.'/../lib/BlueM/Tree/Node.php');
@@ -183,7 +184,7 @@ class ShelfDB
       Log::Error("Error connecting to SQL database: Error #".
         $this->sql->connect_errno." -> ".$this->sql->connect_error
       );
-      throw new Exception("Error connecting to SQL database.");
+      throw new Exception("Error connecting to SQL database. Please check your config.json.");
     } else {
       Log::Info("Connected to MySQL database ".ConfigFile\Database::$user."@"
         .ConfigFile\Database::$host.":".ConfigFile\Database::$port);
