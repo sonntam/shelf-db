@@ -231,8 +231,29 @@
 			  	},*/
         });
 
-				$page.find("#grido").jqGrid('navGrid','#listpager',{edit:false, add:true, del:false});
-
+				$page.find("#grido").jqGrid('navGrid','#listpager',{edit:false, add:true, del:false},{},{},{},{
+					multipleSearch: true,
+					multipleGroup: false
+				});
+				// Copy toolbar buttons to top toolbar and hide right side of toppager
+				$('#listpager_left').children().clone(true).appendTo('#grido_toppager_left');
+				$('#grido_toppager_right').hide();
+				$page.find("#grido").jqGrid('navCheckboxAdd', '#' + $page.find("#grido")[0].id + '_toppager_left', { // "#list_toppager_left"
+					caption: Lang.get('noGroupingByCategories'),
+					position: "first",
+					id: "chkHideGroups",
+						onChange: function() {
+							if($(this).is(":checked")) {
+								$page.find("#grido").jqGrid('setGridParam', {
+									grouping: false
+								}).trigger('reloadGrid');
+							} else {
+								$page.find("#grido").jqGrid('setGridParam', {
+									grouping: true
+								}).trigger('reloadGrid',[{page:1}]);
+							}
+						}
+				 });
 
 				// Select current category in tree
 				var $tree = $('#categorytree');
@@ -243,14 +264,16 @@
 					var width = $page.find("#grido").closest('.ui-content').width();
 
 					if( width < 520 && lastwidth >= 520 ) {
-						$page.find("#grido").jqGrid('hideCol',["mininstock","datasheet"]);
+						$page.find("#grido").jqGrid('hideCol',["mininstock"/*,"datasheet"*/]);
 					} else if( width >= 520 && lastwidth < 520) {
-						$page.find("#grido").jqGrid('showCol',['footprint',"mininstock","datasheet"]);
+						$page.find("#grido").jqGrid('showCol',['footprint',"mininstock"/*,"datasheet"*/]);
 					}
 
 					if( width < 420 && lastwidth >= 420 ) {
 						$page.find("#grido").jqGrid('hideCol',"footprint");
+						$("#chkHideGroups_super").hide();
 					} else if( width >= 420 && lastwidth < 420 ) {
+						$("#chkHideGroups_super").show();
 						$page.find("#grido").jqGrid('showCol',"footprint");
 					}
 					lastwidth = width;

@@ -100,6 +100,12 @@
 					shrinkToFit: true,
 					datatype: 'json',
 					autoencode: true,
+					grouping: <?php echo ($catHasChildren ? 'true' : 'false');?>,
+					groupingView: {
+						groupField: ['category_name'],
+						groupDataSorted: true,
+						groupColumnShow: [false]
+					},
 					sortable: true,
 					cmTemplate: {
 						autoResizable: true,
@@ -264,8 +270,31 @@
 			  	},*/
         });
 
-				$("#grido").jqGrid('navGrid','#listpager',{edit:false, add:true, del:false});
-
+				$('#grido').jqGrid('navGrid','#listpager',{edit:false, add:true, del:false},{},{},{},{
+					multipleSearch: true,
+					multipleGroup: false
+				});
+				// Copy toolbar buttons to top toolbar and hide right side of toppager
+				$('#listpager_left').children().clone(true).appendTo('#grido_toppager_left');
+				$('#grido_toppager_right').hide();
+				<?php if($catHasChildren) { // Only show category selector if category has children ?>
+					$('#grido').jqGrid('navCheckboxAdd', '#' + $('#grido')[0].id + '_toppager_left', { // '#list_toppager_left'
+	          caption: Lang.get('hideSubcategories'),
+						position: 'first',
+						id: 'chkHideSubcategories',
+	            onChange: function() {
+								if($(this).is(':checked')) {
+									$('#grido').jqGrid('setGridParam', {
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>&getSubcategories=0'
+									}).trigger('reloadGrid');
+						 		} else {
+									$('#grido').jqGrid('setGridParam', {
+										url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>&getSubcategories=1'
+									}).trigger('reloadGrid',[{page:1}]);
+						 		}
+	            }
+	 				 });
+				<?php } ?>
 
 				// Select current category in tree
 				var $tree = $('#categorytree');
@@ -276,19 +305,21 @@
 					var width = $("#grido").closest('.ui-content').width();
 
 					if( width < 520 && lastwidth >= 520 ) {
-						$("#grido").jqGrid('hideCol',["mininstock","datasheet"]);
+						$('#grido').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
 					} else if( width >= 520 && lastwidth < 520) {
-						$("#grido").jqGrid('showCol',['footprint',"mininstock","datasheet"]);
+						$('#grido').jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
 					}
 
 					if( width < 420 && lastwidth >= 420 ) {
-						$("#grido").jqGrid('hideCol',"footprint");
+						$('#grido').jqGrid('hideCol','footprint');
+						$('#chkHideSubcategories_super').hide();
 					} else if( width >= 420 && lastwidth < 420 ) {
-						$("#grido").jqGrid('showCol',"footprint");
+						$('#chkHideSubcategories_super').show();
+						$('#grido').jqGrid('showCol','footprint');
 					}
 					lastwidth = width;
 
-	        $("#grido").jqGrid('setGridWidth', width);
+	        $('#grido').jqGrid('setGridWidth', width);
 	      });
 
 				// Initial column hide/show
