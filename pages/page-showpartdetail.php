@@ -19,12 +19,12 @@
 
 		$parentCategoryNames = array_map( function($x) { return $x['name']; }, $parentCategories );
 		$parentCategoryLinks = array_map( function($x) {
-			return '<a href="page-showparts.php?catid='.$x['id'].'&catrecurse=1">'.$x['name'].'</a>';
+			return '<a href="page-showparts.php?catid='.$x['id'].'&showSubcategories=1">'.$x['name'].'</a>';
 		}, $parentCategories );
 
-		$picFnames = explode("/", $part['pict_fname_arr']);
-		$picIds    = explode(",", $part['pict_id_arr']);
-		$picMaster = explode(",", $part['pict_masterpict_arr']);
+		$picFnames = ( $part['pict_id_arr'] ? explode("/", $part['pict_fname_arr']) : array() );
+		$picIds    = ( $part['pict_id_arr'] ? explode(",", $part['pict_id_arr']) : array() );
+		$picMaster = ( $part['pict_id_arr'] ? explode(",", $part['pict_masterpict_arr']) : array() );
 
 		$arrPics = array();
 		for( $i = 0; $i < sizeof($picFnames); $i++ ) {
