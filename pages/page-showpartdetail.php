@@ -60,7 +60,7 @@
 ?>
 
 <script type="text/javascript">
-    window.location="/index.php";
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
 
 <div id=showpartdetail data-role="page">

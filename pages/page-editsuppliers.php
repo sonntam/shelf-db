@@ -36,7 +36,7 @@
 ?>
 
 <script type="text/javascript">
-    window.location="index.php#page-showparts?catid=1";
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
 
 <div id=editsuppliers data-role="page">

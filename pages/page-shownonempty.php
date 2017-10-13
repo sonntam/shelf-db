@@ -44,9 +44,9 @@
   }
 ?>
 
-<!--<script type="text/javascript">
-    window.location="index.php#page/page-shownonempty.php";
-</script>-->
+<script type="text/javascript">
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
+</script>
 
 <div id=showNonEmptyStoreLocations data-role="page">
 

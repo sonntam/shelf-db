@@ -1,3 +1,7 @@
+<script type="text/javascript">
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
+</script>
+
 <div id=test data-role="page">
 
   <script>

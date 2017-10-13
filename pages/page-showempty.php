@@ -26,7 +26,7 @@
 ?>
 
 <script type="text/javascript">
-    window.location="index.php#page/page-showempty.php";
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
 
 <div id=showEmptyStoreLocations data-role="page">
