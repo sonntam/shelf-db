@@ -106,9 +106,13 @@ namespace ShelfDB {
       $parent = $node->getParent();
 
       if( $parent ) {
-        return $parent->toArray();
+        $parent = $parent->toArray();
+        if( isset($parent['name']) )
+          return $parent;
+        else
+          return array( "id" => 0, "name" => "root" );
       } else {
-        return array( "id" => 0, "name" => "root" );
+        return false;
       }
     }
 
@@ -133,8 +137,8 @@ namespace ShelfDB {
 
     public function GetAsArray( int $baseid = 0, bool $withparent = false ) {
 
-      $array = ($withparent ? array($this->GetData()->getNodeById($baseid)->toArray()) : array() );
 
+      $array = array();
       $nodes = $this->GetData()->getNodeById($baseid)->getChildren();
 
       foreach($nodes as $node) {
@@ -143,17 +147,45 @@ namespace ShelfDB {
         $array[] = $el;
       }
 
+      if( $withparent ) {
+        $parent = $this->GetData()->getNodeById($baseid)->toArray();
+        $parent['children'] = $array;
+        $array = array($parent);
+      }
+
       return $array;
     }
 
-    public function GetById( int $id ) {
+    public function GetAll() {
+      $el = $this->GetById();
 
-      $query = "SELECT * FROM `categories` WHERE `id` = $id";
+      // Check if only one element was returned. If so, build array
+      if( $el && !is_array($el[0]) )
+      {
+        $newel = array($el);
+        return $newel;
+      }
 
-      $res = $this->db->sql->query($query) or \Log::WarningSQLQuery($query, $this->db->sql);
+      return $el;
+    }
 
-      $data = $res->fetch_assoc();
-      $res->free();
+    public function GetById( $id = null ) {
+
+      $data = $this->GetData();
+
+      if( $id === null ) {
+        $data = $data->getNodes();
+        $data = array_map(
+          function($x) {
+            return $x->toArray();
+          }, $data);
+      } else {
+        $data = $data->getNodeById($id)->toArray();
+      }
+
+      if( sizeof($data) == 1 ) {
+        $data = $data[0];
+      }
 
       return $data;
     }
@@ -273,7 +305,7 @@ namespace ShelfDB {
 
       if( $res === true ) {
         // Everything OK
-        $oldParentName = $this->GetNameById($cat["parentnode"]);
+        $oldParentName = $this->GetNameById($cat["parent"]);
         $newParentName = $this->GetNameById($newparentid);
 
         $this->db()->History()->Add($id,'C','edit','parentnode',array(
