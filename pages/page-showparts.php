@@ -4,20 +4,25 @@
 	// http://www.trirand.com/jqgridwiki/doku.php?id=wiki%3acolmodel_options
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
-	$_GET 	+= array("id" => null);
-	$_GET   += array("search" => null);
-	$_GET		+= array("catid" => 0);
+	// Handle page arguments
+	$defaults = array(
+		'catid'              => 0,
+		'search'             => null,
+		'id'                 => null
+	);
 
-	$search     = $_GET["search"];
-	$searchMode = $search && ($search != "");
+	$options = array_replace_recursive( $defaults, $_GET, $_POST );
 
-	$catid      = $_GET["catid"];
-	$catname    = $pdb->Categories()->GetNameById($catid);
-	$catrecurse = $_GET["catrecurse"] == "1";
+	$search     = $options['search'];
+	$searchMode = $search && ($search != '');
+
+	$catid             = $options['catid'];
+	$catname           = $pdb->Categories()->GetNameById($catid);
+	$showSubcategories = $options['showSubcategories'] == '1';
 
 	// Create button from category node
 	$funCreateButton = function($cat,$recurse) {
-		return '<a style="margin: 0pt; padding: 0.4em" class="ui-btn ui-btn-inline ui-corner-all ui-shadow" href="page-showparts.php?catid='.$cat['id'].'&catrecurse='.$recurse.'">'
+		return '<a style="margin: 0pt; padding: 0.4em" class="ui-btn ui-btn-inline ui-corner-all ui-shadow" href="page-showparts.php?catid='.$cat['id'].'&showSubcategories='.$recurse.'">'
 		 .htmlspecialchars( $cat['name'] )."</a>\n";
 	};
 
@@ -86,7 +91,7 @@
 				$subtree.bind('tree.click', function(e) {
 					// e.node.name - Name string
 					// e.node.id   - ID string
-					$("body").pagecontainer("change","page-showparts.php?catid=" + e.node.id + "&catrecurse=" + Number(e.node.children.length > 0));
+					$('body').pagecontainer('change','page-showparts.php?catid=' + e.node.id + '&showSubcategories=' + Number(e.node.children.length > 0));
 					var $tree = $('#categorytree');
 
 					$tree.tree( 'selectNode', $tree.tree('getNodeById', e.node.id) );
@@ -242,18 +247,18 @@
     <h1>Kategorie <?php echo $catname; ?></a></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>
-		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&catrecurse=1">Ebene höher</a>
+		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&showSubcategories=1">Ebene höher</a>
 		<?php } ?>
   </div>
   <div role="main" class="ui-content">
 		<?php
 			echo join("<i class='fa fa-arrow-right'></i>",$buttons);
-			if( $catrecurse )
+			if( $showSubcategories )
 			{
 		?>
 
 			<h3>Unterkategorien</h3>
-			<div id="subcattree" data-url="/lib/json.categorytree.php?catid=<?php echo $catid; ?>&withparent=<?php echo ($catid == 0 ? 0 : 1) ?>"></div>
+			<div id="subcattree" data-url="<?php echo $pdb->RelRoot(); ?>lib/json.categorytree.php?catid=<?php echo $catid; ?>&withparent=<?php echo ($catid == 0 ? 0 : 1) ?>"></div>
 		<?php
 			}
 		?>
