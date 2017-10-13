@@ -92,6 +92,25 @@ $_REQUEST['id']"763"
       break;
 
     case 'edit': // Edit command from table
+      if( isset($data['id']) ) {
+        $id = $data['id'];
+        $response['success'] = true;
+
+        if( isset($data['name'] ))
+          $response['success'] = $response['success'] && $p->SetNameById($id, $data['name']);
+
+        if( isset($data['mininstock'] ))
+          $response['success'] = $response['success'] && $p->SetMinInStockById($id, $data['mininstock']);
+
+        if( isset($data['footprint'] ))
+          $response['success'] = $response['success'] && $p->SetFootprintById($id, $data['footprint']);
+
+        if( isset($data['storeloc'] ))
+          $response['success'] = $response['success'] && $p->SetStorageLocationById($id, $data['storeloc']);
+
+        if( isset($data['category_name'] ))
+          $response['success'] = $response['success'] && $p->SetCategoryById($id, $data['category_name']);
+      }
 
       break;
 
