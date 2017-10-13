@@ -1,5 +1,130 @@
 <?php
 
+/**
+ * Translate jqGrid operators to MySQL
+ * @param  string  $operator jqGrid operator string
+ * @return function function of form fnc($column, $searchstring) that expands to the correct MySQL search string
+ */
+function TranslateJqGridToMySQL($operator) {
+  switch( strtolower($operator) ) {
+       case "eq":
+         $operatorFn = function($col, $searchString) {
+             return "STRCMP(LOWER($col),LOWER('$searchString')) <=> 0";
+         };
+         break;
+       case "ne":
+         $operatorFn = function($col, $searchString) {
+             return "NOT (STRCMP(LOWER($col),LOWER('$searchString')) <=> 0)";
+         };
+         break;
+       case "lt":
+         $operatorFn = function($col, $searchString) {
+             return "$col < '$searchString'";
+         };
+         break;
+       case "le":
+         $operatorFn = function($col, $searchString) {
+             return "$col <= '$searchString'";
+         };
+         break;
+       case "gt":
+         $operatorFn = function($col, $searchString) {
+             return "$col > '$searchString'";
+         };
+         break;
+       case "ge":
+         $operatorFn = function($col, $searchString) {
+             return "$col >= '$searchString'";
+         };
+         break;
+       case "bw":
+         $operatorFn = function($col, $searchString) {
+             return "$col LIKE '$searchString%'";
+         };
+         break;
+       case "bn":
+         $operatorFn = function($col, $searchString) {
+             return "NOT $col LIKE '$searchString%'";
+         };
+         break;
+       case "ew":
+         $operatorFn = function($col, $searchString) {
+             return "$col LIKE '%$searchString'";
+         };
+         break;
+       case "en":
+         $operatorFn = function($col, $searchString) {
+             return "NOT $col LIKE '%$searchString'";
+         };
+         break;
+       case "ni":
+       case "nc":
+         $operatorFn = function($col, $searchString) {
+             return "NOT $col LIKE '%$searchString%'";
+         };
+         break;
+       case "cn":
+       case "in":
+       default:
+         $operatorFn = function($col, $searchString) {
+             return "$col LIKE '%$searchString%'";
+         };
+     }
+     return $operatorFn;
+}
+
+/**
+ * Convert input data from a jqGrid Filter/Search to an object handeled by ShelfDB search functions
+ * @param  array  $options jqGrid filter/search data
+ * @return array  data that can be handeled by ShelfDB Part search functions
+ */
+function WrapJqGridFilterString($options) {
+
+  $options["globalSearchString"] = trim($options["globalSearchString"]);
+
+  if( $options["_search"] != "true") {
+    $search = $options["globalSearchString"];
+  } elseif( $options["filters"] != "" ) {
+    $options["filters"] = json_decode($options["filters"], true);
+    $search = array(
+      "groupOp" => $options["filters"]["groupOp"],
+      "rules" => array_map(
+        function($x) {
+          return array(
+            "name" => $x["field"],
+            "operator" => $x["op"],
+            "data" => $x["data"]
+          );
+        }, $options["filters"]["rules"]
+      )
+    );
+    if( $options["globalSearchString"] != null && $options["globalSearchString"] != "" ) {
+      $search["rules"][] = array(
+        "name" => "name",
+        "operator" => "cn",
+        "data" => $options["globalSearchString"]
+      );
+    }
+    if( empty($search["rules"]) )
+      $search = "";
+  }
+  if( $options["searchField"] != "" ) {
+    $search = array(
+      "groupOp" => "OR",
+      "rules" => array(
+        array(
+          "name" => $options['searchField'],
+          "operator" => $options['searchOper'],
+          "data" => $options['searchString']
+        )
+      )
+    );
+  } else
+    $search = "";
+
+  return $search;
+}
+
 function endn($array)
 {
   $array_local = $array;

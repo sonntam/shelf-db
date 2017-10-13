@@ -4,31 +4,72 @@
 	// http://www.trirand.com/jqgridwiki/doku.php?id=wiki%3acolmodel_options
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
-	$_GET 	+= array("id" => null);
-	$_GET   += array("search" => null);
-	$_GET		+= array("catid" => 0);
+	$defaults = array(
+		'catid'              => 0,
+		'search'             => null,
+		'id'                 => null,
+		'searchMode' 				 => 'globalString'
+	);
 
-	$search     = $_GET["search"];
+	$options = array_replace_recursive( $defaults, $_GET, $_POST );
+
+	switch( $options['searchMode'] ) {
+		case 'globalString':
+			// Global search
+			$searchString = $options['search'];
+			$searchUrl    = $pdb->RelRoot().'lib/json.parts.php?globalSearchString='.htmlentities($searchString).'&catid=0';
+			break;
+		case 'storageLocationId':
+			$storelocId = $options['search'];
+
+			if( $sl = $pdb->StoreLocations()->GetById($storelocId) ) {
+			} else {
+				$sl = array(
+					'name' => 'undefined',
+					'id' => 0
+				);
+			}
+			$searchString = $sl['name'];
+			$searchUrl    = $pdb->RelRoot().'lib/json.parts.php?searchField=storelocid&searchOper=eq&searchString='.$sl['id'].'&catid=0';
+
+			break;
+		case 'footprintId':
+			$footprintId = $options['search'];
+
+			if( $fp = $pdb->Footprints()->GetById($footprintId) ) {
+			} else {
+				$fp = array(
+					'name' => 'undefined',
+					'id' => 0
+				);
+			}
+			$searchString = $fp['name'];
+			$searchUrl    = $pdb->RelRoot().'lib/json.parts.php?searchField=footprintid&searchOper=eq&searchString='.$fp['id'].'&catid=0';
+
+			break;
+		default:
+			return;
+	}
+
+	$search     = $options["search"];
 	$searchMode = $search && ($search != "");
 
-	$catid      = $_GET["catid"];
+	$catid      = $options["catid"];
 	$catname    = $pdb->Categories()->GetNameById($catid);
-	$catrecurse = $_GET["catrecurse"] == "1";
 
 
-	// FIlter strings
+	// Filter strings
 	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
 	$slFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
+	$ctFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Categories()->GetAll()));
 ?>
 
 <script type="text/javascript">
-    window.location="index.php#page-showparts?catid=<?php echo $catid; ?>";
+    window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
 
 <div id=showsearchresults data-role="page">
 	<script>
-
-	pageHookClear();
 
   var $page;
 
@@ -61,12 +102,18 @@
 				console.log("DEBUG: pagecontainer - change (id = <?php echo $catid; ?>)");
 				$page.find("#grido").jqGrid({
 					caption: Lang.get('searchTableTitle'),
-					url:'../lib/json.parts.php?globalSearchString=<?php echo htmlentities($search); ?>&catid=<?php echo $catid; ?>',
+					url:'<?php echo $searchUrl; ?>',
 					editurl: 'edit-part.php',
 					autowidth: true,
 					shrinkToFit: true,
 					datatype: 'json',
 					autoencode: true,
+					grouping: true,
+					groupingView: {
+						groupField: ['category_name'],
+						groupDataSorted: true,
+						groupColumnShow: [false]
+					},
 					sortable: true,
 					cmTemplate: {
 						autoResizable: true,
@@ -201,12 +248,12 @@
     <h1 uilang="searchResults"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>
-		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&catrecurse=1">Ebene höher</a>
+		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&showSubcategories=1">Ebene höher</a>
 		<?php } ?>
   </div>
   <div role="main" class="ui-content">
 
-			<h3 uilang="searchResultsFor"><?php echo htmlentities($search); ?></h3>
+			<h3 uilang="searchResultsFor"><?php echo htmlentities($searchString); ?></h3>
 			<!-- Bild/Bottomlevel Kategorie/Name/Lagerbestand/Footprint/Lagerort/Datenblätter/+- -->
 			<p>
 				<table id=grido></table>

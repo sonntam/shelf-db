@@ -5,6 +5,7 @@
    */
 
   include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  include_once(dirname(__DIR__).'/lib/utils.php');
 
   $defaults = array(
     "catid"              => 0,
@@ -19,7 +20,8 @@
     "searchOper"         => null,      // Search operator "cn" = contains; "nc" = contains not; "eq" = equals; "ne" = is not; "bw" = begins with; "bn" = begins not with; "ew" = ends with; "en" = ends not with
     "filters"            => null,      // Filters
     "globalSearchString" => "",
-    "getDetailed"        => false
+    "getDetailed"        => false,
+    "getSubcategories"   => true
   );
 
   $options = array_replace_recursive( $defaults, $_GET, $_POST );
@@ -27,21 +29,23 @@
   // Get category ID
   $catid      = $options["catid"];
   $partid     = $options["partid"];
-  $search     = trim($options["globalSearchString"]);
 
   if( $partid === null ) { // Get list of all parts of category
 
     $limit      = $options["rows"];
     $page       = $options["page"];
+    $recursive  = filter_var($options["getSubcategories"], FILTER_VALIDATE_BOOLEAN);
 
     // http://www.trirand.com/blog/jqgrid/jqgrid.html
-    $numparts = $pdb->Parts()->GetCountByCategoryId($catid, $search, true);
+
+    // Check if this is a filtered search or a global search
+    $search   = WrapJqGridFilterString($options);
+    $numparts = $pdb->Parts()->GetCountByCategoryId($catid, $search, $recursive);
     $numpages = ceil($numparts/$limit);
     $page     = min($numpages,$page);
 
     $offset   = $limit*($page - 1);
-
-    $parts = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], true, $search);
+    $parts    = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], $recursive, $search);
 
     // Copy
     $newparts = array();
@@ -79,6 +83,5 @@
 
     echo $json;
   }
-
 
 ?>

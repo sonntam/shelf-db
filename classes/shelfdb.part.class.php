@@ -94,10 +94,13 @@ namespace ShelfDB {
     }
 
     private function ExplodeSearchString($search) {
+      // Is this a single column-based or global search?
       if( !is_array($search) ) {
-        $search = str_getcsv( $search, " ");
-        foreach( $search as &$el) {
+        // Do global search
+        $clauses = str_getcsv( $search, " ");
+        foreach( $clauses as &$el) {
           $escapedSearch = '%'.$this->db()->sql->real_escape_string($el).'%';
+
           $el = "("
             ."f.name LIKE '$escapedSearch' OR "
             ."s.name LIKE '$escapedSearch' OR "
@@ -106,7 +109,58 @@ namespace ShelfDB {
             ."p.name LIKE '$escapedSearch' OR "
             ."p.comment LIKE '$escapedSearch')";
         }
+        $search = array("(" . join(" OR ", $clauses) . ")");
+
+      } else if(isset($search["groupOp"])) {
+        $groupOp = $search["groupOp"];
+
+        $clauses = array();
+        foreach( $search["rules"] as $rule ) {
+          $escapedSearch = $this->db()->sql->real_escape_string($rule["data"]);
+
+          // Translate to MySQL operator
+          $operatorFn = TranslateJqGridToMySQL($rule["operator"]);
+
+          // Insert column name
+          switch( strtolower($rule["name"]) ) {
+            case "name":
+              $clauses[] = $operatorFn("p.name", $escapedSearch);
+              break;
+            case "supplier":
+              $clauses[] = $operatorFn("su.name", $escapedSearch);
+              break;
+            case "storeloc":
+              $clauses[] = $operatorFn("s.name", $escapedSearch);
+              break;
+            case "storelocid":
+              $clauses[] = $operatorFn("s.id", $escapedSearch);
+              break;
+            case "comment":
+              $clauses[] = $operatorFn("p.comment", $escapedSearch);
+              break;
+            case "instock":
+              $clauses[] = $operatorFn("p.instock", $escapedSearch);
+              break;
+            case "mininstock":
+              $clauses[] = $operatorFn("p.mininstock", $escapedSearch);
+              break;
+            case "footprintid":
+            case "footprint":
+              $clauses[] = $operatorFn("p.id_footprint", $escapedSearch);
+              break;
+            case "storelocid":
+              $clauses[] = $operatorFn("p.id_storeloc", $escapedSearch);
+              break;
+            case "category_name":
+              $clauses[] = $operatorFn("p.id_category", $escapedSearch);
+              break;
+            default:
+              $clauses[] = "0 <=> 0";
+          }
+        }
+        $search = array("(" . join(" $groupOp ", $clauses) . ")");
       }
+
       return $search;
     }
 
@@ -397,11 +451,11 @@ namespace ShelfDB {
       return $data['numParts'];
     }
 
-    public function GetCountByCategoryId( int $catid = 0, $search = "", $recursive = false ) {
+    public function GetCountByCategoryId( int $catid = 0, $search = null, $recursive = false ) {
 
       $partcount = 0;
 
-      if( $search && $search != "" ) {
+      if( $search != null && $search != "" ) {
         $search = $this->ExplodeSearchString($search);
         return $this->GetCountByCategoryIdExploded( $catid, $search, $recursive);
       }
@@ -435,7 +489,7 @@ namespace ShelfDB {
 
     private function GetSegmentByTypeId( string $type, $id, int $offset, int $limit, $sortcol, $sortorder, $recursive, $search = null) {
 
-      if( !$search || $search == "" ) {
+      if( $search === null || $search == "" ) {
         $searchFilter = array();
       } else {
         $searchFilter = $this->ExplodeSearchString($search);
@@ -468,28 +522,49 @@ namespace ShelfDB {
           return null;
       }
 
-      switch( $sortcol )
-      {
-        case "instock":
-          $sortname = "p.instock";
-          break;
-        case "totalstock":
-          $sortname = "p.totalstock";
-          break;
-        case "mininstock":
-          $sortname = "p.mininstock";
-          break;
-        case "footprint":
-          $sortname = "f.name";
-          break;
-        case "storelocid":
-          $sortname = "s.name";
-          break;
-        default:
-          $sortname = "p.name";
-      }
-
+      // Support for multiple sortings
+      $sortcols = explode( ",", $sortcol );
       $sortorder = ($sortorder == "desc" ? "DESC" : "ASC");
+      $sortOptions = array();
+      foreach( $sortcols as $sortcol) {
+        $args = explode( " ", trim($sortcol) );
+        if( count($args) >= 1 ) {
+          $localCol   = $args[0];
+          $localOrder = $sortorder;
+        } else {
+          continue;
+        }
+        if( count($args) == 2 ) {
+          $localOrder = $args[1];
+        }
+
+        switch( $localCol )
+        {
+          case "instock":
+            $sortname = "p.instock";
+            break;
+          case "totalstock":
+            $sortname = "p.totalstock";
+            break;
+          case "mininstock":
+            $sortname = "p.mininstock";
+            break;
+          case "footprint":
+            $sortname = "f.name";
+            break;
+          case "storelocid":
+            $sortname = "s.name";
+            break;
+          case "category_name":
+            $sortname = "c.name";
+            break;
+          default:
+            $sortname = "p.name";
+        }
+        $sortOptions[] = "udf_NaturalSortFormat($sortname, 10, \".,\") $localOrder";
+      }
+      if( count($sortOptions) == 0 ) $sortOptions[] = "udf_NaturalSortFormat(p.name, 10, \".,\")";
+      $sortOptions = join(", ", $sortOptions);
 
       $query = "SELECT p.*, p.id, p.id_category, p.name AS name, p.instock AS instock, p.mininstock AS mininstock, "
         ."CONCAT(p.instock,'/',p.mininstock) AS partnum, COALESCE(f.name,'-') AS footprint, "
