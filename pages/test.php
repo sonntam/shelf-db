@@ -1,3 +1,7 @@
+<?php
+  require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+?>
+
 <script type="text/javascript">
     window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
@@ -67,12 +71,11 @@
   </script>
 
   <div data-role="header" data-position="fixed">
-      <h2>Are you sure?</h2>
+      <h2>Testing page</h2>
       <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
     </div>
   <div role="main" class="ui-content">
-    <h2>Are you sure you wish to exit the application?</h2>
-    <p>You have unsaved changes. If you exit without saving them, you will lose them.</p>
+    <h2>Here is some clicky stuff for testing</h2>
     <div class="ui-grid-a">
       <div class="ui-block-a">
         <div id="testextpopup" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Footprint popup</div>
