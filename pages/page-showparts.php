@@ -42,9 +42,10 @@
 		$parent  = $pdb->Categories()->GetParentFromId($parent['id']);
 	}
 
-	// FIlter strings
-	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
-	$slFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
+	// Filter strings
+	$fpFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
+	$slFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
+	$ctFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Categories()->GetAll()));
 ?>
 
 <script type="text/javascript">
@@ -53,8 +54,7 @@
 
 <div id=showparts data-role="page">
 	<script>
-
-	pageHookClear();
+	console.log("DEBUG: page-showparts executing...")
 
 	// Popup handler
 	$.mobile.pageCreateTasks.push( function() {
