@@ -41,8 +41,6 @@
 <div id=editfootprints data-role="page">
 
 	<script>
-		pageHookClear();
-
 		$.mobile.pageContainerBeforeShowTasks.push( function(event,ui) {
 			console.log("DEBUG: pageTask");
 

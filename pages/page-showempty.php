@@ -32,8 +32,6 @@
 <div id=showEmptyStoreLocations data-role="page">
 
 	<script>
-		pageHookClear();
-
 		$.mobile.pageContainerBeforeShowTasks.push( function(event,ui) {
 			console.log("DEBUG: pageTask <?php echo $_SERVER["REQUEST_URI"]; ?>");
 
@@ -50,7 +48,7 @@
 			}
 
 			$('[name=newStoreLocation]').click( function(evt) {
-				openExternalPopup({
+				ShelfDB.GUI.Popup.openExternalPopup({
 					url: '/pages/popup-editstorelocation.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
@@ -90,7 +88,7 @@
         {
           var entryEl = $(evt.currentTarget).closest('li');
           var entryName = entryEl.first().find('h2').first().text();
-          confirmPopUp({
+          ShelfDB.GUI.Popup.confirmPopUp({
 				    header: Lang.get('editStoreLocationDelete'),
 				    text: (Lang.get('editStoreLocationDeleteHint'))(entryName),
 				    confirmButtonText: Lang.get('delete'),
@@ -128,7 +126,7 @@
 
         if( id )
         {
-            openExternalPopup({
+            ShelfDB.GUI.Popup.openExternalPopup({
 							url: '/pages/popup-editstorelocation.php?id='+id+'&method=edit',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {

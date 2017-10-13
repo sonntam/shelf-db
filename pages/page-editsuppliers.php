@@ -42,7 +42,7 @@
 <div id=editsuppliers data-role="page">
 
 	<script>
-		pageHookClear();
+		console.log("DEBUG: page-editsuppliers - executing...");
 
 		$.mobile.pageContainerBeforeShowTasks.push( function(event,ui) {
 			console.log("DEBUG: pageTask");
@@ -62,7 +62,7 @@
 			}
 
 			$('#newSupplier').click( function(evt) {
-				openExternalPopup({
+				ShelfDB.GUI.Popup.openExternalPopup({
 					url: '/pages/popup-editsupplier.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
@@ -101,7 +101,7 @@
         {
           var entryEl = $(evt.currentTarget).closest('li');
           var entryName = entryEl.first().find('h2').first().text();
-          confirmPopUp({
+          ShelfDB.GUI.Popup.confirmPopUp({
 				    header: Lang.get('editSupplierDelete'),
 				    text: (Lang.get('editSupplierDeleteHint'))(entryName),
 				    confirmButtonText: Lang.get('delete'),
@@ -138,7 +138,7 @@
         var id = $(evt.currentTarget).attr('value');
         if( id )
         {
-            openExternalPopup({
+            ShelfDB.GUI.Popup.openExternalPopup({
 							constrainHeight: false,
 							fixedMaxWidth: '525px',
 							url: '/pages/popup-editsupplier.php?id='+id+'&method=edit',
@@ -183,7 +183,7 @@
         var id = $(evt.currentTarget).attr('value');
         if( id )
         {
-            openExternalPopup({
+            ShelfDB.GUI.Popup.openExternalPopup({
 							url: '/pages/popup-editsupplier.php?id='+id+'&method=copy',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
