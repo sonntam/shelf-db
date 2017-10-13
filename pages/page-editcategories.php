@@ -6,7 +6,7 @@
     window.location="<?php echo $pdb->RelRoot(); ?>index.php#<?php echo $_SERVER['REQUEST_URI']; ?>";
 </script>
 
-<div id=showparts data-role="page">
+<div id=editcategories data-role="page">
 
 	<script>
 		$.mobile.pageContainerBeforeShowTasks.push( function(event,ui) {
