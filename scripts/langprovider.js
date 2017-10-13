@@ -158,6 +158,7 @@ var Lang = (function(){
         searchResultsFor: function(str) {
           return 'Suchergebnisse für "'+str+'"';
         },
+        upperLevel: 'Ebene höher',
         enterName: 'Namen eingeben',
         enterPrice: 'Preis eingeben',
         enterAmount: 'Menge eingeben',

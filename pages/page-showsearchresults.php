@@ -248,7 +248,7 @@
     <h1 uilang="searchResults"></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>
-		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&showSubcategories=1">Ebene höher</a>
+		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&showSubcategories=1" uilang="upperLevel"></a>
 		<?php } ?>
   </div>
   <div role="main" class="ui-content">
