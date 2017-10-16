@@ -1,6 +1,23 @@
 $.widget( "mobile.menupanel", $.mobile.panel, {
     _transitionClose: true,
 
+    _handleClick: function( e ) {
+  		var link,
+  			panelId = this.element.attr( "id" );
+
+  		if ( e.currentTarget.href.split( "#" )[ 1 ] === panelId && panelId !== undefined ) {
+
+  			e.preventDefault();
+  			link = $( e.target );
+  			if ( link.hasClass( "ui-btn" ) ) {
+  				link.addClass( $.mobile.activeBtnClass );
+  				this.element.one( "menupanelopen menupanelclose", function() {
+  					link.removeClass( $.mobile.activeBtnClass );
+  				});
+  			}
+  			this.toggle();
+  		}
+  	},
 
     _bindPageEvents: function() {
   		var self = this;
