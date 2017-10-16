@@ -59,7 +59,7 @@
 			}
 
 			$('#newFootprint').click( function(evt) {
-				openExternalPopup({
+				ShelfDB.GUI.Popup.openExternalPopup({
 					url: '/pages/popup-editfootprint.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
@@ -137,7 +137,7 @@
 
         if( id )
         {
-            openExternalPopup({
+            ShelfDB.GUI.Popup.openExternalPopup({
 							url: '/pages/popup-editfootprint.php?id='+id+'&method=edit',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
@@ -179,7 +179,7 @@
         var id = $(evt.currentTarget).attr('value');
         if( id )
         {
-            openExternalPopup({
+            ShelfDB.GUI.Popup.openExternalPopup({
 							url: '/pages/popup-editfootprint.php?id='+id+'&method=copy',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
