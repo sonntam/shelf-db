@@ -3,7 +3,6 @@
 namespace {
 
 	require_once(__DIR__.'/config.defaults.php');
-	require_once(__DIR__.'/log.php');
 	require_once(dirname(__DIR__).'/lib/namespacefinder.php');
 	require_once(dirname(__DIR__).'/lib/utils.php');
 
