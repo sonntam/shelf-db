@@ -4,4 +4,4 @@ img/parts/*
 img/footprint/*
 img/supplier/*
 cache
-/img/tmp
+img/tmp/*
