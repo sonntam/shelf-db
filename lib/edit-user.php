@@ -3,7 +3,7 @@
 
 include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
-$fp = $pdb->StoreLocations();
+$fp = $pdb->StoreLocation();
 
 $data = array_replace_recursive( array('method' => 'none'), $_GET, $_POST );
 $response = array_replace_recursive($data, array('success' => false));
