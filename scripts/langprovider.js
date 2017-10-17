@@ -375,6 +375,12 @@ var Lang = (function(){
       }
     }
 
+    // Verify if language exists, else return to default
+    if( !_Languages.hasOwnProperty(language) ) {
+      console.log("Language " + language + " is not available. Defaulting to " + LANG_DEFAULT + ".");
+      LANG_CURRENT = LANG_DEFAULT;
+    }
+
    /**
     * key è la chiave da usare nell'oggetto LANG
     * @param key
