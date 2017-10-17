@@ -2,8 +2,10 @@
 
   require_once(__DIR__.'/utils.php');
   require_once(dirname(__DIR__).'/classes/log.php');
+  require_once(__DIR__.'/Twig/Autoloader.php');
 
   spl_autoload_extensions( '.php,.class.php' );
+  Twig_Autoloader::register();
   spl_autoload_register( function( $class_name ) {
 
     $loadFcn = function( $loadPath, $className ) {
