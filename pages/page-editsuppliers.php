@@ -104,7 +104,7 @@
           var entryName = entryEl.first().find('h2').first().text();
           ShelfDB.GUI.Popup.confirmPopUp({
 				    header: Lang.get('editSupplierDelete'),
-				    text: (Lang.get('editSupplierDeleteHint'))(entryName),
+				    text: (Lang.get('editSupplierDeleteHint',true))(entryName),
 				    confirmButtonText: Lang.get('delete'),
 				    confirm: function() {  // Confirmed delete operation
 							// TODO: Database action

@@ -101,7 +101,7 @@
           var entryName = entryEl.first().find('h2').first().text();
           confirmPopUp({
 				    header: Lang.get('editFootprintDelete'),
-				    text: (Lang.get('editFootprintDeleteHint'))(entryName),
+				    text: (Lang.get('editFootprintDeleteHint',true))(entryName),
 				    confirmButtonText: Lang.get('delete'),
 				    confirm: function() {  // Confirmed delete operation
 							// TODO: Database action
