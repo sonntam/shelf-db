@@ -98,10 +98,10 @@ namespace ShelfDB {
       if( $this->db()->affected_rows > 0 ) {
         $this->db()->History()->Add(0, 'P', 'edit', 'storeLocation', array(
           "id" => $oldid,
-          "name" => $this->db()->StoreLocations()->GetNameById($oldid)
+          "name" => $this->db()->StoreLocation()->GetNameById($oldid)
         ), array(
           "id" => $newid,
-          "name" => $this->db()->StoreLocations()->GetNameById($newid)
+          "name" => $this->db()->StoreLocation()->GetNameById($newid)
         ) );
       }
 
@@ -285,13 +285,13 @@ namespace ShelfDB {
       if( !$storelocId ) return false;
 
       // Check if supplier EXISTS
-      $newStoreLocation = $this->db()->StoreLocations()->GetById($storelocId);
+      $newStoreLocation = $this->db()->StoreLocation()->GetById($storelocId);
       if( !$newStoreLocation ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_storeloc", $storelocId );
       if( $oldData ) {
         if( $oldData['oldData'] == $storelocId ) return true;
-        $oldStoreLocation = $this->db()->StoreLocations()->GetById($oldData['oldData']);
+        $oldStoreLocation = $this->db()->StoreLocation()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'storelocation',
           $oldStoreLocation['name'], $newStoreLocation['name'] );
 

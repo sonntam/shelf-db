@@ -2,7 +2,7 @@
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get storelocations
-  $storelocations = $pdb->StoreLocations()->GetEmpty();
+  $storelocations = $pdb->StoreLocation()->GetEmpty();
 
 	$createListEntryFcn = function( $name, $id ) {
 		ob_start();

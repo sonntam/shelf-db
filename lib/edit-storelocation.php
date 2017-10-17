@@ -5,7 +5,7 @@ include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
 $_POST += array('method' => 'none');
 
-$fp = $pdb->StoreLocations();
+$fp = $pdb->StoreLocation();
 
 $response = array_replace_recursive($_GET, $_POST, array('success' => true));
 

@@ -2,7 +2,7 @@
   require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get footprints
-  $storelocs = $pdb->StoreLocations()->GetAll();
+  $storelocs = $pdb->StoreLocation()->GetAll();
 
 
   foreach( $storelocs as &$s ) {

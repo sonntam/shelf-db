@@ -61,7 +61,7 @@ class ShelfDB
     $this->part            = new ShelfDB\Part($this);
     $this->category        = new ShelfDB\Category($this);
     $this->footprint       = new ShelfDB\Footprint($this);
-    $this->storeLocation   = new ShelfDB\StoreLocations($this);
+    $this->storeLocation   = new ShelfDB\StoreLocation($this);
     $this->picture         = new ShelfDB\Picture($this);
     $this->supplier        = new ShelfDB\Supplier($this);
     $this->user            = new ShelfDB\User($this);
@@ -79,7 +79,7 @@ class ShelfDB
   public function Part()           : ShelfDB\Part           { return $this->part; }
   public function Category()       : ShelfDB\Category       { return $this->category; }
   public function Footprint()      : ShelfDB\Footprint      { return $this->footprint; }
-  public function StoreLocations() : ShelfDB\StoreLocations { return $this->storeLocation; }
+  public function StoreLocation()  : ShelfDB\StoreLocation  { return $this->storeLocation; }
   public function Picture()        : ShelfDB\Picture        { return $this->picture; }
   public function Supplier()       : ShelfDB\Supplier       { return $this->supplier; }
   public function User()           : ShelfDB\User           { return $this->user; }

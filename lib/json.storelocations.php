@@ -4,7 +4,7 @@
 
   $_GET += array("id" => null);
 
-  $fp = $pdb->StoreLocations()->GetById($_GET["id"]);
+  $fp = $pdb->StoreLocation()->GetById($_GET["id"]);
 
   $json = json_encode($fp, JSON_PRETTY_PRINT);
 

@@ -14,7 +14,7 @@
         // Fetch data
         $id = $_GET['id'];
 
-        $storelocation = $pdb->StoreLocations()->GetById($id);
+        $storelocation = $pdb->StoreLocation()->GetById($id);
 
         if( $storelocation ) {
           $formData['name'] = $storelocation['name'];

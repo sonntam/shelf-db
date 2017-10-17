@@ -44,7 +44,7 @@
 
 	// Filter strings
 	$fpFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprint()->GetAll()));
-	$slFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
+	$slFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocation()->GetAll()));
 	$ctFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Category()->GetAll()));
 ?>
 

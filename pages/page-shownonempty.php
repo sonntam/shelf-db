@@ -2,7 +2,7 @@
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get storelocations
-  $storelocations = $pdb->StoreLocations()->GetNonEmpty();
+  $storelocations = $pdb->StoreLocation()->GetNonEmpty();
 	$storeLocationIds = array_map( function($x) {
 		return $x['id'];
 	}, $storelocations );

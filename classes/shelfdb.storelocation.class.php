@@ -2,7 +2,7 @@
 
 namespace ShelfDB {
 
-  class StoreLocations {
+  class StoreLocation {
 
     private $db = null;
 
