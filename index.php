@@ -241,6 +241,7 @@
       </div>
       <div role="main" class="ui-content">
         <p><a href="<?php echo $pdb->RelRoot(); ?>pages/test.php">Testlink</a></p>
+        <p><a href="<?php echo $pdb->RelRoot(); ?>pages/page-recentactivity.php">History</a></p>
         <p>
 
         </p>
