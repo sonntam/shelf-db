@@ -436,10 +436,10 @@ var Lang = (function(){
           } else if( attr.length == 2 ) { // Set attribute
             setAttr = attr[0];
             strName = attr[1];
-          } else if( attr.length == 3 ) { // Function call
+          } else if( attr.length >= 3 ) { // Function call
             setAttr = attr[0];
             strName = attr[1];
-            strArg  = attr[2];
+            strArg  = attr.slice(2);
           }
 
           var txt = get(strName);
@@ -447,7 +447,11 @@ var Lang = (function(){
           // If the string is of function type, try to apply the inner Html as argument
           if( typeof txt === 'function' ) {
             if( strArg ) {
-              txt = txt(item.attr(strArg));
+              strArg = strArg.map( function(el) {
+                return item.attr(el);
+              });
+
+              txt = txt.apply(this,strArg);
             } else {
               txt = txt(item.text());
             }
