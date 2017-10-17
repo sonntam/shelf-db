@@ -12,6 +12,10 @@ namespace ShelfDB {
       $this->db = $dbobj;
     }
 
+    private function db() : \ShelfDB {
+      return $this->db;
+    }
+
     private function GetImageFolderFromType($type) {
       switch( strtoupper($type) ) {
         case 'T':
