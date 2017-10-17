@@ -1,5 +1,5 @@
 // This is the main ShelfDB javascript framework namespace
-var ShelfDB = (function(sdb, $) {
+var ShelfDB = (function(sdb, $, Lang) {
 
   // The Parts submodule
   var partsModule = (function() {
@@ -58,7 +58,7 @@ var ShelfDB = (function(sdb, $) {
           },
           {
             name: 'instock',
-            label: 'Lager',
+            label: Lang.get('inStockColumnHeader'),
             index: 'instock',
             sortable: true,
             align: 'right',
@@ -76,7 +76,7 @@ var ShelfDB = (function(sdb, $) {
           },
           {
             name: 'totalstock',
-            label: 'Vorh.',
+            label: Lang.get('totalStockColumnHeader'),
             index: 'totalstock',
             sortable: true,
             align: 'right',
@@ -94,7 +94,7 @@ var ShelfDB = (function(sdb, $) {
           },
           {
             name: 'mininstock',
-            label: 'Min.',
+            label: Lang.get('minStockColumnHeader'),
             index: 'mininstock',
             sortable: true,
             align: 'right',
@@ -127,7 +127,7 @@ var ShelfDB = (function(sdb, $) {
           },
           {
             name: 'storeloc',
-            label: 'Lagerort',
+            label: Lang.get('storageLocation'),
             index: 'storelocid',
             sortable: true,
             align: 'right',
@@ -162,7 +162,7 @@ var ShelfDB = (function(sdb, $) {
           */
           {
             name: 'actions',
-            label: 'Aktionen',
+            label: Lang.get('actions'),
             template: 'actions',
             align: 'center',
             formatter: 'actions',
@@ -171,7 +171,7 @@ var ShelfDB = (function(sdb, $) {
             }
           },
           {
-            label: 'Kategorie',
+            label: Lang.get('category'),
             name: 'category_name',
             index: 'category_name',
             hidden: true,
@@ -280,4 +280,4 @@ var ShelfDB = (function(sdb, $) {
   });
 
   return sdb;
-})(typeof ShelfDB !== 'undefined' ? ShelfDB : {}, jQuery);
+})(typeof ShelfDB !== 'undefined' ? ShelfDB : {}, jQuery, Lang);
