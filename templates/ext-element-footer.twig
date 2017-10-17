@@ -1,0 +1,9 @@
+<div data-role="footer">
+  {# Dynamic page footer #}
+
+  {# Show versions #}
+  {% block footerContent %}
+    Shelf-DB V{{ version.programVersion|join('.')|e }} using database V{{ version.databaseVersion|join('.')|e }}<br>
+    {{ logContent|nl2br }}
+  {% endblock %}
+</div>

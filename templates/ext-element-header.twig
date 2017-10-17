@@ -1,0 +1,12 @@
+<div data-role="header" data-position="fixed">
+
+  {% block headerContent %}
+  {% if lang.mainHeader %}
+    <h1 uilang="{{ lang.mainHeader }}"></h1>
+  {% else %}
+    <h1>{{ title }}</h1>
+  {% endif %}
+  <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+  {% endblock %}
+
+</div>
