@@ -1,6 +1,7 @@
 <?PHP
 
-require_once(__DIR__.'/log.php');
+require_once(dirname(__DIR__).'/lib/autoloader.php');
+
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/cache.class.php');
 require_once(__DIR__.'/shelfdb.part.class.php');
@@ -15,9 +16,6 @@ require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
 require_once(__DIR__.'/../lib/utils.php');
 require_once(__DIR__.'/../lib/qrcode.php');
-require_once(__DIR__.'/../lib/BlueM/Tree.php');
-require_once(__DIR__.'/../lib/BlueM/Tree/Node.php');
-require_once(__DIR__.'/../lib/BlueM/Tree/InvalidParentException.php');
 
 /**
  * ShelfDB-Database singleton class
