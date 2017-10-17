@@ -1,24 +1,38 @@
 {
     "config": {
-        "version": "1.0"
+        "version": "1.2"
     },
     "database": {
         "host": "localhost",
         "user": "root",
         "password": "",
-        "name": "shelfdb",
+        "name": "partdb",
         "port": 55555
     },
     "log": {
-        "logLevel": "debug",
-        "logDateTime": false
+        "logLevel": "error",
+        "logDateTime": true
     },
-    "filesystem": {
-      "tempFileMaxAgeSecs": 30
+    "fileSystem": {
+        "tempFileMaxAgeSecs": 3600
     },
-    "qrcode": {
-      "pixelWidth": 8,
-      "qrMargin": 4,
-      "dataType": "png"
+    "qRCode": {
+        "enable": true,
+        "pixelWidth": 6,
+        "qrMargin": 4,
+        "dataType": "png"
+    },
+    "currency": {
+        "symbol": " \u20ac",
+        "symbolPosition": "behind",
+        "decimal": ",",
+        "thousandsDelimiter": ".",
+        "numDecimals": 2
+    },
+    "cache": {
+        "expireSeconds": 3600
+    },
+    "language": {
+      "default": "deDE"
     }
 }

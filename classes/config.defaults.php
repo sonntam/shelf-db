@@ -79,5 +79,12 @@ namespace ConfigFile {
 		 static public $folder = __DIR__.'/../cache';
 		 static public $expireSeconds = 3600;
 	 }
+
+	 /**
+	  * Language default
+	  */
+	 class Language {
+		 static public $default = "enEN";
+	 }
 }
 ?>

@@ -40,7 +40,7 @@
 
     <!-- Localization -->
     <!-- This has to be loaded BEFORE jQuery mobile! -->
-    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=deDE&replace=true"></script>
+    <script type="text/javascript" src="<?php echo $pdb->RelRoot(); ?>scripts/langprovider.js?language=<?php echo \ConfigFile\Language::$default; ?>&replace=true"></script>
 
     <!-- JQUERY MOBILE -->
     <script src="<?php echo $pdb->RelRoot(); ?>scripts/lib/jquery.mobile-1.4.5.js"></script>
