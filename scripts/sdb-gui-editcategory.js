@@ -164,7 +164,7 @@ var ShelfDB = (function(sdb,$) {
     				ShelfDB.GUI.Popup.inputPopUp({
     			    header: Lang.get('editCategoryAdd'),
     			    headline: Lang.get('editCategoryNewName'),
-    			    message: (Lang.get('editCategoryAddHint'))(node.name),
+    			    message: (Lang.get('editCategoryAddHint',true))(node.name),
     			    confirmButtonText: Lang.get('add'),
     			    textLabel: Lang.get('name')+":",
     			    textPlaceholder: Lang.get('name'),
@@ -214,20 +214,20 @@ var ShelfDB = (function(sdb,$) {
     				var partmovestring = "";
     				if( node.partcount > 0 )
     				{
-    					partmovestring = " "+(Lang.get('editCategoryRemoveLeafHint'))(node.parent.name);
+    					partmovestring = " "+(Lang.get('editCategoryRemoveLeafHint',true))(node.parent.name);
     				}
 
     				// Check if category has children
     				var subcatstring = "";
     				if( node.children.length > 0 ) {
-    					var subcatstring = (Lang.get('editCategoryRemoveSubLeavesHint'))(node.children.map(function(el){
+    					var subcatstring = (Lang.get('editCategoryRemoveSubLeavesHint',true))(node.children.map(function(el){
     							return "\""+el.name+"\"";
     						}).join(", "));
     				}
 
     				ShelfDB.GUI.Popup.confirmPopUp({
     			    header: Lang.get('editCategoryDelete'),
-    			    text: (Lang.get('editCategoryRemoveLeafQuestion'))(curname, subcatstring, partmovestring ),
+    			    text: (Lang.get('editCategoryRemoveLeafQuestion',true))(curname, subcatstring, partmovestring ),
     			    confirmButtonText: Lang.get('delete'),
     			    confirm: function() {
 
@@ -286,7 +286,7 @@ var ShelfDB = (function(sdb,$) {
     				{
     					ShelfDB.GUI.Popup.confirmPopUp({
     				    header: Lang.get('editCategoryMove'),
-    				    text: (Lang.get('editCategoryMoveConfirmTest'))(node.name,npnode.name),
+    				    text: (Lang.get('editCategoryMoveConfirmTest',true))(node.name,npnode.name),
     				    confirmButtonText: Lang.get('move'),
     				    confirm: function() {
     							// Apply move in database
