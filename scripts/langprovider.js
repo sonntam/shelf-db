@@ -385,10 +385,25 @@ var Lang = (function(){
     * key è la chiave da usare nell'oggetto LANG
     * @param key
     */
-    var get = function(key) {
-      var str = _Languages[LANG_CURRENT][key] || _Languages[LANG_DEFAULT][key];
-      if( str === undefined ) {
+    var get = function(key, forceFunction) {
+      var str;
+      if( typeof forceFunction === "undefined" ) {
+        forceFunction = false;
+      }
+      // Check if translation is available
+      if( _Languages[LANG_CURRENT].hasOwnProperty(key) ) {
+        var lstr = _Languages[LANG_CURRENT][key] || _Languages[LANG_DEFAULT][key];
+        if( lstr === undefined ) {
+          console.log('Lang: Key "'+key+'" could not be found!');
+          if( forceFunction ) str = function() { return key; };
+          else str = key;
+        } else {
+          str = lstr;
+        }
+      } else {
         console.log('Lang: Key "'+key+'" could not be found!');
+        if( forceFunction ) str = function() { return key; };
+        else str = key;
       }
       return str;
     };
