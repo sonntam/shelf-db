@@ -5,7 +5,7 @@ include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
 $_POST += array('method' => 'none');
 
-$fp = $pdb->Footprints();
+$fp = $pdb->Footprint();
 
 $response = array_replace_recursive($_GET, $_POST, array('success' => true));
 
@@ -38,7 +38,7 @@ switch ($_POST['method']) {
       if( isset( $setDefaultImg ) && $setDefaultImg == "true" ) {
 
         // Only delete...
-        $pdb->Pictures()->DeleteAllByElementId($id, 'F');
+        $pdb->Picture()->DeleteAllByElementId($id, 'F');
         $response += array(
           'newImageId' => null,
           'id' => $_POST['id'],
@@ -47,7 +47,7 @@ switch ($_POST['method']) {
 
       } else if( isset( $imgFile ) && $imgFile != "" ) {
         // Create database entry for image
-        $pid = $pdb->Pictures()->Create($id, 'F', $imgFile);
+        $pid = $pdb->Picture()->Create($id, 'F', $imgFile);
 
         if( $pid ) {
           $response += array(

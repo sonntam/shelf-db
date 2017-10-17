@@ -17,7 +17,7 @@
         // Fetch data
         $id = $data['id'];
 
-        $supplier = $pdb->Suppliers()->GetById($id);
+        $supplier = $pdb->Supplier()->GetById($id);
 
         if( $supplier ) {
             $formData['name'] = $supplier['name'];
@@ -38,7 +38,7 @@
         // Fetch data
         $id = $data['id'];
 
-        $supplier = $pdb->Suppliers()->GetById($id);
+        $supplier = $pdb->Supplier()->GetById($id);
 
         if( $supplier ) {
             $formData['name'] = $supplier['name'];

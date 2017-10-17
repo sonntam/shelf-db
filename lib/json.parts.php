@@ -40,12 +40,12 @@
 
     // Check if this is a filtered search or a global search
     $search   = WrapJqGridFilterString($options);
-    $numparts = $pdb->Parts()->GetCountByCategoryId($catid, $search, $recursive);
+    $numparts = $pdb->Part()->GetCountByCategoryId($catid, $search, $recursive);
     $numpages = ceil($numparts/$limit);
     $page     = min($numpages,$page);
 
     $offset   = $limit*($page - 1);
-    $parts    = $pdb->Parts()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], $recursive, $search);
+    $parts    = $pdb->Part()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], $recursive, $search);
 
     // Copy
     $newparts = array();
@@ -72,9 +72,9 @@
 
   } else {  // Single part information
     if( $options["getDetailed"] )
-      $parts = array( $pdb->Parts()->GetDetailsById($partid) );
+      $parts = array( $pdb->Part()->GetDetailsById($partid) );
     else
-      $parts = array( $pdb->Parts()->GetById($partid) );
+      $parts = array( $pdb->Part()->GetById($partid) );
 
     $json = json_encode($parts[0], JSON_PRETTY_PRINT);
 

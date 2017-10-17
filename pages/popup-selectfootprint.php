@@ -2,7 +2,7 @@
   require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get footprints
-  $footprints = $pdb->Footprints()->GetAll();
+  $footprints = $pdb->Footprint()->GetAll();
 
   foreach( $footprints as &$f ) {
     $name = htmlspecialchars($f['name']);

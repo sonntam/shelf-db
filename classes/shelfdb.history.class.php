@@ -19,7 +19,7 @@ namespace ShelfDB {
       // $itemType can be one of G, U, P, SU, F, SL, PIC
       // Group, User, Part, Supplier, Footprint, Storelocation, Picture
 
-      $userId = $this->db()->Users()->GetLoggedInUserId();
+      $userId = $this->db()->User()->GetLoggedInUserId();
       if( !$userId ) $userId = 0; // No user is logged in
 
       $action   = $this->db()->sql->real_escape_string($action);
@@ -113,8 +113,8 @@ namespace ShelfDB {
               $langStr = ":historyUserPartChangePrice:hUser:hOldVal:hNewVal";
               $attrEls = array(
                 'hUser'     => $data['username'],
-                'hOldVal' => $this->db()->Parts()->FormatPrice($data['oldvalue']),
-                'hNewVal' => $this->db()->Parts()->FormatPrice($data['newvalue'])
+                'hOldVal' => $this->db()->Part()->FormatPrice($data['oldvalue']),
+                'hNewVal' => $this->db()->Part()->FormatPrice($data['newvalue'])
               );
               break;
             case 'historyUserPartChangePartNumber':

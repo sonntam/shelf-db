@@ -2,7 +2,7 @@
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get footprints
-  $footprints = $pdb->Footprints()->GetAll();
+  $footprints = $pdb->Footprint()->GetAll();
 
 	$createListEntryFcn = function( $name, $pictureFilename, $id ) use (&$pdb) {
 		ob_start();

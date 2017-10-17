@@ -2,7 +2,7 @@
 
 namespace ShelfDB {
 
-  class Parts {
+  class Part {
 
     private $db = null;
 
@@ -65,10 +65,10 @@ namespace ShelfDB {
       // Update history
       $this->db()->History()->Add(0, 'P', 'edit', 'footprint', array(
         "id" => $oldid,
-        "name" => $this->db()->Footprints()->GetNameById($oldid)
+        "name" => $this->db()->Footprint()->GetNameById($oldid)
       ), array(
         "id" => $newid,
-        "name" => $this->db()->Footprints()->GetNameById($newid)
+        "name" => $this->db()->Footprint()->GetNameById($newid)
       ) );
 
       return $res;
@@ -81,10 +81,10 @@ namespace ShelfDB {
       // Update history
       $this->db()->History()->Add(0, 'P', 'edit', 'supplier', array(
         "id" => $oldid,
-        "name" => $this->db()->Suppliers()->GetNameById($oldid)
+        "name" => $this->db()->Supplier()->GetNameById($oldid)
       ), array(
         "id" => $newid,
-        "name" => $this->db()->Suppliers()->GetNameById($newid)
+        "name" => $this->db()->Supplier()->GetNameById($newid)
       ) );
 
       return $res;
@@ -306,14 +306,14 @@ namespace ShelfDB {
       if( !$categoryId ) return false;
 
       // Check if category EXISTS
-      $newCategory = $this->db()->Categories()->GetById($categoryId);
+      $newCategory = $this->db()->Category()->GetById($categoryId);
       if( !$newCategory ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_category", $categoryId );
 
       if( $oldData ) {
         if( $oldData['oldData'] == $categoryId ) return true;
-        $oldCategory = $this->db()->Categories()->GetById($oldData['oldData']);
+        $oldCategory = $this->db()->Category()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'category',
           $oldCategory['name'], $newCategory['name'] );
 
@@ -345,7 +345,7 @@ namespace ShelfDB {
       if( !$footprintId ) return false;
 
       // Check if supplier EXISTS
-      $newFootprint = $this->db()->Footprints()->GetById($footprintId);
+      $newFootprint = $this->db()->Footprint()->GetById($footprintId);
       if( !$newFootprint ) return false;
 
       $oldData = $this->SetDataColumnById( $id, "id_footprint", $footprintId );
@@ -353,7 +353,7 @@ namespace ShelfDB {
       if( $oldData ) {
         if( $oldData['oldData'] == $footprintId ) return true;
         if( $oldData['oldData'] > 0 ) {
-          $oldFootprint = $this->db()->Footprints()->GetById($oldData['oldData']);
+          $oldFootprint = $this->db()->Footprint()->GetById($oldData['oldData']);
         } else {
           $oldFootprint = array("name" => "none");
         }
@@ -371,11 +371,11 @@ namespace ShelfDB {
       if( !$supplierId ) return false;
 
       // Check if supplier EXISTS
-      $newSupplier = $this->db()->Suppliers()->GetById($supplierId);
+      $newSupplier = $this->db()->Supplier()->GetById($supplierId);
       if( !$newSupplier ) return false;
 
       if( $oldData = $this->SetDataColumnById( $id, "id_supplier", $supplierId ) ) {
-        $oldSupplier = $this->db()->Suppliers()->GetById($oldData['oldData']);
+        $oldSupplier = $this->db()->Supplier()->GetById($oldData['oldData']);
         $this->db()->History()->Add($id, 'P', 'edit', 'supplier', $oldSupplier['name'], $newSupplier['name'] );
 
         return true;
@@ -399,14 +399,14 @@ namespace ShelfDB {
       $this->db()->History()->Add($id, 'P', 'delete', 'object', $fp, '');
 
       // Clear category cache as the part count changed
-      $this->db()->Categories()->DefileCache();
+      $this->db()->Category()->DefileCache();
 
       // Now delete the image
       if( isset($fp['pict_id_arr']) && $fp['pict_id_arr'] ){
         $picIds = explode(';',$fp['pict_id_arr']);
         foreach($picIds as $picId) {
             \Log::Info("Trying to delete the image id = $picId entry for part id = $id");
-            $this->db()->Pictures()->DeleteById($picId);
+            $this->db()->Picture()->DeleteById($picId);
         }
       }
       return true;
@@ -518,7 +518,7 @@ namespace ShelfDB {
       switch($type) {
         case 'category':
           if( $recursive ) {
-            $ids = $this->db()->Categories()->GetSubcategoryIdsFromId( $id, true );
+            $ids = $this->db()->Category()->GetSubcategoryIdsFromId( $id, true );
           } else {
             $ids = array($id);
           }

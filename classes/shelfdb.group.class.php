@@ -1,7 +1,7 @@
 <?php
 
 namespace ShelfDB {
-  class Groups {
+  class Group {
 
     private $db         = null;
 
@@ -92,7 +92,7 @@ namespace ShelfDB {
 
     public function AddUserById(int $groupid, $userId) {
       // TODO Block ambiguous requests
-      $existingUsers = $this->db()->Users()->GetAllByGroupId($groupid);
+      $existingUsers = $this->db()->User()->GetAllByGroupId($groupid);
       $userId = array_diff($userId, $existingUsers);
       $userId = array_unique($userId);
       $values = "(".join(",'U',$groupid),(", $userId).",'U',$groupid)";

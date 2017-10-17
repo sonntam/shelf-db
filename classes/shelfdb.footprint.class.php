@@ -1,7 +1,7 @@
 <?php
 
 namespace ShelfDB {
-  class Footprints {
+  class Footprint {
 
     private $db = null;
 
@@ -21,7 +21,7 @@ namespace ShelfDB {
       if( !$fp ) return false;
 
       // Delete the footprint and update all parts to use the default footprint id = 0
-      if( !($this->db()->Parts()->AllReplaceFootprintId($id, 0)) )
+      if( !($this->db()->Part()->AllReplaceFootprintId($id, 0)) )
         return false;
 
       $query = "DELETE FROM footprints WHERE id = $id;";
@@ -36,7 +36,7 @@ namespace ShelfDB {
       // Now delete the image
       if( isset($fp['pict_id']) && $fp['pict_id'] ){
         \Log::Info("Trying to delete the image entry for footprint id = $id");
-        $this->db()->Pictures()->DeleteById($fp['pict_id']);
+        $this->db()->Picture()->DeleteById($fp['pict_id']);
       }
       return true;
     }
@@ -80,7 +80,7 @@ namespace ShelfDB {
         if( !$fp ); // error but ignore for now
 
         if( $fp['pict_id'] ) {
-          $newId['picId'] = $this->db()->Pictures()->CreateCopyFromId($fp['pict_id'], $newId['id']);
+          $newId['picId'] = $this->db()->Picture()->CreateCopyFromId($fp['pict_id'], $newId['id']);
         }
 
         return $newId;
@@ -101,7 +101,7 @@ namespace ShelfDB {
         // Create picture
         $picid = null;
         if( $pictureFileName != "" )
-          $picid = $this->db()->Pictures()->Create($newid, 'F', $pictureFileName, false);
+          $picid = $this->db()->Picture()->Create($newid, 'F', $pictureFileName, false);
 
         $fp = array('id' => $newid, 'name' => $name, 'picId' => $picid);
 

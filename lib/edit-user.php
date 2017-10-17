@@ -11,7 +11,7 @@ $response = array_replace_recursive($data, array('success' => false));
 switch ($data['method']) {
 
   case 'logout':
-    $pdb->Users()->LogOut();
+    $pdb->User()->LogOut();
     $response = array_replace_recursive($response, array(
       'success' => true
     ));
@@ -20,7 +20,7 @@ switch ($data['method']) {
   case 'authenticate': // Auth
 
     if( isset($data['username']) && isset($data['password']) ) {
-      if( $pdb->Users()->LoginUser($data['username'], $data['password']) ) {
+      if( $pdb->User()->LoginUser($data['username'], $data['password']) ) {
         $response = array_replace_recursive($response, array(
           'success' => true
         ));

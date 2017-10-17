@@ -2,7 +2,7 @@
 	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
   // Get suppliers
-  $suppliers = $pdb->Suppliers()->GetAll();
+  $suppliers = $pdb->Supplier()->GetAll();
 
 	$createListEntryFcn = function( $name, $pictureFilename, $id, $url ) use(&$pdb) {
 		ob_start();
@@ -32,7 +32,7 @@
 
   foreach( $suppliers as &$f ) {
     $name = htmlspecialchars($f['name']);
-		$f = $createListEntryFcn($name, $f['pict_fname'], $f['id'], $pdb->Suppliers()->ExpandRawUrl($f['urlTemplate'], "example"));
+		$f = $createListEntryFcn($name, $f['pict_fname'], $f['id'], $pdb->Supplier()->ExpandRawUrl($f['urlTemplate'], "example"));
   }
 ?>
 

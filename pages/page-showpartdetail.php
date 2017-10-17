@@ -11,11 +11,11 @@
 
   if( $data["partid"] != null )
 	{
-    $part = $pdb->Parts()->GetDetailsById($data["partid"]);
+    $part = $pdb->Part()->GetDetailsById($data["partid"]);
 		$name = $part['name'];
 		$partFootprintImageFile = joinPaths( $pdb->RelRoot(), 'img/footprint', $part['f_pict_fname']);
 		$partSupplierImageFile = joinPaths( $pdb->RelRoot(), 'img/supplier', $part['su_pict_fname']);
-		$parentCategories = array_reverse( $pdb->Categories()->GetAncestorsFromId($part['id_category'], true) );
+		$parentCategories = array_reverse( $pdb->Category()->GetAncestorsFromId($part['id_category'], true) );
 
 		$parentCategoryNames = array_map( function($x) { return $x['name']; }, $parentCategories );
 		$parentCategoryLinks = array_map( function($x) {
@@ -54,7 +54,7 @@
 		$categoryString = join( " <i class='fa fa-arrow-right'></i> ", $parentCategoryLinks);
 
 		// Link to supplier
-		$url = $pdb->Suppliers()->GetUrlFromId($part['id_supplier'], $part['supplierpartnr']);
+		$url = $pdb->Supplier()->GetUrlFromId($part['id_supplier'], $part['supplierpartnr']);
 	}
 
 ?>
@@ -284,7 +284,7 @@
 					textDefault: $('[name=showPartNumber]').val(),
 					ok: function( newnumber ) {
 						// Apply new data in database
-						ShelfDB.Parts.editPartFieldData( partId, 'supplierpartnr', newnumber,
+						ShelfDB.Part.editPartFieldData( partId, 'supplierpartnr', newnumber,
 							function(data) {
 								if( data && data.success ) {
 									$('[name=showPartNumber]').val(newnumber);
@@ -315,7 +315,7 @@
 		    textDefault: $('[name=showName]').text(),
 		    ok: function( newName ) {
 					// Apply new data in database
-					ShelfDB.Parts.editPartFieldData( partId, 'name', newName,
+					ShelfDB.Part.editPartFieldData( partId, 'name', newName,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showName]').text(newName);
@@ -352,7 +352,7 @@
 					var storeClicked = $(evt.currentTarget).attr('storeid');
 					if( storeClicked )
 					{
-						ShelfDB.Parts.editPartFieldData( partId, 'storelocation', storeClicked,
+						ShelfDB.Part.editPartFieldData( partId, 'storelocation', storeClicked,
 							function(data) {
 								if( data && data.success ) {
 									//evt.preventDefault();
@@ -379,7 +379,7 @@
 					var fpClicked = $(evt.currentTarget).attr('footprintid');
 					if( fpClicked )
 					{
-						ShelfDB.Parts.editPartFieldData( partId, 'footprint', fpClicked,
+						ShelfDB.Part.editPartFieldData( partId, 'footprint', fpClicked,
 							function(data) {
 								if( data && data.success ) {
 									// Load store location name and store in database
@@ -441,7 +441,7 @@
 					var fpClicked = $(evt.currentTarget).attr('supplierid');
 					if( fpClicked )
 					{
-						ShelfDB.Parts.editPartFieldData( partId, 'supplierid', fpClicked,
+						ShelfDB.Part.editPartFieldData( partId, 'supplierid', fpClicked,
 							function(data) {
 								if( data && data.success ) {
 									// Load store location name and store in database
@@ -485,7 +485,7 @@
 		    textPlaceholder: Lang.get('enterPrice'),
 		    textDefault: $('[name=showPrice]').attr('floatvalue'),
 		    ok: function( newPrice ) {
-					ShelfDB.Parts.editPartFieldData( partId, 'price', newPrice,
+					ShelfDB.Part.editPartFieldData( partId, 'price', newPrice,
 						function(data) {
 							if( data && data.success ) {
 								// Submit and save new name, then update GUI on success
@@ -510,7 +510,7 @@
 				textDefault: $('[name=showTotal]').val(),
 				ok: function( total ) {
 					// Submit and save new name, then update GUI on success
-					ShelfDB.Parts.editPartFieldData( partId, 'totalstock', total,
+					ShelfDB.Part.editPartFieldData( partId, 'totalstock', total,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showTotal]').val(total);
@@ -528,28 +528,28 @@
 		});
 
 		$('[name=addTotal]').click(function(evt) {
-			ShelfDB.Parts.incrementTotal(<?php echo $data['partid']; ?>, function(newval) {
+			ShelfDB.Part.incrementTotal(<?php echo $data['partid']; ?>, function(newval) {
 				$('[name=showTotal]').val(newval);
 				updateButtons();
 			});
 		});
 
 		$('[name=subTotal]').click(function(evt) {
-			ShelfDB.Parts.decrementTotal(<?php echo $data['partid']; ?>, function(newval) {
+			ShelfDB.Part.decrementTotal(<?php echo $data['partid']; ?>, function(newval) {
 				$('[name=showTotal]').val(newval);
 				updateButtons();
 			});
 		});
 
 		$('[name=addStock]').click(function(evt) {
-			ShelfDB.Parts.incrementStock(<?php echo $data['partid']; ?>, function(newval) {
+			ShelfDB.Part.incrementStock(<?php echo $data['partid']; ?>, function(newval) {
 				$('[name=showStock]').val(newval);
 				updateButtons();
 			});
 		});
 
 		$('[name=subStock]').click(function(evt) {
-			ShelfDB.Parts.decrementStock(<?php echo $data['partid']; ?>, function(newval) {
+			ShelfDB.Part.decrementStock(<?php echo $data['partid']; ?>, function(newval) {
 				$('[name=showStock]').val(newval);
 				updateButtons();
 			});
@@ -563,7 +563,7 @@
 		    textDefault: $('[name=showStock]').val(),
 		    ok: function( stock ) {
 					// Submit and save new name, then update GUI on success
-					ShelfDB.Parts.editPartFieldData( partId, 'instock', stock,
+					ShelfDB.Part.editPartFieldData( partId, 'instock', stock,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showStock]').val(stock);
@@ -590,7 +590,7 @@
 		    textDefault: $('[name=showMinStock]').val(),
 		    ok: function( minstock ) {
 					// Submit and save new name, then update GUI on success
-					ShelfDB.Parts.editPartFieldData( partId, 'mininstock', minstock,
+					ShelfDB.Part.editPartFieldData( partId, 'mininstock', minstock,
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showMinStock]').val(minstock);
@@ -616,7 +616,7 @@
 	      textPlaceholder: Lang.get('enterDescription'),
 	      textDefault: $('[name=showDescription]').text(),
 	      ok: function( newdescription ) {
-					ShelfDB.Parts.editPartFieldData( partId, 'comment', newdescription,
+					ShelfDB.Part.editPartFieldData( partId, 'comment', newdescription,
 						function(data) {
 							if( data && data.success ) {
 								// Submit and save new name, then update GUI on success
@@ -680,7 +680,7 @@
 							<?php
 								if( \ConfigFile\QRCode::$enable ) { ?>
 									<br>
-									<img data-other-src="<?php echo $qrImgData = $pdb->Parts()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
+									<img data-other-src="<?php echo $qrImgData = $pdb->Part()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
 								<?php }
 							?>
 						</a>
@@ -784,7 +784,7 @@
 						<div class="ui-grid-a">
 							<div class="ui-block-a" style="padding-right: 0.5em">
 								<div class="flexBoxTextInputEditControl">
-									<input name="showPrice" type="text" readonly=readonly floatvalue="<?php echo $part['price']; ?>" value="<?php echo $pdb->Parts()->FormatPrice($part['price']); ?>">
+									<input name="showPrice" type="text" readonly=readonly floatvalue="<?php echo $part['price']; ?>" value="<?php echo $pdb->Part()->FormatPrice($part['price']); ?>">
 									<input name="editPrice" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>

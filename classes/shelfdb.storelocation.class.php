@@ -83,7 +83,7 @@ namespace ShelfDB {
       if( !$fp ) return false;
 
       // Delete the footprint and update all parts to use the default footprint id = 0
-      if( !($this->db()->Parts()->AllReplaceStorelocationId($id, 0)) )
+      if( !($this->db()->Part()->AllReplaceStorelocationId($id, 0)) )
         return false;
 
       $query = "DELETE FROM storeloc WHERE id = $id;";

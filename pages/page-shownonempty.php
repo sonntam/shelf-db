@@ -6,7 +6,7 @@
 	$storeLocationIds = array_map( function($x) {
 		return $x['id'];
 	}, $storelocations );
-  //$parts = $pdb->Parts()->GetSegmentByStoreLocationId($storeLocationIds, 0, 25, "storelocid", "asc", false, null);
+  //$parts = $pdb->Part()->GetSegmentByStoreLocationId($storeLocationIds, 0, 25, "storelocid", "asc", false, null);
 
 	$createListEntryFcn = function( $name, $id, $images ) use(&$pdb) {
 		ob_start();
@@ -23,7 +23,7 @@
 
   foreach( $storelocations as &$s ) {
     $name = htmlspecialchars($s['name']);
-    //$parts = $pdb->Parts()->GetSegmentByStoreLocationId($s['id'],0,15,"totalstock","desc",false,null);
+    //$parts = $pdb->Part()->GetSegmentByStoreLocationId($s['id'],0,15,"totalstock","desc",false,null);
 
     // Build list of unique images
     /*

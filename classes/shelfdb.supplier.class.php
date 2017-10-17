@@ -1,7 +1,7 @@
 <?php
 
 namespace ShelfDB {
-  class Suppliers {
+  class Supplier {
 
     private $db = null;
 
@@ -52,7 +52,7 @@ namespace ShelfDB {
       if( !$su ) return false;
 
       // Delete the supplier and update all parts to use the default supplier id = 0
-      if( !($this->db()->Parts()->AllReplaceSupplierId($id, 0)) )
+      if( !($this->db()->Part()->AllReplaceSupplierId($id, 0)) )
         return false;
 
       $query = "DELETE FROM suppliers WHERE id = $id;";
@@ -67,7 +67,7 @@ namespace ShelfDB {
       // Now delete the image
       if( isset($su['pict_id']) && $su['pict_id'] ){
         \Log::Info("Trying to delete the image entry for supplier id = $id");
-        $this->db()->Pictures()->DeleteById($su['pict_id']);
+        $this->db()->Picture()->DeleteById($su['pict_id']);
       }
       return true;
     }
@@ -113,7 +113,7 @@ namespace ShelfDB {
         if( !$su ); // error but ignore for now
 
         if( $su['pict_id'] ) {
-          $newId['picId'] = $this->db()->Pictures()->CreateCopyFromId($su['pict_id'], $newId['id']);
+          $newId['picId'] = $this->db()->Picture()->CreateCopyFromId($su['pict_id'], $newId['id']);
         }
 
         return $newId;
@@ -137,7 +137,7 @@ namespace ShelfDB {
         // Create picture
         $picid = null;
         if( $pictureFileName != "" )
-          $picid = $this->db()->Pictures()->Create($newid, 'SU', $pictureFileName, false);
+          $picid = $this->db()->Picture()->Create($newid, 'SU', $pictureFileName, false);
 
         $fp = array('id' => $newid, 'name' => $name, 'picId' => $picid, 'urlTemplate' => $url);
 

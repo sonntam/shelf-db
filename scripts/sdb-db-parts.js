@@ -1,7 +1,7 @@
 // This is the main ShelfDB javascript framework namespace
 var ShelfDB = (function(sdb, $, Lang) {
 
-  // The Parts submodule
+  // The Part submodule
   var partsModule = (function() {
 
     var getListViewModel = function(opts) {
@@ -276,7 +276,7 @@ var ShelfDB = (function(sdb, $, Lang) {
   })();
 
   $.extend(sdb, {
-    Parts: partsModule,
+    Part: partsModule,
   });
 
   return sdb;

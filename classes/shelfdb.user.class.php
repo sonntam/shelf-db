@@ -1,7 +1,7 @@
 <?php
 
 namespace ShelfDB {
-  class Users {
+  class User {
 
     private $db         = null;
     private $isLoggedIn = false;
@@ -189,7 +189,7 @@ namespace ShelfDB {
     }
 
     public function HashPassword($password) {
-      $hash = password_hash( $password, Users::hashAlgorithm, Users::hashOptions );
+      $hash = password_hash( $password, User::hashAlgorithm, User::hashOptions );
     }
 
     public function CheckLogin($username, $password) {
@@ -200,7 +200,7 @@ namespace ShelfDB {
       if( password_verify($password, $user['passhash']) ) {
 
         // Rehash if necessary
-        if( password_needs_rehash( $user['passhash'], Users::hashAlgorithm, Users::hashOptions  ) ) {
+        if( password_needs_rehash( $user['passhash'], User::hashAlgorithm, User::hashOptions  ) ) {
           $newHash = $this->HashPassword($password);
           $this->SetUserPasswordHashById( $user['id'], $newHash);
           $user['passhash'] = $newHash;

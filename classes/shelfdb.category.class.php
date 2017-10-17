@@ -2,7 +2,7 @@
 
 namespace ShelfDB {
 
-  class Categories {
+  class Category {
 
     private $db = null;
     private $data = null;

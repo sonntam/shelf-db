@@ -6,7 +6,7 @@
 
   $data = array_replace_recursive( array("id" => null), $_GET, $_POST );
 
-  $fp = $pdb->Footprints()->GetById($data["id"]);
+  $fp = $pdb->Footprint()->GetById($data["id"]);
 
   $json = json_encode($fp, JSON_PRETTY_PRINT);
 

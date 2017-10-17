@@ -40,15 +40,15 @@ class ShelfDB
    */
   public $twigLoader;
 
-  private $parts;
-  private $categories;
-  private $footprints;
-  private $storeLocations;
-  private $pictures;
-  private $suppliers;
-  private $users;
+  private $part;
+  private $category;
+  private $footprint;
+  private $storeLocation;
+  private $picture;
+  private $supplier;
+  private $user;
   private $history;
-  private $groups;
+  private $group;
 
   private function sql(): mysqli
   {
@@ -58,15 +58,15 @@ class ShelfDB
   /** Constructor */
   function __construct()
   {
-    $this->parts            = new ShelfDB\Parts($this);
-    $this->categories       = new ShelfDB\Categories($this);
-    $this->footprints       = new ShelfDB\Footprints($this);
-    $this->storeLocations   = new ShelfDB\StoreLocations($this);
-    $this->pictures         = new ShelfDB\Pictures($this);
-    $this->suppliers        = new ShelfDB\Suppliers($this);
-    $this->users            = new ShelfDB\Users($this);
-    $this->history          = new ShelfDB\History($this);
-    $this->groups           = new ShelfDB\Groups($this);
+    $this->part            = new ShelfDB\Part($this);
+    $this->category        = new ShelfDB\Category($this);
+    $this->footprint       = new ShelfDB\Footprint($this);
+    $this->storeLocation   = new ShelfDB\StoreLocations($this);
+    $this->picture         = new ShelfDB\Picture($this);
+    $this->supplier        = new ShelfDB\Supplier($this);
+    $this->user            = new ShelfDB\User($this);
+    $this->history         = new ShelfDB\History($this);
+    $this->group           = new ShelfDB\Group($this);
 
     $this->twigLoader       = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
     $this->twig             = new Twig_Environment($this->twigLoader, array(
@@ -76,15 +76,15 @@ class ShelfDB
     ));
   }
 
-  public function Parts()          : ShelfDB\Parts          { return $this->parts; }
-  public function Categories()     : ShelfDB\Categories     { return $this->categories; }
-  public function Footprints()     : ShelfDB\Footprints     { return $this->footprints; }
-  public function StoreLocations() : ShelfDB\StoreLocations { return $this->storeLocations; }
-  public function Pictures()       : ShelfDB\Pictures       { return $this->pictures; }
-  public function Suppliers()      : ShelfDB\Suppliers      { return $this->suppliers; }
-  public function Users()          : ShelfDB\Users          { return $this->users; }
+  public function Part()           : ShelfDB\Part           { return $this->part; }
+  public function Category()       : ShelfDB\Category       { return $this->category; }
+  public function Footprint()      : ShelfDB\Footprint      { return $this->footprint; }
+  public function StoreLocations() : ShelfDB\StoreLocations { return $this->storeLocation; }
+  public function Picture()        : ShelfDB\Picture        { return $this->picture; }
+  public function Supplier()       : ShelfDB\Supplier       { return $this->supplier; }
+  public function User()           : ShelfDB\User           { return $this->user; }
   public function History()        : ShelfDB\History        { return $this->history; }
-  public function Groups()         : ShelfDB\Groups         { return $this->groups; }
+  public function Group()          : ShelfDB\Group          { return $this->group; }
 
   /**
    * Get the singleton instance of ShelfDB
@@ -106,7 +106,7 @@ class ShelfDB
 
       \Log::Debug("Include path is \"".get_include_path()."\"");
 
-      $db->Users()->ResumeSession();
+      $db->User()->ResumeSession();
     }
 
     return $db;

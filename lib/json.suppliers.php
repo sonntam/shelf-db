@@ -13,22 +13,22 @@
     "success" => true
   );
 
-  $su = $pdb->Suppliers()->GetById($data['id']);
+  $su = $pdb->Supplier()->GetById($data['id']);
 
   if( $su ) {
 
-    if( !$data['id'] ) { // Get all Suppliers
+    if( !$data['id'] ) { // Get all Supplier
 
       if( $data['partNr'] ) {
         foreach( $su as &$s ) {
-          $s['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $s['urlTemplate'], $data['partNr'] );
+          $s['urlTemplate'] = $pdb->Supplier()->ExpandRawUrl( $s['urlTemplate'], $data['partNr'] );
         }
       }
 
     } else {
       // Single supplier
       if( $data['partId'] ) {
-        $part = $pdb->Parts()->GetById($data['partId']);
+        $part = $pdb->Part()->GetById($data['partId']);
         if( !$part ) {
           $response = array_replace_recursive($response,
             array(
@@ -36,10 +36,10 @@
               "success" => false
             ));
         } else {
-          $su['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $su['urlTemplate'], $part['supplierpartnr'] );
+          $su['urlTemplate'] = $pdb->Supplier()->ExpandRawUrl( $su['urlTemplate'], $part['supplierpartnr'] );
         }
       } elseif( $data['partNr'] ) {
-        $su['urlTemplate'] = $pdb->Suppliers()->ExpandRawUrl( $su['urlTemplate'], $data['partNr'] );
+        $su['urlTemplate'] = $pdb->Supplier()->ExpandRawUrl( $su['urlTemplate'], $data['partNr'] );
       }
     }
   } else {

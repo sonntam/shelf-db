@@ -36,7 +36,7 @@
 		case 'footprintId':
 			$footprintId = $options['search'];
 
-			if( $fp = $pdb->Footprints()->GetById($footprintId) ) {
+			if( $fp = $pdb->Footprint()->GetById($footprintId) ) {
 			} else {
 				$fp = array(
 					'name' => 'undefined',
@@ -55,13 +55,13 @@
 	$searchMode = $search && ($search != "");
 
 	$catid      = $options["catid"];
-	$catname    = $pdb->Categories()->GetNameById($catid);
+	$catname    = $pdb->Category()->GetNameById($catid);
 
 
 	// Filter strings
-	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
+	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprint()->GetAll()));
 	$slFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
-	$ctFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Categories()->GetAll()));
+	$ctFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Category()->GetAll()));
 ?>
 
 <script type="text/javascript">
@@ -146,7 +146,7 @@
 						}
 
 					},
-	        colModel: ShelfDB.Parts.getListViewModel({
+	        colModel: ShelfDB.Part.getListViewModel({
 						footprintFilterString: '<?php echo $fpFilter; ?>',
 						storeLocationFilterString: '<?php echo $slFilter; ?>',
 						categoryFilterString: '<?php echo $ctFilter; ?>',

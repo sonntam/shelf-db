@@ -13,7 +13,7 @@ $response = array(
   'success' => true
 );
 
-$cat = $pdb->Categories();
+$cat = $pdb->Category();
 
 switch ($data['method']) {
 
@@ -65,7 +65,7 @@ switch ($data['method']) {
       $id = $data['id'];
 
       // Get part count
-      $numParts = $pdb->Parts()->GetCountByCategoryId( $id, "", true );
+      $numParts = $pdb->Part()->GetCountByCategoryId( $id, "", true );
 
       // Get Sub-categories
       $subCatIds = $cat->GetSubcategoryIdsFromId( $id, false );
@@ -82,7 +82,7 @@ switch ($data['method']) {
         ));
         $parentCatId = $cat->GetParentFromId($id);
         if( $parentCatId ) {
-          if( $pdb->Parts()->AllReplaceStorelocationId($id,$parentCatId['id']) ) {
+          if( $pdb->Part()->AllReplaceStorelocationId($id,$parentCatId['id']) ) {
             // Delete category
             if( $cat->DeleteById($id) ) {
               $response = array_replace_recursive( $response, array(

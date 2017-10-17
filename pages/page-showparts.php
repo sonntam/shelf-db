@@ -17,7 +17,7 @@
 	$searchMode = $search && ($search != '');
 
 	$catid             = $options['catid'];
-	$catname           = $pdb->Categories()->GetNameById($catid);
+	$catname           = $pdb->Category()->GetNameById($catid);
 	$showSubcategories = $options['showSubcategories'] == '1';
 
 	// Create button from category node
@@ -27,10 +27,10 @@
 	};
 
 	// Get Parent
-	$parent  				= $pdb->Categories()->GetParentFromId($catid);
+	$parent  				= $pdb->Category()->GetParentFromId($catid);
 	$catParentName 	= $parent['name'];
 	$catParentId    = $parent['id'];
-	$catHasChildren = (int)( count($pdb->Categories()->GetDirectChildrenFromId($catid)) > 0 );
+	$catHasChildren = (int)( count($pdb->Category()->GetDirectChildrenFromId($catid)) > 0 );
 	// Get All parent nodes and create buttons
 	$buttons = [];
 	if( $catid != 0 )
@@ -39,13 +39,13 @@
 	while($parent['id'] != 0) {
 		array_unshift($buttons, $funCreateButton($parent,1));
 
-		$parent  = $pdb->Categories()->GetParentFromId($parent['id']);
+		$parent  = $pdb->Category()->GetParentFromId($parent['id']);
 	}
 
 	// Filter strings
-	$fpFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprints()->GetAll()));
+	$fpFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprint()->GetAll()));
 	$slFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocations()->GetAll()));
-	$ctFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Categories()->GetAll()));
+	$ctFilter = join(';', array_map(function($el){return $el['id'].':'.htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Category()->GetAll()));
 ?>
 
 <script type="text/javascript">
@@ -143,7 +143,7 @@
 						}
 
 					},
-	        colModel: ShelfDB.Parts.getListViewModel({
+	        colModel: ShelfDB.Part.getListViewModel({
 						footprintFilterString: '<?php echo $fpFilter; ?>',
 						storeLocationFilterString: '<?php echo $slFilter; ?>',
 						categoryFilterString: '<?php echo $ctFilter; ?>',

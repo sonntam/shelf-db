@@ -11,7 +11,7 @@ $_REQUEST['datasheet']""
 $_REQUEST['oper']"edit"
 $_REQUEST['id']"763"
    */
-  $p = $pdb->Parts();
+  $p = $pdb->Part();
 
   // Submitted data
   $data = array_replace_recursive(array(
@@ -66,7 +66,7 @@ $_REQUEST['id']"763"
     case 'addPicture':
       if( isset($data['imageFileName']) && isset($data['id']) ) {
         $id = $data['id'];
-        $newid = $pdb->Pictures()->Create($id, 'P', $data['imageFileName'], false);
+        $newid = $pdb->Picture()->Create($id, 'P', $data['imageFileName'], false);
 
         if( $newid ) {
           $response = array_replace_recursive($response, array(
@@ -80,7 +80,7 @@ $_REQUEST['id']"763"
 
     case 'deletePicture':
       if( isset($data['pictureId']) ) {
-        $res = $pdb->Pictures()->DeleteById($data['pictureId']);
+        $res = $pdb->Picture()->DeleteById($data['pictureId']);
 
         if( $res ) {
           $response = array_replace_recursive($response, array(
@@ -117,7 +117,7 @@ $_REQUEST['id']"763"
     case 'setMasterPic':
       $picId = $data['id'];
 
-      $res = $pdb->Pictures()->SetPartMasterById($picId);
+      $res = $pdb->Picture()->SetPartMasterById($picId);
 
       $response = array_replace_recursive($response, array(
         'success' => ($res ? true : false)

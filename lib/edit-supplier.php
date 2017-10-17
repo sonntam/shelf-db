@@ -5,7 +5,7 @@ include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
 
 $_POST += array('method' => 'none');
 
-$su = $pdb->Suppliers();
+$su = $pdb->Supplier();
 
 // Response data structure
 $response = array_replace_recursive($_GET, $_POST, array('success' => true));
@@ -55,7 +55,7 @@ switch ($data['method']) {
       if( isset( $setDefaultImg ) && $setDefaultImg == "true" ) {
 
         // Only delete...
-        $pdb->Pictures()->DeleteAllByElementId($id, 'SU');
+        $pdb->Picture()->DeleteAllByElementId($id, 'SU');
         $response += array(
           'newImageId' => null,
           'id' => $data['id'],
@@ -64,7 +64,7 @@ switch ($data['method']) {
 
       } else if( isset( $imgFile ) && $imgFile != "" ) {
         // Create database entry for image
-        $pid = $pdb->Pictures()->Create($id, 'SU', $imgFile);
+        $pid = $pdb->Picture()->Create($id, 'SU', $imgFile);
 
         if( $pid ) {
           $response += array(

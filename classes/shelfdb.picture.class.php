@@ -2,7 +2,7 @@
 
 namespace ShelfDB {
 
-  class Pictures {
+  class Picture {
 
     private $db = null;
 

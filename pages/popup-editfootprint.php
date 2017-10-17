@@ -16,7 +16,7 @@
         // Fetch data
         $id = $_GET['id'];
 
-        $footprint = $pdb->Footprints()->GetById($id);
+        $footprint = $pdb->Footprint()->GetById($id);
 
         if( $footprint ) {
             $formData['name'] = $footprint['name'];
@@ -36,7 +36,7 @@
         // Fetch data
         $id = $_GET['id'];
 
-        $footprint = $pdb->Footprints()->GetById($id);
+        $footprint = $pdb->Footprint()->GetById($id);
 
         if( $footprint ) {
             $formData['name'] = $footprint['name'];
