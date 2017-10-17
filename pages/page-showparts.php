@@ -98,7 +98,7 @@
 				});
 
 				$("#grido").jqGrid({
-					caption: 'Teile in Kategorie <?php echo $catname; ?>',
+					caption: Lang.get('partsInCategoryNameHeader', true)('<?php echo $catname; ?>'),
 					url:'<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>',
 					editurl: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
 					autowidth: true,
@@ -244,7 +244,7 @@
 	</script>
 
   <div data-role="header" data-position="fixed">
-    <h1>Kategorie <?php echo $catname; ?></a></h1>
+    <h1 uilang=":categoryNameHeader:"><?php echo $catname; ?></a></h1>
     <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<?php if( $catid != 0 && $catParentId != 0 ) { ?>
 		<a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="page-showparts.php?catid=<?php echo $catParentId; ?>&showSubcategories=1" uilang="upperLevel"></a>
@@ -257,13 +257,13 @@
 			{
 		?>
 
-			<h3>Unterkategorien</h3>
+			<h3 uilang="subCategories"></h3>
 			<div id="subcattree" data-url="<?php echo $pdb->RelRoot(); ?>lib/json.categorytree.php?catid=<?php echo $catid; ?>&withparent=<?php echo ($catid == 0 ? 0 : 1) ?>"></div>
 		<?php
 			}
 		?>
 
-			<h3>Teile</h3>
+			<h3 uilang="parts"></h3>
 			<!-- Bild/Bottomlevel Kategorie/Name/Lagerbestand/Footprint/Lagerort/Datenblätter/+- -->
 			<p>
 				<table id=grido></table>
@@ -272,7 +272,7 @@
 
 		<!-- Popup image viewer -->
 		<div data-role="popup" id="popupimg" class="photopopup" data-overlay-theme="a" data-corners="false" data-tolerance="30,15">
-			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Schließen</a>
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" uilang="close"></a>
 			<img src="" alt="">
 		</div>
 
