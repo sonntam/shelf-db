@@ -514,6 +514,7 @@
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showTotal]').val(total);
+								updateButtons();
 							}
 						}
 					);
@@ -566,6 +567,7 @@
 						function(data) {
 							if( data && data.success ) {
 								$('[name=showStock]').val(stock);
+								updateButtons();
 							}
 						}
 					);
