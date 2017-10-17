@@ -316,7 +316,7 @@ var Lang = (function(){
         popupStorelocationFilterPlaceholder: 'Lagerorte filtern...',
 
         helpInStock: 'Die eingelagerte Menge ist die Menge, die im Lagerort verfügbar ist. Sie ist nicht größer als die vorhandene Menge.',
-        helpTotalInStock: 'Die vorhandene Menge ist die Menge, die überhaupt existiert, aber nicht unbedingt im Lagerort verfügbar ist. Sie ist immer mindestens so groß, wie die eingelagerte Menge.'
+        helpTotalInStock: 'Die vorhandene Menge ist die Menge, die überhaupt existiert, aber nicht unbedingt im Lagerort verfügbar ist. Sie ist immer mindestens so groß, wie die eingelagerte Menge.',
 
         // History related
         historyUserPartChangeTotalStock: function(user, oldCount, count) {
