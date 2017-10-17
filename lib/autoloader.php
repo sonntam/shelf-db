@@ -2,10 +2,12 @@
 
   require_once(__DIR__.'/utils.php');
   require_once(dirname(__DIR__).'/classes/log.php');
+
+  // Register autoloaders of sub-libraries first
   require_once(__DIR__.'/Twig/Autoloader.php');
+  Twig_Autoloader::register();
 
   spl_autoload_extensions( '.php,.class.php' );
-  Twig_Autoloader::register();
   spl_autoload_register( function( $class_name ) {
 
     $loadFcn = function( $loadPath, $className ) {
@@ -19,8 +21,6 @@
             return true;
           }
         }
-
-        Log::Error("Could not find include for $loadPath");
         return false;
     };
 
