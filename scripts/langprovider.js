@@ -317,6 +317,61 @@ var Lang = (function(){
 
         helpInStock: 'Die eingelagerte Menge ist die Menge, die im Lagerort verfügbar ist. Sie ist nicht größer als die vorhandene Menge.',
         helpTotalInStock: 'Die vorhandene Menge ist die Menge, die überhaupt existiert, aber nicht unbedingt im Lagerort verfügbar ist. Sie ist immer mindestens so groß, wie die eingelagerte Menge.'
+
+        // History related
+        historyUserPartChangeTotalStock: function(user, oldCount, count) {
+          var change = parseInt(count)-parseInt(oldCount);
+          return user + ' hat ' + (Math.abs(change) == 1 ? 'ein' : parseInt(Math.abs(change)) ) + ' Stück ' + (change > 0 ? 'zur Gesamtmenge hinzugefügt.' : 'von der Gesamtmenge entfernt.' );
+        },
+        historyUserPartChangeInStock: function(user, oldCount, count) {
+          var change = parseInt(count)-parseInt(oldCount);
+          return user + ' hat ' + (Math.abs(change) == 1 ? 'ein' : parseInt(Math.abs(change)) ) + ' Stück ' + (change > 0 ? 'zur Lagermenge hinzugefügt.' : 'aus der Lagermenge entnommen.' );
+        },
+        historyUserPartChangeMinStock: function(user, oldCount, count) {
+          return user + ' hat die Mindestmenge auf ' + (Math.abs(count) == 1 ? 'ein' : parseInt(Math.abs(count)) ) + ' Stück geändert.';
+        },
+        historyUserPartChangePartNumber: function(user, oldNumber, newNumber) {
+          return user + ' hat die Artikelnummer von ' + oldNumber + ' auf ' + newNumber + ' geändert.';
+        },
+        historyUserPartChangeFootprint: function(user, oldVal, newVal) {
+          return user + ' hat die Bauform von ' + oldVal + ' auf ' + newVal + ' geändert.';
+        },
+        historyUserPartChangeStorageLocation: function(user, oldVal, newVal) {
+          return user + ' hat den Lagerort von ' + oldVal + ' auf ' + newVal + ' geändert.';
+        },
+        historyUserPartChangeSupplier: function(user, oldVal, newVal) {
+          return user + ' hat den Lieferanten von ' + oldVal + ' auf ' + newVal + ' geändert.';
+        },
+        historyUserPartChangePrice: function(user, oldVal, newVal) {
+          return user + ' hat den Preis von ' + oldVal + ' auf ' + newVal + ' geändert.';
+        },
+        historyUserPartChangeName: function(user, oldVal, newVal) {
+          return user + ' hat den Namen von ' + oldVal + ' auf ' + newVal + ' geändert.';
+        },
+        historyUserPartChangeDescription: function(user) {
+          return user + ' hat die Beschreibung geändert.';
+        },
+        historyUserPartAddPicture: function(user) {
+          return user + ' hat ein Bild hinzugefügt.';
+        },
+        historyUserPartDeletePicture: function(user) {
+          return user + ' hat ein Bild gelöscht.';
+        },
+        historyUserPartNewMasterPicture: function(user) {
+          return user + ' hat ein neues Bild als Hauptbild ausgewählt.';
+        },
+        historyUserPartAddDatasheet: function(user) {
+          return user + ' hat ein neues Datenblatt hinzugefügt.';
+        },
+        historyUserPartDeleteDatasheet: function(user) {
+          return user + ' hat ein Datenblatt gelöscht.';
+        },
+        historyUserPartDelete: function(user, partname) {
+          return user + ' hat das Teil "' + partname + '" gelöscht.';
+        },
+        historyUserPartAdd: function(user, partname) {
+          return user + ' hat das Teil "' + partname + '" angelegt.';
+        }
       }
     }
 
