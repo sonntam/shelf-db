@@ -152,6 +152,8 @@ $_REQUEST['id']"763"
           && is_callable( array($p, $methodTable[$field] ) ) ) {
           $method = $methodTable[$field];
           $response['success'] = $p->$method( $id, $data['data'] );
+          if( $field == 'price' ) // Format price and send back
+            $response['pricetext'] = $p->FormatPrice($data['data']);
         }
       }
       break;

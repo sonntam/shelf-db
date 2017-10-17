@@ -483,13 +483,13 @@
 		    header: Lang.get('editPartPrice'),
 		    headline: Lang.get('editPartChangePrice'),
 		    textPlaceholder: Lang.get('enterPrice'),
-		    textDefault: $('[name=showPrice]').val(),
+		    textDefault: $('[name=showPrice]').attr('floatvalue'),
 		    ok: function( newPrice ) {
 					ShelfDB.Parts.editPartFieldData( partId, 'price', newPrice,
 						function(data) {
 							if( data && data.success ) {
 								// Submit and save new name, then update GUI on success
-								$('[name=showPrice]').val(newPrice);
+								$('[name=showPrice]').val(data.pricetext);
 							}
 						}
 					);
@@ -782,7 +782,7 @@
 						<div class="ui-grid-a">
 							<div class="ui-block-a" style="padding-right: 0.5em">
 								<div class="flexBoxTextInputEditControl">
-									<input name="showPrice" type="text" readonly=readonly value="<?php echo $part['price']; ?>">
+									<input name="showPrice" type="text" readonly=readonly floatvalue="<?php echo $part['price']; ?>" value="<?php echo $pdb->Parts()->FormatPrice($part['price']); ?>">
 									<input name="editPrice" type="button" data-icon="edit" data-iconpos="notext">
 								</div>
 							</div>
