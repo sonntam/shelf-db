@@ -186,14 +186,14 @@ function joinPaths() {
     }
 
     if( sizeof($paths) > 0  ) {
-      $frontSep = substr($paths[0],0,1) == '/';
+      $frontSep = substr($paths[0],0,1) == '/' || substr($paths[0],0,1) == "\\" ;
     }
 
     $paths = array_map(function($p) {
-      return trim($p, "/");
+      return trim($p, "\\/");
     }, $paths);
     $paths = array_filter($paths);
-    return ($frontSep ? '/' : "" ).join('/', $paths);
+    return ($frontSep ? DIRECTORY_SEPARATOR : "" ).join(DIRECTORY_SEPARATOR, $paths);
 }
 
 ?>
