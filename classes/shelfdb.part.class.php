@@ -16,6 +16,21 @@ namespace ShelfDB {
       return $this->db;
     }
 
+    public function FormatPrice( $priceVal ) {
+      $str = "";
+      $str = number_format( $priceVal,
+        \ConfigFile\Currency::$numDecimals,
+        \ConfigFile\Currency::$decimal,
+        \ConfigFile\Currency::$thousandsDelimiter
+      );
+      if( strtolower(\ConfigFile\Currency::$symbolPosition) == 'behind' ) {
+        $str = $str . \ConfigFile\Currency::$symbol;
+      } else {
+        $str = \ConfigFile\Currency::$symbol . $str;
+      }
+      return $str;
+    }
+
     public function CreateQRCode( $partId ) {
       $qr = \QRCode::getMinimumQRCode($partId, QR_ERROR_CORRECT_LEVEL_Q);
 
