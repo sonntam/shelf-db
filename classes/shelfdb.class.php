@@ -29,6 +29,17 @@ class ShelfDB
    */
   public $sql;
 
+  /**
+   * @var Twig_Environment $twig The main Twig environment
+   */
+  public $twig;
+
+
+  /**
+   * @var Twig_Loader $twigLoader The main Twig loader
+   */
+  public $twigLoader;
+
   private $parts;
   private $categories;
   private $footprints;
@@ -56,6 +67,13 @@ class ShelfDB
     $this->users            = new ShelfDB\Users($this);
     $this->history          = new ShelfDB\History($this);
     $this->groups           = new ShelfDB\Groups($this);
+
+    $this->twigLoader       = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
+    $this->twig             = new Twig_Environment($this->twigLoader, array(
+      'cache'       => joinPaths(dirname(__DIR__),'cache'),
+      'auto_reload' => true,
+      'debug'       => true
+    ));
   }
 
   public function Parts()          : ShelfDB\Parts          { return $this->parts; }
