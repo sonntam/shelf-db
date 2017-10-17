@@ -26,6 +26,12 @@
 
     $class_path = str_replace("\\",DIRECTORY_SEPARATOR,$class_name);
 
+    // Exception for ConfigFile
+    if( strpos($class_path, "ConfigFile") === 0 ){
+      require_once(joinPaths(dirname(__DIR__),'classes','ConfigFile.class.php'));
+      return true;
+    }
+
     // Generate list of files to try
     $tries = array(
       joinPaths(__DIR__, $class_path),
@@ -41,4 +47,5 @@
 
     return false;
   });
+
 ?>

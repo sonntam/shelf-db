@@ -1,6 +1,5 @@
 <?php
 
-  include_once(dirname(__DIR__).'/classes/config.php');
   include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
   include_once(__DIR__.'/utils.php');
 

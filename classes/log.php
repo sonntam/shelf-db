@@ -2,8 +2,6 @@
 
 namespace {
 
-  require_once(__DIR__.'/config.php');
-
   class Log {
 
     private const LOG_LEVEL_SUFFIX = " - ";
