@@ -4,15 +4,6 @@ require_once(dirname(__DIR__).'/lib/autoloader.php');
 
 require_once(__DIR__.'/config.php');
 require_once(__DIR__.'/cache.class.php');
-require_once(__DIR__.'/shelfdb.part.class.php');
-require_once(__DIR__.'/shelfdb.user.class.php');
-require_once(__DIR__.'/shelfdb.group.class.php');
-require_once(__DIR__.'/shelfdb.history.class.php');
-require_once(__DIR__.'/shelfdb.picture.class.php');
-require_once(__DIR__.'/shelfdb.supplier.class.php');
-require_once(__DIR__.'/shelfdb.category.class.php');
-require_once(__DIR__.'/shelfdb.footprint.class.php');
-require_once(__DIR__.'/shelfdb.storelocation.class.php');
 
 require_once(__DIR__.'/../lib/utils.php');
 require_once(__DIR__.'/../lib/qrcode.php');
