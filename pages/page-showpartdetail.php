@@ -811,21 +811,30 @@
 							?></p>
 			    </div>
 				</div>
-				<div data-role="collapsible">
+
+				<div name="partDatasheetsListView" data-role="collapsible">
 			    <h4 uilang="datasheets"></h4>
 					<p>TODO: DS</p>
 				</div>
+
 				<div name="partPictureListView" data-role="collapsible">
 			    <h4 uilang="images"></h4>
 					<!-- Part pictures -->
 					<?php echo  join("",$partImageHtml); ?>
 					<div name="pictureContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
 						<a name="pictureContainerAddButton" href="#">
-						<div class="partinfo partImageListItem" style="font-size: 1em; width: 10em; height: 10em">
-							<i class="fa fa-plus" style="font-size: 10em"></i>
-						</div>
-					</a>
+							<div class="partinfo partImageListItem" style="font-size: 1em; width: 10em; height: 10em">
+								<i class="fa fa-plus" style="font-size: 10em"></i>
+							</div>
+						</a>
+					</div>
 				</div>
+
+				<div name="partHistory" data-role="collapsible">
+				  <h4 uilang="history"></h4>
+					<p>
+					<?php echo  $pdb->History()->PrintHistoryData($pdb->History()->GetByTypeAndId($data['partid'], 'P')); ?>
+					</p>
 				</div>
 			</div>
     </div>
