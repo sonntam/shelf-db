@@ -70,6 +70,7 @@ namespace ConfigFile {
 		static public $symbolPosition = 'behind';
 		static public $decimal = ',';
 		static public $thousandsDelimiter = '.';
+		static public $numDecimals = 2;
 	}
 
 	/**
