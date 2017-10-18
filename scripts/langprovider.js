@@ -112,6 +112,7 @@ var Lang = (function(){
         add: 'Anlegen',
         edit: 'Bearbeiten',
         close: 'Schließen',
+        name: 'Name',
         copy: 'Kopieren',
         change: 'Ändern',
         move: 'Verschieben',
