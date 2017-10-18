@@ -85,6 +85,11 @@
 
     {% endembed %}
 
+    <!-- Popup image viewer -->
+		<div data-role="popup" id="imgViewer" class="photopopup" data-overlay-theme="a" data-corners="false" data-tolerance="30,15">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" uilang="close"></a>
+			<img src="" alt="">
+		</div>
 
     {% include 'ext-element-navpanel.twig' %}
 

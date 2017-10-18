@@ -56,28 +56,6 @@
 	<script>
 	console.log("DEBUG: page-showparts executing...")
 
-	// Popup handler
-	$.mobile.pageCreateTasks.push( function() {
-	  $( ".photopopup" ).on({
-      popupbeforeposition: function(evt) {
-        var maxHeight = $( window ).height() - 60 + "px";
-
-       	$( ".photopopup img" ).css( "max-height", maxHeight );
-    	}
-	  });
-
-
-		$('.ui-content').on('click', 'a', function(evt) {
-				// Set data
-				var $tn = $(evt.target);
-
-				$( ".photopopup img" ).attr('src', $tn.attr('data-other-src'));
-
-		});
-	});
-
-		//$(':mobile-pagecontainer').off("pagecontainerchange");
-		//$(':mobile-pagecontainer').on("pagecontainerchange",
 		$.mobile.pageContainerChangeTasks.push( function( event, ui ){
 				console.log("DEBUG: pagecontainer - change (id = <?php echo $catid; ?>)");
 
@@ -233,10 +211,10 @@
 
 				var retstr = '';
 
-				retstr = '<img id="popuptn" style="max-width: 32px; max-height: 32px; height:auto; '
+				retstr = '<img style="max-width: 32px; max-height: 32px; height:auto; '
 				+ 'width:auto" data-other-src="'+rowObject.mainPicFile+'" src="'+rowObject.mainPicThumbFile+'">'
 
-				retstr = '<a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">'
+				retstr = '<a href="#imgViewer" data-rel="popup" data-position-to="window">'
 									+ retstr + '</a>';
 
 				return retstr;
