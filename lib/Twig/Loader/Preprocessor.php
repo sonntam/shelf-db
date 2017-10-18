@@ -44,34 +44,85 @@ class Twig_Loader_Preprocessor extends Twig_Loader_Filesystem
      */
     public function getSourceContext($name)
     {
-        $realSource = parent::getSourceContext($name);
-        $srcCode = $realSource->getCode();
+      // Get code
+      $srcContext = parent::getSourceContext($name);
+      $srcCode    = $srcContext->getCode();
 
-        // Kill all comments
-        $repCnt = 0;
-        $srcCode = preg_replace( '/\{#.*?#\}/s', '', $srcCode, -1, $repCnt );
+      // Apply preprocessor
+      $this->updateDependencies($name);
+      $srcCode = $this->applyPreprocessor($name, $srcCode);
 
-        // Preprocess the input directive
-        $matches = array();
-        if( preg_match_all( '/\{%\s*input\s*[\'"](.*?)[\'"]\s*%\}/', $srcCode, $matches  ) ) {
-          $this->dependencies = array_merge( $this->dependencies, $matches[1] );
-          // Go on and replace the source
-          foreach( $matches[1] as $file ) {
-            $srcInclude = parent::getSourceContext($file)->getCode();
-            $srcCode = preg_replace( '/\{%\s*input\s*[\'"]'.$file.'[\'"]\s*%\}/', $srcInclude, $srcCode, -1, $repCnt );
+      if( $this->callback ) {
+        return new Twig_Source(
+            call_user_func($this->callback, $srcCode), $srcContext->getName(), $srcContext->getPath()
+        );
+      } else {
+        return new Twig_Source($srcCode, $srcContext->getName(), $srcContext->getPath());
+      }
+    }
+
+    private function applyPreprocessor( $name, $srcCode ) {
+
+      foreach( $this->dependencies[$name] as $file ) {
+        $srcInclude = parent::getSourceContext($file)->getCode();
+        $srcCode = preg_replace( '/\{%\s*input\s*[\'"]'.$file.'[\'"]\s*%\}/', $srcInclude, $srcCode, 1, $repCnt );
+        if( $repCnt !== 1 ) {
+          throw new Exception("Unknown error during input operation in $name < $file");
+        }
+      }
+
+      return $srcCode;
+    }
+
+    private function updateDependencies($basename, $name = null, $root = array()) {
+
+      if( array_key_exists( $basename, $this->dependencies ) && !empty($this->dependencies[$basename]) && empty($name) )
+        return;
+
+      if( empty($name) ) $name = $basename;
+
+      // Initialize
+      if( empty($root) ) $root = array($basename);
+
+      if( !array_key_exists( $basename, $this->dependencies ) ) $this->dependencies[$basename] = array();
+
+      $srcCode = parent::getSourceContext($name)->getCode();
+
+      // Kill all comments
+      $repCnt = 0;
+      $srcCode = preg_replace( '/\{#.*?#\}/s', '', $srcCode, -1, $repCnt );
+
+      // Find input statements
+      if( preg_match_all( '/\{%\s*input\s*[\'"](.*?)[\'"]\s*%\}/', $srcCode, $matches  ) ) {
+        $this->dependencies[$basename] = array_merge( $this->dependencies[$basename], $matches[1] );
+
+        foreach( $matches[1] as $file ) {
+          // Check for circulary dependencies
+          if( in_array( $file, $root ) ) {
+            throw new Exception("Error while using input statement for $name due to circular dependency.");
           }
-        } else {
-          // Nothing to do
-          return $realSource;
-        }
 
-        if( $this->callback ) {
-          return new Twig_Source(
-              call_user_func($this->callback, $srcCode), $realSource->getName(), $realSource->getPath()
-          );
-        } else {
-          return new Twig_Source($srcCode, $realSource->getName(), $realSource->getPath());
+          // Recursive call
+          $newRoot = $root;
+          array_push($newRoot, $file);
+          $this->updateDependencies($basename, $file, $newRoot);
         }
+      }
+    }
 
+    public function isFresh($name, $time)
+    {
+      $fresh = parent::isFresh($name, $time);
+
+      if( array_key_exists( $name, $this->dependencies ) ) {
+          foreach( $this->dependencies[$name] as $dep ) {
+            $fresh = $fresh & parent::isFresh($dep, $time);
+          }
+      } else {
+        $this->updateDependencies($name);
+        return $this->isFresh($name,$time);
+      }
+
+      return $fresh;
     }
 }
