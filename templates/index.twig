@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 
+  {% embed 'ext-element-head.twig' %}
+    {% block additionalHeader %}
 
       <script>
 
@@ -56,6 +58,8 @@
 
       </script>
 
+    {% endblock %}
+  {% endembed %}
 
   <body class="ui-responsive-panel">
     <div id=index data-role="page">
