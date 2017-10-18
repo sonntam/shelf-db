@@ -44,6 +44,7 @@ Used libraries
  - [NameSpaceFinder php class](https://stackoverflow.com/a/22762333) - Creative Commons BY-SA 2.5 License (Share & Adapt)
  - [BlueM/Tree](https://github.com/BlueM/Tree) - BSD License
  - [twigphp/Twig](https://github.com/twigphp/Twig) - BSD License 3-clause
+ - [TiGR/twig-preprocessor](https://github.com/TiGR/twig-preprocessor/tree/master/lib) - MIT License
 
  Special thanks to all the people that contributed to these projects.
 
