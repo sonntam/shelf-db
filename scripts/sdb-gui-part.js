@@ -17,7 +17,35 @@ var ShelfDB = (function(sdb,$) {
     };
 
     return {
+      SubCategoryTree: {
+        setup: function(opts) {
 
+          var defaults = {
+            treeSelector: '#subcattree',
+    				mainTreeSelector: '#navCategorytree'
+          };
+
+          opts = $.extend(true, {}, defaults, opts);
+
+          var $subtree = $(opts.treeSelector);
+
+          // Tree callback
+          $subtree.bind('tree.init', function(e) {
+            $subtree.tree('openNode',$subtree.tree('getTree').children[0])
+          });
+
+          $subtree.tree();
+
+          $subtree.bind('tree.click', function(e) {
+            // e.node.name - Name string
+            // e.node.id   - ID string
+            $('body').pagecontainer('change','page-showparts.php?catid=' + e.node.id + '&showSubcategories=' + Number(e.node.children.length > 0));
+            var $tree = $(opts.mainTreeSelector);
+
+            $tree.tree( 'selectNode', $tree.tree('getNodeById', e.node.id) );
+          });
+        }
+      },
       PartList: {
         setup: function(opts) {
 

@@ -1,0 +1,126 @@
+{#
+  category.id
+  category.name
+  category.parents -> .id .name
+  category.hasChildren
+
+  footprintFilterString
+  storeLocationFilterString
+  categoryFilterString
+
+#}
+{% extends 'ext-element-page.twig' %}
+
+{% set pageId = (pageId ?? 'showparts') %}
+
+{% set langLabels = { mainHeader: ':categoryNameHeader:' } %}
+{% set title = category.name %}
+
+{% block additionalHeader %}
+
+  {% if category.parents|length > 0 and category.id != 0 %}
+    <a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="{{ relRoot }}pages/page-showparts.php?catid={{ (category.parents|last).id }}&showSubcategories=1" uilang="upperLevel"></a>
+  {% endif %}
+
+{% endblock additionalHeader %}
+
+{% block pagePre %}
+
+<script>
+  console.log("DEBUG: page-showparts executing...");
+
+  $.mobile.pageContainerChangeTasks.push( function( event, ui ){
+    console.log("DEBUG: pagecontainer - change (id = {{ category.id }})");
+
+    // Category tree
+		ShelfDB.GUI.Part.SubCategoryTree.setup({
+			treeSelector: '#subcattree',
+			mainTreeSelector: '#navCategorytree'
+		});
+
+    // Part list
+    ShelfDB.GUI.Part.PartList.setup({
+      listSelector: '#partList',
+      caption: Lang.get('partsInCategoryNameHeader', true)('{{ category.name|e('js') }}'),
+      filterParameters: {
+        catid: {{ category.id }},
+      },
+      enableGrouping: {{ category.hasChildren ? 'true' : 'false' }},
+      showGroupingSwitch: {{ category.hasChildren ? 'true' : 'false' }},
+      groupingSwitch: {
+        caption: Lang.get('hideSubcategories'),
+        id: 'chkHideSubcategories'
+      },
+      pagerSelector: '#partListPager',
+      footprintFilterString: '{{ footprintFilterString|e('js') }}',
+      storeLocationFilterString: '{{ storeLocationFilterString|e('js') }}',
+      categoryFilterString:  '{{ categoryFilterString|e('js') }}',
+    });
+
+    // Select current category in tree
+    var $tree = $('#navCategorytree');
+    $tree.tree( 'selectNode', $tree.tree('getNodeById', {{ category.id }}) );
+
+    var lastwidth = 9999;
+    $(window).on('resize', function() {
+      var width = $("#partList").closest('.ui-content').width();
+
+      if( width < 520 && lastwidth >= 520 ) {
+        $('#partList').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
+      } else if( width >= 520 && lastwidth < 520) {
+        $('#partList').jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
+      }
+
+      if( width < 420 && lastwidth >= 420 ) {
+        $('#partList').jqGrid('hideCol','footprint');
+        $('#chkHideSubcategories_super').hide();
+      } else if( width >= 420 && lastwidth < 420 ) {
+        $('#chkHideSubcategories_super').show();
+        $('#partList').jqGrid('showCol','footprint');
+      }
+      lastwidth = width;
+
+      $('#partList').jqGrid('setGridWidth', width);
+    });
+
+    // Initial column hide/show
+    $(window).triggerHandler('resize');
+
+  });
+
+  //$(':mobile-pagecontainer').off("pagecontainerbeforeload");
+  //$(':mobile-pagecontainer').on("pagecontainerbeforeload",
+  $.mobile.pageContainerBeforeLoadTasks.push( function(event,ui) {
+
+    console.log("DEBUG: pagecontainer - beforeload (id = {{ category.id }})");
+
+    $(window).off('resize');
+    //if( $('#subcattree').length ) {
+      //$('#subcattree').tree('destroy');
+    //}
+  });
+
+</script>
+
+{% endblock pagePre %}
+
+{% block pageContent %}
+  {# echo join("<i class='fa fa-arrow-right'></i>",$buttons); #}
+  {% for parent in category.parents %}
+    <i class='fa fa-arrow-right'></i>
+    <a style="margin: 0pt; padding: 0.4em" class="ui-btn ui-btn-inline ui-corner-all ui-shadow" href="{{ relRoot }}pages/page-showparts.php?catid={{ parent.id }}&showSubcategories=1">
+      {{ parent.name|e }}
+    </a>
+  {% endfor %}
+  {% if category.hasChildren %}
+    <h3 uilang="subCategories"></h3>
+    <div id="subcattree" data-url="{{ relRoot }}lib/json.categorytree.php?catid={{ category.id }}&withparent={{ ( category.id == 0 ? 0 : 1 ) }}"></div>
+  {% endif %}
+  <h3 uilang="parts"></h3>
+
+  <p>
+    <table id="partList"></table>
+    <div id="partListPager"></div>
+  </p>
+
+{% endblock pageContent %}
