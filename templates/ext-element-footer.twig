@@ -5,5 +5,8 @@
   {% block footerContent %}
     Shelf-DB V{{ version.programVersion|join('.')|e }} using database V{{ version.databaseVersion|join('.')|e }}<br>
     {{ logContent|nl2br }}
+    {% if (debugMode ?? false) %}
+      {% include 'ext-element-dumpenv.twig' %}
+    {% endif %}
   {% endblock %}
 </div>

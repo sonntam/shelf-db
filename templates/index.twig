@@ -2,7 +2,7 @@
 <html>
 
   {% embed 'ext-element-head.twig' %}
-    {% block additionalHeader %}
+    {% block additionalHead %}
 
       <script>
 
@@ -77,9 +77,6 @@
         <p><a href="{{ relRoot }}pages/test.php">Testlink</a></p>
         <p><a href="#imgViewer" data-rel="popup" data-position-to="window">Testlink Popup</a></p>
         <p><a href="{{ relRoot }}pages/page-recentactivity.php">History</a></p>
-        {% if (debugMode ?? false) %}
-          {% include 'ext-element-dumpenv.twig' %}
-        {% endif %}
 
       {% endblock %}
 
