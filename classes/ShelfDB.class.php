@@ -56,7 +56,9 @@ class ShelfDB
     $this->history         = new ShelfDB\History($this);
     $this->group           = new ShelfDB\Group($this);
 
-    $this->twigLoader       = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
+    //$twigFileLoader        = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
+    $this->twigLoader      = new Twig_Loader_Preprocessor(joinPaths(dirname(__DIR__),'templates'));
+
     $this->twig             = new Twig_Environment($this->twigLoader, array(
       'cache'       => joinPaths(dirname(__DIR__),'cache'),
       'auto_reload' => \ConfigFile\Config::$debug,

@@ -12,14 +12,12 @@
   {% endblock %}
 
   {# Set lang.mainHeader or title and may overwrite headerContent #}
-  {% embed 'ext-element-header.twig' %}
-  {% endembed %}
+  {% input 'ext-element-header.twig' %}
 
   <div role="main" class="ui-content">
     {% block pageContent %}
     {% endblock %}
   </div>
 
-  {% embed 'ext-element-footer.twig' %}
-  {% endembed %}
+  {% input 'ext-element-footer.twig' %}
 </div>
