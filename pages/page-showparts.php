@@ -75,119 +75,49 @@
 					$tree.tree( 'selectNode', $tree.tree('getNodeById', e.node.id) );
 				});
 
-				$("#grido").jqGrid({
+				// Part list
+				ShelfDB.GUI.Part.PartList.setup({
+					listSelector: '#partList',
 					caption: Lang.get('partsInCategoryNameHeader', true)('<?php echo $catname; ?>'),
-					url:'<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>',
-					editurl: '<?php echo $pdb->RelRoot(); ?>lib/edit-part.php',
-					autowidth: true,
-					shrinkToFit: true,
-					datatype: 'json',
-					autoencode: true,
-					grouping: <?php echo ($catHasChildren ? 'true' : 'false');?>,
-					groupingView: {
-						groupField: ['category_name'],
-						groupDataSorted: true,
-						groupColumnShow: [false]
+					filterParameters: {
+						catid: <?php echo $catid; ?>,
 					},
-					sortable: true,
-					cmTemplate: {
-						autoResizable: true,
-						editable: true
+					enableGrouping: <?php echo ($catHasChildren ? 'true' : 'false');?>,
+					showGroupingSwitch: <?php echo ($catHasChildren ? 'true' : 'false');?>,
+					groupingSwitch: {
+						caption: Lang.get('hideSubcategories'),
+						id: 'chkHideSubcategories'
 					},
-					autoResizing: {
-						compact: true
-					},
-					iconSet: 'fontAwesome',
-					rowNum:20,
-					rowList: [20,50,100],
-					pager:'#listpager',
-					toppager:true,
-					filterToolbar:true,
-					searching: {
-						defaultSearch: 'cn'
-					},
-					inlineEditing: {keys:true, position:"afterSelected"},
-					sortname: 'name',
-					viewrecords: true,
-					sortorder: 'asc',
-					viewrecords: false,
-					gridComplete: function() {
-
-						var ids = $(this).jqGrid('getDataIDs');
-						for( var i = 0; i < ids.length; i++) {
-								$(this).jqGrid('setRowData', ids[i], {
-									action: '<p>add decrease</p>'
-								});
-						}
-
-					},
-	        colModel: ShelfDB.Part.getListViewModel({
-						footprintFilterString: '<?php echo $fpFilter; ?>',
-						storeLocationFilterString: '<?php echo $slFilter; ?>',
-						categoryFilterString: '<?php echo $ctFilter; ?>',
-						imageFormatter: imageFormatter
-					}),
-					/*onSelectRow: function(rowid){
-						debugger;
-						var $self = $(this);
-						var savedRow = $self.jqGrid('getGridParam', 'savedRow');
-						if (savedRow.length > 0) {
-							$self.jqGrid('restoreRow', savedRow[0].id);
-						}
-						//$self.jqGrid('editRow', rowid);
-			  	},*/
-        });
-
-				$('#grido').jqGrid('navGrid','#listpager',{edit:false, add:true, del:false},{},{},{},{
-					multipleSearch: true,
-					multipleGroup: false
+					pagerSelector: '#partListPager',
+					footprintFilterString: '<?php echo $fpFilter; ?>',
+					storeLocationFilterString: '<?php echo $slFilter; ?>',
+					categoryFilterString: '<?php echo $ctFilter; ?>',
 				});
-				// Copy toolbar buttons to top toolbar and hide right side of toppager
-				$('#listpager_left').children().clone(true).appendTo('#grido_toppager_left');
-				$('#grido_toppager_right').hide();
-				<?php if($catHasChildren) { // Only show category selector if category has children ?>
-					$('#grido').jqGrid('navCheckboxAdd', '#' + $('#grido')[0].id + '_toppager_left', { // '#list_toppager_left'
-	          caption: Lang.get('hideSubcategories'),
-						position: 'first',
-						id: 'chkHideSubcategories',
-	            onChange: function() {
-								if($(this).is(':checked')) {
-									$('#grido').jqGrid('setGridParam', {
-										url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>&getSubcategories=0'
-									}).trigger('reloadGrid');
-						 		} else {
-									$('#grido').jqGrid('setGridParam', {
-										url: '<?php echo $pdb->RelRoot(); ?>lib/json.parts.php?catid=<?php echo $catid; ?>&getSubcategories=1'
-									}).trigger('reloadGrid',[{page:1}]);
-						 		}
-	            }
-	 				 });
-				<?php } ?>
 
 				// Select current category in tree
-				var $tree = $('#categorytree');
+				var $tree = $('#navCategorytree');
 				$tree.tree( 'selectNode', $tree.tree('getNodeById', <?php echo $catid; ?>) );
 
 				var lastwidth = 9999;
 				$(window).on('resize', function() {
-					var width = $("#grido").closest('.ui-content').width();
+					var width = $("#partList").closest('.ui-content').width();
 
 					if( width < 520 && lastwidth >= 520 ) {
-						$('#grido').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
+						$('#partList').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
 					} else if( width >= 520 && lastwidth < 520) {
-						$('#grido').jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
+						$('#partList').jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
 					}
 
 					if( width < 420 && lastwidth >= 420 ) {
-						$('#grido').jqGrid('hideCol','footprint');
+						$('#partList').jqGrid('hideCol','footprint');
 						$('#chkHideSubcategories_super').hide();
 					} else if( width >= 420 && lastwidth < 420 ) {
 						$('#chkHideSubcategories_super').show();
-						$('#grido').jqGrid('showCol','footprint');
+						$('#partList').jqGrid('showCol','footprint');
 					}
 					lastwidth = width;
 
-	        $('#grido').jqGrid('setGridWidth', width);
+	        $('#partList').jqGrid('setGridWidth', width);
 	      });
 
 				// Initial column hide/show
@@ -244,8 +174,8 @@
 			<h3 uilang="parts"></h3>
 			<!-- Bild/Bottomlevel Kategorie/Name/Lagerbestand/Footprint/Lagerort/Datenblätter/+- -->
 			<p>
-				<table id=grido></table>
-				<div id="listpager"></div>
+				<table id="partList"></table>
+				<div id="partListPager"></div>
 			</p>
 
 		<!-- Popup image viewer -->
