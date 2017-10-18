@@ -16,12 +16,12 @@ a {
 /***********
  * Nav Bar *
  ***********/
-#navpanel {
+#navPanel {
   /*width: 400px;*/
   /*background-color: #edf0f2;*/
 }
 
-#navpanel .catkeys {
+#navPanel .catkeys {
   font-size: 10px;
   margin-top: 1.809em;
   margin-bottom: 0px;

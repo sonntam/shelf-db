@@ -25,7 +25,7 @@
 
   <div data-role="header" data-position="fixed">
     <h1>Recent activity</h1>
-    <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+    <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
   </div>
   <div role="main" class="ui-content">
     <div style="font-size: 10pt">

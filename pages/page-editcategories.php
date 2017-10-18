@@ -28,7 +28,7 @@
 
   <div data-role="header" data-position="fixed">
     <h1 uilang="editCategories"></h1>
-    <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+    <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<button id="editcontrols-addroot" class="ui-icon-fa-plus ui-btn-inline ui-btn ui-btn-right ui-btn-icon-notext" uilang="add"></button>
   </div>
   <div role="main" class="ui-content">

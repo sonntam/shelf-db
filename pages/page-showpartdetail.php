@@ -659,7 +659,7 @@
 
   <div data-role="header" data-position="fixed">
     <h1 uilang="partTitle"></h1>
-    <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+    <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
   </div>
   <div role="main" class="ui-content">
     <div class="partinfo ui-body ui-body-a ui-corner-all ui-shadow">

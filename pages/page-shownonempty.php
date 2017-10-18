@@ -186,7 +186,7 @@
 
   <div data-role="header" data-position="fixed">
     <h1 uilang="showNonEmptyStoreLocations"></h1>
-    <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+    <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
 		<button name="newStoreLocation" class="ui-btn ui-btn-right ui-btn-icon-notext ui-btn-inline ui-icon-fa-plus" uilang="add"></button>
   </div>
 
