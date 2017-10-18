@@ -63,6 +63,12 @@ class ShelfDB
       'debug'       => \ConfigFile\Config::$debug
     ));
     $this->twig->addGlobal('debugMode', \ConfigFile\Config::$debug );
+    $this->twig->addGlobal('relRoot',   $this->RelRoot() );
+    $this->twig->addGlobal('lang',      \ConfigFile\Language::$default);
+    if( \ConfigFile\Config::$debug ) {
+      $this->twig->addExtension(new Twig_Extension_Debug());
+
+    }
   }
 
   public function Part()           : ShelfDB\Part           { return $this->part; }
