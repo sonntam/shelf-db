@@ -123,6 +123,14 @@ class ShelfDB
     return $relRoot;
   }
 
+  public function RenderTemplate() {
+      $args = func_get_args();
+
+      $args[1] = array_replace_recursive($args[1], array("requestUri" => $_SERVER["REQUEST_URI"]));
+
+      return call_user_func_array( array($this->twig, 'render'), $args );
+  }
+
   /**
    * Get the MySQL singleton instance interface
    */

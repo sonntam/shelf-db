@@ -9,13 +9,12 @@
 
   $pdb = ShelfDB::Instance();
 
-  echo $pdb->twig->render('index.twig', array(
+  echo $pdb->RenderTemplate('index.twig', array(
     'version'          => array(
         'programVersion'   => $pdb->GetProgramVersion(),
         'databaseVersion'  => $pdb->GetDatabaseVersion()
     ),
     'logContent'       => Log::FetchLogContent(),
-    'language'         => \ConfigFile\Language::$default,
     'user'             => array(
       'isLoggedIn'         => $pdb->User()->IsLoggedIn(),
       'isAdmin'            => $pdb->User()->IsAdmin()
