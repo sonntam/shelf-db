@@ -3,8 +3,6 @@ var ShelfDB = (function(sdb,$) {
 
   var navModule = (function(){
 
-    var _mainTreeSelector = undefined;
-
     return {
       Search: {
         setup: function(opts) {
@@ -86,6 +84,75 @@ var ShelfDB = (function(sdb,$) {
               }
               return true;
             });
+          });
+        }
+      },
+      Logon: {
+        setup: function(opts) {
+          var defaults = {
+            loggedInSelector:  '[data-group=loggedIn]',
+            loggedOutSelector: '[data-group=loggedOut]',
+            isAdminSelector:   null,
+            loginLinkSelector: 'a#navUserLogin',
+            logoutLinkSelector:'a#navUserLogout',
+            pageAfterLogon:    'index.php'
+          }
+
+          opts = $.extend({}, defaults, opts);
+
+          $(opts.loginLinkSelector).click( function() {
+            sdb.GUI.Popup.loginPopup({
+              loggedInSelector: opts.loggedInSelector,
+              loggedOutSelector: opts.loggedOutSelector,
+              success: function(data) {
+                  // Reload nav and main page
+                  $.mobile.pageContainer.change(sdb.Core.basePath+opts.pageAfterLogon);
+              }}
+            );
+          });
+
+          $(opts.logoutLinkSelector).click( function(evt) {
+            sdb.GUI.Nav.Logon.logoutUser(opts);
+          });
+
+        },
+        logoutUser: function(opts) {
+          var defaults = {
+            loggedInSelector:  null,
+            loggedOutSelector: null,
+            isAdminSelector:   null,
+            pageAfterLogon:    'index.php',
+            success:           null
+          }
+
+          opts = $.extend({}, defaults, opts);
+
+          $.mobile.referencedLoading('show');
+
+          $.ajax({
+            url: sdb.Core.basePath+'lib/edit-user.php',
+            data: {
+              method: 'logout'
+            },
+            method: 'post',
+            cache: false,
+            dataType: 'json',
+            success: function(data) {
+              if( opts.success && typeof opts.success === 'function')
+                opts.success(data);
+
+              // Reload nav and main page
+              $.mobile.pageContainer.change(sdb.Core.basePath+opts.pageAfterLogon);
+
+              $(opts.loggedInSelector).addClass('ui-screen-hidden');
+              $(opts.loggedOutSelector).removeClass('ui-screen-hidden');
+
+              $.mobile.referencedLoading('hide');
+            },
+            error: function() {
+              // Show error
+              $.mobile.referencedLoading('hide');
+            }
           });
         }
       }

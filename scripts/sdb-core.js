@@ -11,6 +11,7 @@ var ShelfDB = (function(sdb, $) {
 
   var _init = function() {
     coreModule.pageHookClear();
+    coreModule.pageHookInit();
   }
 
   // The core submodule
@@ -24,6 +25,71 @@ var ShelfDB = (function(sdb, $) {
         $.mobile.pageContainerBeforeLoadTasks = [];
         $.mobile.pageContainerBeforeChangeTasks = [];
         $.mobile.pageContainerChangeTasks = [];
+      },
+      pageHookInit: function() {
+
+        $(document).on('updatelayout',function() {
+          console.log("DEBUG: updatelayout");
+        });
+
+        $(document).on('menupanelopen',function() {
+          console.log("DEBUG: menupanelopen");
+          $(window).trigger('resize');
+        });
+
+        $(document).on('menupanelclose',function() {
+          console.log("DEBUG: menupanelclose");
+          $(window).trigger('resize');
+        });
+
+        $(document).one('pagecreate', function() {
+            console.log("DEBUG: page - create (once)");
+
+            $(':mobile-pagecontainer').on('pagecontainerbeforeshow', function(event,ui) {
+              console.log("DEBUG: pagecontainer - beforeshow");
+
+              $.mobile.pageContainerBeforeShowTasks.forEach(function(fun) { fun(event,ui); });
+            });
+
+            $(':mobile-pagecontainer').on('pagecontainerbeforeload', function(event,ui) {
+              console.log("DEBUG: pagecontainer - beforeload");
+
+              $.mobile.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
+
+              sdb.Core.pageHookClear();
+            });
+
+            $(':mobile-pagecontainer').on('pagecontainerchange', function(event,ui) {
+              console.log("DEBUG: pagecontainer - change");
+
+              $.mobile.pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
+
+              sdb.Core.pageHookClear();
+            });
+
+            $(':mobile-pagecontainer').on('pagecontainerbeforechange', function(event,ui) {
+              console.log("DEBUG: pagecontainer - beforechange");
+
+              $.mobile.pageContainerBeforeChangeTasks.forEach(function(fun) { fun(event,ui); });
+            });
+        });
+        $(document).on('popupcreate', function() {
+          console.log("DEBUG: popup - create");
+        });
+        $(document).on('pagecreate', function() {
+            console.log("DEBUG: page - create");
+
+            $(document).on( "panelclose", "[data-role=menupanel]", function() {
+              console.log('Panel close');
+            });
+
+            $.mobile.pageCreateTasks.forEach(function(fun) { fun(); });
+
+            $("[data-role=menupanel]").one("panelbeforeopen", function() {
+              var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
+              $(".ui-panel-wrapper").css("height", height+1);
+            });
+        });
       },
       basePath: _basePath
     };

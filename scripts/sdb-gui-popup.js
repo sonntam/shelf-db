@@ -83,7 +83,7 @@ var ShelfDB = (function(sdb,$) {
 
           $.mobile.referencedLoading('show');
 
-          $popuptarget.load('/pages/popup-confirmdialog.php', function() {
+          $popuptarget.load(sdb.Core.basePath+'pages/popup-confirmdialog.php', function() {
             var $popup = $('#popupConfirmDialog');
             Lang.searchAndReplace();
             setupPopup($popup);
@@ -215,7 +215,7 @@ var ShelfDB = (function(sdb,$) {
 
           $.mobile.referencedLoading('show');
 
-          $popuptarget.load('/pages/popup-inputdialog.php', function() {
+          $popuptarget.load(sdb.Core.basePath+'pages/popup-inputdialog.php', function() {
             var $popup = $('#popupInputDialog');
             Lang.searchAndReplace();
             setupPopup($popup);
@@ -301,7 +301,7 @@ var ShelfDB = (function(sdb,$) {
 
             $.mobile.referencedLoading('show');
 
-            $popuptarget.load('/pages/popup-inputmultilinedialog.php', function() {
+            $popuptarget.load(sdb.Core.basePath+'pages/popup-inputmultilinedialog.php', function() {
               $popup = $('#popupInputMultilineDialog');
 
               Lang.searchAndReplace();
@@ -411,6 +411,64 @@ var ShelfDB = (function(sdb,$) {
             dialogId.popup('open', { transition: options.transition});
           });
         }
+      },
+
+      // Login user dialog
+      loginPopup: function(options) {
+        defaults = {
+          loggedInSelector: '[data-group=loggedIn]',
+          loggedOutSelector: '[data-group=loggedOut]',
+          success: null
+        };
+
+        options = $.extend({},defaults, options);
+        debugger;
+        sdb.GUI.Popup.openExternalPopup({
+          url: sdb.Core.basePath+'pages/popup-login.php',
+          submit: function(evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            if( !$(evt.target).valid() )
+              return;
+
+            $.mobile.referencedLoading('show');
+
+            $.ajax({
+              url: sdb.Core.basePath+'lib/edit-user.php',
+              data: $(evt.target).formData(),
+              method: 'post',
+              cache: false,
+              dataType: 'json',
+              success: function(data) {
+                $.mobile.referencedLoading('hide');
+
+                if( data.success ) {
+                  if( options.success && typeof options.success === 'function' )
+                    options.success(data);
+
+                  $(options.loggedInSelector).removeClass('ui-screen-hidden');
+                  $(options.loggedOutSelector).addClass('ui-screen-hidden');
+
+                  $('#popupLoginDialog').popup('close');
+                } else {
+                  // Show error
+                  $('#popupLoginDialog').find('input').addClass('error');
+                }
+
+              },
+              error: function() {
+                // Show error
+                $.mobile.referencedLoading('hide');
+              }
+            });
+          },
+          afterclose: function(evt) {
+            $(this).find("form").validate().resetForm();
+            $(this).find("#username").val("");
+            $(this).find("#password").val("");
+          }
+        });
       }
     }
   })();

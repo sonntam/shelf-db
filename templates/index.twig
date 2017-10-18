@@ -1,171 +1,62 @@
 <!DOCTYPE html>
 <html>
 
-    <script>
-      $(function(){
-        // Document ready
-        //
-        //$.mobile.linkBindingEnabled = true;
-        //$.mobile.ajaxEnabled = true;
-        console.log("DEBUG: document ready");
 
-        ShelfDB.GUI.Nav.CategoryTree.setup({
-          treeSelector: '#categorytree',
-          btnCollapseSelector: '#collapse',
-          btnExpandSelector: '#expand'
-        });
+      <script>
 
-        // Search
-        ShelfDB.GUI.Nav.Search.setup({
-          searchBoxSelector: '#searchbar'
-        });
+        $(function(){
+          // Document ready
+          //
+          console.log("DEBUG: document ready");
 
-        // Panel
-        $panel = $("body>[data-role='menupanel']");
-        $panel.menupanel({'_transitionClose': false}).enhanceWithin();
+          // Setup the controls
+          //
 
-        $('a#userLogin').click( function() {
-          ShelfDB.GUI.Popup.openExternalPopup({
-            url: '{{ relRoot }}pages/popup-login.php',
-            submit: function(evt) {
-              evt.preventDefault();
-              evt.stopPropagation();
+          // Category tree
+          ShelfDB.GUI.Nav.CategoryTree.setup({
+            treeSelector: '#navCategorytree',
+            btnCollapseSelector: '#navCollapse',
+            btnExpandSelector: '#navExpand'
+          });
 
-              if( !$(evt.target).valid() )
-                return;
+          // Search
+          ShelfDB.GUI.Nav.Search.setup({
+            searchBoxSelector: '#navSearchbar'
+          });
 
-              $.mobile.referencedLoading('show');
+          // Panel
+          $panel = $("body>[data-role='menupanel']");
+          $panel.menupanel({'_transitionClose': false}).enhanceWithin();
 
-              $.ajax({
-                url: '{{ relRoot }}lib/edit-user.php',
-                data: $(evt.target).formData(),
-                method: 'post',
-                cache: false,
-                dataType: 'json',
-                success: function(data) {
-                  $.mobile.referencedLoading('hide');
+          // Image viewer popup
+          $( "#imgViewer" ).enhanceWithin().popup();
+          $( "#imgViewer" ).on({
+            popupbeforeposition: function(evt) {
+              var maxHeight = $( window ).height() - 60 + "px";
+             	$( ".photopopup img" ).css( "max-height", maxHeight );
+          	}
+      	  });
+          $(document).on('click', 'a[data-rel=popup]', function(evt) {
+    					// Set data
+    					if( evt.target.localName.toLowerCase() === 'img' ) {
+      					var $tn = $(evt.target);
+      					$( ".photopopup img" ).attr('src', $tn.attr('data-other-src'));
+              }
+    			});
 
-                  if( data.success ) {
-                    // Do visual things after login
-                    // Reload nav and main page
-                    $.mobile.pageContainer.change("{{ relRoot }}index.php");
-
-                    $('[data-group=loggedIn]').removeClass('ui-screen-hidden');
-                    $('[data-group=loggedOut]').addClass('ui-screen-hidden');
-
-                    $('#popupLoginDialog').popup('close');
-                  } else {
-                    // Show error
-                    $('#popupLoginDialog').find('input').addClass('error');
-                  }
-
-                },
-                error: function() {
-                  // Show error
-                  $.mobile.referencedLoading('hide');
-                }
-              });
-            },
-            afterclose: function(evt) {
-              $(this).find("form").validate().resetForm();
-              $(this).find("#username").val("");
-              $(this).find("#password").val("");
-            }
+          // Logon
+          ShelfDB.GUI.Nav.Logon.setup({
+            loggedInSelector:  '[data-group=loggedIn]',
+            loggedOutSelector: '[data-group=loggedOut]',
+            loginLinkSelector: 'a#navUserLogin',
+            logoutLinkSelector:'a#navUserLogout',
+            pageAfterLogon:    'index.php'
           });
         });
 
-        $("a#userLogout").click( function(evt) {
+      </script>
 
-          $.mobile.referencedLoading('show');
 
-          $.ajax({
-            url: '{{ relRoot }}lib/edit-user.php',
-            data: {
-              method: 'logout'
-            },
-            method: 'post',
-            cache: false,
-            dataType: 'json',
-            success: function(data) {
-              // Reload nav and main page
-              $.mobile.pageContainer.change("{{ relRoot }}index.php");
-
-              $('[data-group=loggedIn]').addClass('ui-screen-hidden');
-              $('[data-group=loggedOut]').removeClass('ui-screen-hidden');
-
-              $.mobile.referencedLoading('hide');
-            },
-            error: function() {
-              // Show error
-              $.mobile.referencedLoading('hide');
-            }
-          });
-        });
-      });
-
-      $(document).on('updatelayout',function() {
-        console.log("DEBUG: updatelayout");
-      });
-
-      $(document).on('menupanelopen',function() {
-        console.log("DEBUG: menupanelopen");
-        $(window).trigger('resize');
-      });
-
-      $(document).on('menupanelclose',function() {
-        console.log("DEBUG: menupanelclose");
-        $(window).trigger('resize');
-      });
-
-      $(document).one('pagecreate', function() {
-          console.log("DEBUG: page - create (once)");
-
-          $(':mobile-pagecontainer').on('pagecontainerbeforeshow', function(event,ui) {
-            console.log("DEBUG: pagecontainer - beforeshow");
-
-            $.mobile.pageContainerBeforeShowTasks.forEach(function(fun) { fun(event,ui); });
-          });
-
-          $(':mobile-pagecontainer').on('pagecontainerbeforeload', function(event,ui) {
-            console.log("DEBUG: pagecontainer - beforeload");
-
-            $.mobile.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
-
-            ShelfDB.Core.pageHookClear();
-          });
-
-          $(':mobile-pagecontainer').on('pagecontainerchange', function(event,ui) {
-            console.log("DEBUG: pagecontainer - change");
-
-            $.mobile.pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
-
-            ShelfDB.Core.pageHookClear();
-          });
-
-          $(':mobile-pagecontainer').on('pagecontainerbeforechange', function(event,ui) {
-            console.log("DEBUG: pagecontainer - beforechange");
-
-            $.mobile.pageContainerBeforeChangeTasks.forEach(function(fun) { fun(event,ui); });
-          });
-      });
-      $(document).on('popupcreate', function() {
-        console.log("DEBUG: popup - create");
-      });
-      $(document).on('pagecreate', function() {
-          console.log("DEBUG: page - create");
-
-          $(document).on( "panelclose", "#navpanel", function() {
-            console.log('Panel close');
-          });
-
-          $.mobile.pageCreateTasks.forEach(function(fun) { fun(); });
-
-          $("[data-role=menupanel]").one("panelbeforeopen", function() {
-            var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
-            $(".ui-panel-wrapper").css("height", height+1);
-          });
-      });
-    </script>
   </head>
   <body class="ui-responsive-panel">
     <div id=index data-role="page">
