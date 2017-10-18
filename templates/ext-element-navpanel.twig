@@ -1,0 +1,78 @@
+{#
+  navpanel Twig
+  \author     Marcus Sonntag
+
+  \arguments  user
+                .isLoggedIn - True if user is logged on
+                .isAdmin    - True if user is an admin
+
+#}
+<!-- Menupanel -->
+<div data-role="menupanel" id="navPanel" data-position="left" class="ui-page-theme-a">
+
+  <div class="search">
+    <a class="homelink" href="index.php"><i class="fa fa-home"></i>&nbsp;ShelfDB</a>
+    <input id="navSearchbar" type="text" data-type="search" data-clear-btn="true" uilang="placeholder:searchPlaceholder">
+  </div>
+
+  <div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+  <!--<span><a href="#" id="btnSlideCategories"><i class="fa fa-plus-square" aria-hidden="true"></i></a> Kategorien</span>-->
+  <div data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+    <h6 uilang="account"></h6>
+    <ul data-role="listview">
+      <li data-group="loggedIn" class="{{ (user.isLoggedIn ?: 'ui-screen-hidden') }}" data-icon="false"><a id="navUserLogout" href="#"><i class="fa fa-sign-out"></i> <span uilang="logout"></span></a></li>
+      <li data-group="loggedIn" class="{{ (user.isAdmin ?: 'ui-screen-hidden')}}"><a id="navUserOpenAdministration" href="#"><i class="fa fa-cogs"></i> <span uilang="administration"></span></a></li>
+      <li data-group="loggedOut" class="{{ (user.isLoggedIn ? 'ui-screen-hidden') }}"><a id="navUserLogin" href="#"><i class="fa fa-sign-in"></i> <span uilang="login"></span></a></li>
+      <li data-group="loggedOut" class="{{ (user.isLoggedIn ? 'ui-screen-hidden') }}"><a href="{{ relRoot }}"><i class="fa fa-user"></i> <span uilang="register"></span></a></li>
+    </ul>
+  </div>
+    <div id="navCategories" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-collapsed="false">
+      <h6 uilang="categories"></h6>
+        <ul data-role="listview">
+          <li><a href="{{ relRoot }}pages/page-editcategories.php"><i class="fa fa-pencil"></i> <span uilang="edit"></span></a></li>
+        </ul>
+
+        <div class="ui-grid-a">
+          <div class="ui-block-a">
+            <a id="navCollapse" class="ui-btn ui-shadow catkeys" href="#"><i class="fa fa-compress"></i> <span uilang="compress"></span></a>
+          </div>
+          <div class="ui-block-b">
+            <a id="navExpand" class="ui-btn ui-shadow catkeys" href="#"><i class="fa fa-expand"></i> <span uilang="expand"></span></a>
+          </div>
+        </div>
+        <div id="navCategorytree" data-url="{{ relRoot }}lib/json.categorytree.php"></div>
+
+    </div>
+    <div id="navStorage" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+      <h6 uilang="storageLocations"></h6>
+      <ul data-role="listview">
+        <li><a href="{{ relRoot }}pages/page-editstorelocation.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+        <li><a href="{{ relRoot }}pages/page-showempty.php"><i class="fa fa-square-o"></i> <span uilang="storageLocationShowEmpty"></span></a></li>
+        <li><a href="{{ relRoot }}pages/page-shownonempty.php"><i class="fa fa-square"></i> <span uilang="storageLocationShowNonEmpty"></span></a></li>
+      </ul>
+    </div>
+    <div id="navTools" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+      <h6 uilang="tools"></h6>
+      <ul data-role="listview">
+        <li><a href="#"><i class="fa fa-th"></i> <span uilang="noFootprintShow"></span></a></li>
+        <li><a href="#"><i class="fa fa-archive"></i> <span uilang="noStorageLocationShow"></span></a></li>
+        <li><a href="#"><i class="fa fa-truck"></i> <span uilang="noSupplierShow"></span></a></li>
+        <li><a href="#"><i class="fa fa-microchip"></i> <span uilang="icLogosShow"></span></a></li>
+        <li><a href="#"><i class="fa fa-line-chart"></i> <span uilang="statisticsShow"></span></a></li>
+        <li><a href="#"><i class="fa fa-shopping-cart"></i> <span uilang="orderItemsShow"></span></a></li>
+      </ul>
+    </div>
+    <div id="navSuppliers" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+      <h6 uilang="suppliers"></h6>
+      <ul data-role="listview">
+        <li><a href="{{ relRoot }}pages/page-editsuppliers.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+      </ul>
+    </div>
+    <div id="navFootprints" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+      <h6 uilang="footprints"></h6>
+      <ul data-role="listview">
+        <li><a href="{{ relRoot }}pages/page-editfootprints.php"><i class="fa fa-edit"></i> <span uilang="edit"></span></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
