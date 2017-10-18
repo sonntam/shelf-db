@@ -62,26 +62,25 @@
   {% endembed %}
 
   <body class="ui-responsive-panel">
-    <div id=index data-role="page">
 
-      <div data-role="header" data-position="fixed">
-        <h1 uilang="componentDatabase"></h1>
-        <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
-      </div>
-      <div role="main" class="ui-content">
+    {% set pageId = (pageId ?? 'index') %}
+    {% embed 'ext-element-page.twig' %}
+
+
+      {% set langLabels = { mainHeader: 'componentDatabase' } %}
+
+      {% block pageContent %}
+
         <p><a href="{{ relRoot }}pages/test.php">Testlink</a></p>
+        <p><a href="#imgViewer" data-rel="popup" data-position-to="window">Testlink Popup</a></p>
         <p><a href="{{ relRoot }}pages/page-recentactivity.php">History</a></p>
-        <p>
+        {% if (debugMode ?? false) %}
+          {% include 'ext-element-dumpenv.twig' %}
+        {% endif %}
 
-        </p>
-      </div>
+      {% endblock %}
 
-      {% include 'ext-element-footer.twig' %}
-
-    </div>
-
-
-
+    {% endembed %}
 
 
     {% include 'ext-element-navpanel.twig' %}
