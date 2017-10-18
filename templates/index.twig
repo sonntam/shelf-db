@@ -66,6 +66,9 @@
     {% set pageId = (pageId ?? 'index') %}
     {% embed 'ext-element-page.twig' %}
 
+      {# Remove forwarding block for index page #}
+      {% block pageForwarding %}
+      {% endblock %}
 
       {% set langLabels = { mainHeader: 'componentDatabase' } %}
 
