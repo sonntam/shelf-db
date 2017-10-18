@@ -11,6 +11,9 @@ namespace ConfigFile {
 	class Config {
 		/** @var string Version number of this configuration file */
 		static $version = "1.2";
+
+		/** @var bool Enable debugging here */
+		static $debug = false;
 	}
 
 	/**

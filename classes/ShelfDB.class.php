@@ -59,9 +59,10 @@ class ShelfDB
     $this->twigLoader       = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
     $this->twig             = new Twig_Environment($this->twigLoader, array(
       'cache'       => joinPaths(dirname(__DIR__),'cache'),
-      'auto_reload' => true,
-      'debug'       => true
+      'auto_reload' => \ConfigFile\Config::$debug,
+      'debug'       => \ConfigFile\Config::$debug
     ));
+    $this->twig->addGlobal('debugMode', \ConfigFile\Config::$debug );
   }
 
   public function Part()           : ShelfDB\Part           { return $this->part; }
