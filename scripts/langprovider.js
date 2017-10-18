@@ -462,7 +462,7 @@ var Lang = (function(){
 
           // If the string is of function type, try to apply the inner Html as argument
           if( typeof txt === 'function' ) {
-            if( strArg.some(function(e){ return (e?true:false); }) ) {
+            if( strArg && strArg.some(function(e){ return (e?true:false); }) ) {
               strArg = strArg.map( function(el) {
                 return item.attr(el);
               });
