@@ -1,11 +1,11 @@
 
 {% block pageForwarding %}
 <script type="text/javascript">
-    window.location="{{ relRoot }}index.php#{{ requestUri }}";
+    window.location="{{ relRoot }}index.php#{{ requestUri|e('js') }}";
 </script>
 {% endblock %}
 
-<div id={{ pageId }} data-role="page">
+<div id="{{ pageId }}" data-role="page">
 
   {# You can put e.g. additional page specific scripts in this block #}
   {% block pagePre %}
