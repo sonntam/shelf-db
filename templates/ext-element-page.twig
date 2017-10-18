@@ -1,0 +1,25 @@
+
+{% block pageForwarding %}
+<script type="text/javascript">
+    window.location="{{ relRoot }}index.php#{{ requestUri }}";
+</script>
+{% endblock %}
+
+<div id={{ pageId }} data-role="page">
+
+  {# You can put e.g. additional page specific scripts in this block #}
+  {% block pagePre %}
+  {% endblock %}
+
+  {# Set lang.mainHeader or title and may overwrite headerContent #}
+  {% embed 'ext-element-header.twig' %}
+  {% endembed %}
+
+  <div role="main" class="ui-content">
+    {% block pageContent %}
+    {% endblock %}
+  </div>
+
+  {% embed 'ext-element-footer.twig' %}
+  {% endembed %}
+</div>
