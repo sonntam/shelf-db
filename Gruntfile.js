@@ -92,6 +92,18 @@ module.exports = function(grunt) {
           }
         ]
       },
+      release_config: {
+        src: 'config/config.json',
+        dest: releaseDir+'/config/config.json',
+        options: {
+          process: function(content,srcPath) {
+            var jsonObj = JSON.parse(content);
+            // Change config contents for release
+            jsonObj.config.debug = false;
+            return JSON.stringify(jsonObj,null,4);
+          }
+        }
+      },
       dev: {
         files: [
           {
@@ -100,7 +112,7 @@ module.exports = function(grunt) {
             dest: releaseDir+'/'
           }
         ]
-      }
+      },
     }
   });
 
@@ -118,6 +130,6 @@ module.exports = function(grunt) {
   grunt.registerTask('all', ['newer:cssmin:build', 'newer:uglify:build', 'newer:jshint']);
   grunt.registerTask('rebuild_all', ['clean:build', 'all'])
   grunt.registerTask('merged', ['newer:cssmin:merge', 'newer:uglify:merge']);
-  grunt.registerTask('release', ['all', 'newer:copy:release']);
+  grunt.registerTask('release', ['all', 'newer:copy:release', 'newer:copy:release_config']);
 
 };
