@@ -1,6 +1,39 @@
 <?php
 
 /**
+ * Translate jqGrid column name to MySQL table name
+ * @param  string  $operator jqGrid operator string
+ * @return function function of form fnc($column, $searchstring) that expands to the correct MySQL search string
+ */
+function TranslateJqGridColumnToMySQL($col) {
+  switch( strtolower($col) ) {
+    case "name":
+      return "p.name";
+    case "supplier":
+      return "su.name";
+    case "storeloc":
+      return "s.name";
+    case "storelocid":
+      return "s.id";
+    case "comment":
+      return "p.comment";
+    case "instock":
+      return "p.instock";
+    case "mininstock":
+      return "p.mininstock";
+    case "footprintid":
+    case "footprint":
+      return "p.id_footprint";
+    case "storelocid":
+      return "p.id_storeloc";
+    case "category_name":
+      return "p.id_category";
+    default:
+      return "";
+  }
+}
+
+/**
  * Translate jqGrid operators to MySQL
  * @param  string  $operator jqGrid operator string
  * @return function function of form fnc($column, $searchstring) that expands to the correct MySQL search string
@@ -82,11 +115,21 @@ function WrapJqGridFilterString($options) {
 
   $options["globalSearchString"] = trim($options["globalSearchString"]);
 
-  if( $options["_search"] != "true") {
-    $search = $options["globalSearchString"];
-  } elseif( $options["filters"] != "" ) {
+  $search = array("groupOp" => "AND", "rules" => array());
+
+  // Global search string
+  if( $options["_search"] != "true" || !empty($options["globalSearchString"] )) {
+    $search["rules"][] = array(
+      "name" => "any",
+      "operator" => "cn",
+      "data" => $options["globalSearchString"]
+   );
+  }
+
+  // Filter
+  if( $options["filters"] != "" ) {
     $options["filters"] = json_decode($options["filters"], true);
-    $search = array(
+    $search["rules"][] = array(
       "groupOp" => $options["filters"]["groupOp"],
       "rules" => array_map(
         function($x) {
@@ -98,29 +141,14 @@ function WrapJqGridFilterString($options) {
         }, $options["filters"]["rules"]
       )
     );
-    if( $options["globalSearchString"] != null && $options["globalSearchString"] != "" ) {
-      $search["rules"][] = array(
-        "name" => "name",
-        "operator" => "cn",
-        "data" => $options["globalSearchString"]
-      );
-    }
-    if( empty($search["rules"]) )
-      $search = "";
   }
   if( $options["searchField"] != "" ) {
-    $search = array(
-      "groupOp" => "OR",
-      "rules" => array(
-        array(
-          "name" => $options['searchField'],
-          "operator" => $options['searchOper'],
-          "data" => $options['searchString']
-        )
-      )
+    $search["rules"][] = array(
+        "name" => $options['searchField'],
+        "operator" => $options['searchOper'],
+        "data" => $options['searchString']
     );
-  } else
-    $search = "";
+  }
 
   return $search;
 }

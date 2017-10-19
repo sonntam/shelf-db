@@ -124,59 +124,48 @@ namespace ShelfDB {
             ."p.name LIKE '$escapedSearch' OR "
             ."p.comment LIKE '$escapedSearch')";
         }
-        $search = array("(" . join(" OR ", $clauses) . ")");
+        return array("(" . join(" OR ", $clauses) . ")");
 
       } else if(isset($search["groupOp"])) {
-        $groupOp = $search["groupOp"];
 
-        $clauses = array();
-        foreach( $search["rules"] as $rule ) {
-          $escapedSearch = $this->db()->sql->real_escape_string($rule["data"]);
+        $fnSQLSearchString = function($searchLevel, $groupOp = null) use (&$fnSQLSearchString) {
 
-          // Translate to MySQL operator
-          $operatorFn = TranslateJqGridToMySQL($rule["operator"]);
-
-          // Insert column name
-          switch( strtolower($rule["name"]) ) {
-            case "name":
-              $clauses[] = $operatorFn("p.name", $escapedSearch);
-              break;
-            case "supplier":
-              $clauses[] = $operatorFn("su.name", $escapedSearch);
-              break;
-            case "storeloc":
-              $clauses[] = $operatorFn("s.name", $escapedSearch);
-              break;
-            case "storelocid":
-              $clauses[] = $operatorFn("s.id", $escapedSearch);
-              break;
-            case "comment":
-              $clauses[] = $operatorFn("p.comment", $escapedSearch);
-              break;
-            case "instock":
-              $clauses[] = $operatorFn("p.instock", $escapedSearch);
-              break;
-            case "mininstock":
-              $clauses[] = $operatorFn("p.mininstock", $escapedSearch);
-              break;
-            case "footprintid":
-            case "footprint":
-              $clauses[] = $operatorFn("p.id_footprint", $escapedSearch);
-              break;
-            case "storelocid":
-              $clauses[] = $operatorFn("p.id_storeloc", $escapedSearch);
-              break;
-            case "category_name":
-              $clauses[] = $operatorFn("p.id_category", $escapedSearch);
-              break;
-            default:
-              $clauses[] = "0 <=> 0";
+          if( array_key_exists("groupOp", $searchLevel) ) {
+            // We have a rules array to process
+            return $fnSQLSearchString($searchLevel["rules"], $searchLevel["groupOp"]);
+          } else {
+            // We have an array of rules
+            if( empty($groupOp) ) throw new Exception("Error while building SQL search string.");
+            $sqlRules = array();
+            foreach( $searchLevel as $rule ) {
+              if( array_key_exists("groupOp", $rule) ) {
+                // Another level
+                $sqlRules[] = $fnSQLSearchString( $rule["rules"], $rule["groupOp"] );
+              } else {
+                $operatorFn = TranslateJqGridToMySQL($rule["operator"]);
+                $escapedSearch = $this->db()->sql->real_escape_string($rule["data"]);
+                if( strtolower($rule["name"]) === 'any') {
+                  $sqlRules[] = "("
+                    ."f.name LIKE '%$escapedSearch%' OR "
+                    ."s.name LIKE '%$escapedSearch%' OR "
+                    ."su.name LIKE '%$escapedSearch%' OR "
+                    ."c.name LIKE '%$escapedSearch%' OR "
+                    ."p.name LIKE '%$escapedSearch%' OR "
+                    ."p.comment LIKE '%$escapedSearch%')";
+                } else {
+                  $col        = TranslateJqGridColumnToMySQL($rule["name"]);
+                  $sqlRules[] = "(".$operatorFn( $col, $escapedSearch ).")";
+                }
+              }
+            }
+            return "(".join(" $groupOp ",$sqlRules).")";
           }
-        }
-        $search = array("(" . join(" $groupOp ", $clauses) . ")");
-      }
+        };
 
-      return $search;
+        $search = array($fnSQLSearchString($search));
+
+        return $search;
+      }
     }
 
     private function GetDataColumnById(int $id, $column ) {
