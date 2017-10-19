@@ -5,3 +5,6 @@ img/footprint/*
 img/supplier/*
 cache/*
 img/tmp/*
+package-lock.json
+node_modules/*
+build/*
