@@ -4,7 +4,7 @@
    * Generate ShelfDB list of parts of a category and all its subcategories as JSON file
    */
 
-  include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
   include_once(dirname(__DIR__).'/lib/utils.php');
 
   $defaults = array(

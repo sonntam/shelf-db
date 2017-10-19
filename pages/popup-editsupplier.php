@@ -1,5 +1,5 @@
 <?php
-  require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  require_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
   $data = array_replace_recursive( array(
     "method" => "add"

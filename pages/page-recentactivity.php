@@ -2,7 +2,7 @@
 
 	// https://stackoverflow.com/questions/7550304/jqgrid-upload-a-file-in-add-edit-dialog
 	// http://www.trirand.com/jqgridwiki/doku.php?id=wiki%3acolmodel_options
-	require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+	require_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
 	// Handle page arguments
 	$defaults = array(

@@ -1,6 +1,6 @@
 <?php
 
-  require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  require_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
   // Dynamic page footer
   //

@@ -1,7 +1,7 @@
 <?php
 /* POST Script for editing footprints */
 
-include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
 $fp = $pdb->StoreLocation();
 

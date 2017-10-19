@@ -1,5 +1,5 @@
 <?php
-  require_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  require_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 ?>
 
 <script type="text/javascript">
@@ -72,7 +72,7 @@
 
   <div data-role="header" data-position="fixed">
       <h2>Testing page</h2>
-      <a href="#navpanel" class="ui-btn"><i class="fa fa-bars"></i></a>
+      <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
     </div>
   <div role="main" class="ui-content">
     <h2>Here is some clicky stuff for testing</h2>

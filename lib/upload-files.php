@@ -1,6 +1,6 @@
 <?php
 
-  include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
   include_once(__DIR__.'/utils.php');
 
   $data = array();

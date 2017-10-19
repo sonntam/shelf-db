@@ -4,7 +4,7 @@
    * Generate ShelfDB tree of categories as JSON file
    */
 
-  include_once(dirname(__DIR__).'/classes/shelfdb.class.php');
+  include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
   $data = array_replace_recursive(
     array(
