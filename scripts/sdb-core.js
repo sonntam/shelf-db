@@ -6,7 +6,7 @@ var ShelfDB = (function(sdb, $) {
     var getUrl = window.location;
     var pathParts = getUrl.pathname.split('/');
     pathParts.splice(-1,1);
-    return '/' + pathParts.join('/');
+    return pathParts.join('/')+'/';
   })();
 
   var _init = function() {
