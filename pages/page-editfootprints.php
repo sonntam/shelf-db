@@ -60,7 +60,7 @@
 
 			$('#newFootprint').click( function(evt) {
 				ShelfDB.GUI.Popup.openExternalPopup({
-					url: '/pages/popup-editfootprint.php?method=add',
+					url: ShelfDB.Core.basePath+'pages/popup-editfootprint.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
 						var action = data.buttonresult;
@@ -74,7 +74,7 @@
 								$.mobile.referencedLoading('show');
 
 								$.ajax({
-									url: '/lib/json.footprints.php?id='+newid,
+									url: ShelfDB.Core.basePath+'lib/json.footprints.php?id='+newid,
 									cache: false,
 									dataType: 'json',
 									success: function(data) {
@@ -107,7 +107,7 @@
 							// TODO: Database action
 							$.mobile.referencedLoading('show');
 							$.ajax({
-								url: '/lib/edit-footprint.php',
+								url: ShelfDB.Core.basePath+'lib/edit-footprint.php',
 								type: 'POST',
 								data: {
 									method: 'delete',
@@ -138,7 +138,7 @@
         if( id )
         {
             ShelfDB.GUI.Popup.openExternalPopup({
-							url: '/pages/popup-editfootprint.php?id='+id+'&method=edit',
+							url: ShelfDB.Core.basePath+'pages/popup-editfootprint.php?id='+id+'&method=edit',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
 								var action = data.buttonresult;
@@ -151,7 +151,7 @@
 										$.mobile.referencedLoading('show');
 
 										$.ajax({
-											url: '/lib/json.footprints.php?id='+id,
+											url: ShelfDB.Core.basePath+'lib/json.footprints.php?id='+id,
 											cache: false,
 							        dataType: 'json',
 											success: function(data) {
@@ -180,7 +180,7 @@
         if( id )
         {
             ShelfDB.GUI.Popup.openExternalPopup({
-							url: '/pages/popup-editfootprint.php?id='+id+'&method=copy',
+							url: ShelfDB.Core.basePath+'pages/popup-editfootprint.php?id='+id+'&method=copy',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
 								var action = data.buttonresult;
@@ -192,7 +192,7 @@
 										// Reload item
 										$.mobile.referencedLoading('show');
 										$.ajax({
-											url: '/lib/json.footprints.php?id='+data.id,
+											url: ShelfDB.Core.basePath+'lib/json.footprints.php?id='+data.id,
 											cache: false,
 							        dataType: 'json',
 											success: function(data) {

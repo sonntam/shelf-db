@@ -49,7 +49,7 @@
 
 			$('[name=newStoreLocation]').click( function(evt) {
 				ShelfDB.GUI.Popup.openExternalPopup({
-					url: '/pages/popup-editstorelocation.php?method=add',
+					url: ShelfDB.Core.basePath+'pages/popup-editstorelocation.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
 						var action = data.buttonresult;
@@ -63,7 +63,7 @@
 								$.mobile.referencedLoading('show');
 
 								$.ajax({
-									url: '/lib/json.storelocations.php?id='+newid,
+									url: ShelfDB.Core.basePath+'lib/json.storelocations.php?id='+newid,
 									cache: false,
 									dataType: 'json',
 									success: function(data) {
@@ -96,7 +96,7 @@
 							// TODO: Database action
 							$.mobile.referencedLoading('show');
 							$.ajax({
-								url: '/lib/edit-storelocation.php',
+								url: ShelfDB.Core.basePath+'lib/edit-storelocation.php',
 								type: 'POST',
 								data: {
 									method: 'delete',
@@ -127,7 +127,7 @@
         if( id )
         {
             ShelfDB.GUI.Popup.openExternalPopup({
-							url: '/pages/popup-editstorelocation.php?id='+id+'&method=edit',
+							url: ShelfDB.Core.basePath+'pages/popup-editstorelocation.php?id='+id+'&method=edit',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
 								var action = data.buttonresult;
@@ -140,7 +140,7 @@
 										$.mobile.referencedLoading('show');
 
 										$.ajax({
-											url: '/lib/json.storelocations.php?id='+id,
+											url: ShelfDB.Core.basePath+'lib/json.storelocations.php?id='+id,
 											cache: false,
 							        dataType: 'json',
 											success: function(data) {

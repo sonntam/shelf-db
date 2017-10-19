@@ -98,7 +98,7 @@
     function postUploadReaction(formData) {
 
       $.ajax({
-        url: '/lib/edit-footprint.php',
+        url: ShelfDB.Core.basePath+'lib/edit-footprint.php',
         type: 'POST',
         data: formData,
         cache: false,
@@ -128,7 +128,7 @@
       postUploadReaction(formData);
     } else {
       $.ajax({
-        url: '/lib/upload-files.php',
+        url: ShelfDB.Core.basePath+'lib/upload-files.php',
         type: 'POST',
         data: {
           tempFilename: $('#popupFootprintEditDialog #imgPreview').attr('src'),
@@ -188,7 +188,7 @@
     });
 
     $.ajax({
-      url: '/lib/upload-files.php',
+      url: ShelfDB.Core.basePath+'lib/upload-files.php',
       type: 'POST',
       data: data,
       cache: false,

@@ -42,7 +42,7 @@
 			<li uilang="editCategoriesRootDeleteHint"></li>
 			</ul>
 
-			<div id="editcategorytree" data-url="/lib/json.categorytree.php"></div>
+			<div id="editcategorytree" data-url="<?php echo $pdb->RelRoot(); ?>lib/json.categorytree.php"></div>
 			<div class="editcontrols editcontrols-hidden">
 				<span><i id="editcontrols-edit" class="fa fa-pencil"></i>&nbsp;</span>
 				<span><i id="editcontrols-delete" class="fa fa-times" style="color: darkred"></i>&nbsp;</span>

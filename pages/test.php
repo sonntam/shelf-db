@@ -13,15 +13,15 @@
       console.log("DEBUG: pagecontainer - change");
 
       $('#testextpopup').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-selectfootprint.php'});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-selectfootprint.php'});
       });
 
       $('#testextpopup2').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-selectstorelocation.php'});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-selectstorelocation.php'});
       });
 
       $('#selectSupplier').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-selectsupplier.php'});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-selectsupplier.php'});
       });
 
       // Open external input dialog
@@ -38,15 +38,15 @@
       });
 
       $('#editfootprint').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-editfootprint.php', forceReload: true});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-editfootprint.php', forceReload: true});
       });
 
       $('#addpartpicture').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-uploadfile.php', forceReload: true});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-uploadfile.php', forceReload: true});
       });
 
       $('#editfootprintId').click( function(evt) {
-        ShelfDB.GUI.Popup.openExternalPopup({url: '/pages/popup-editfootprint.php?method=edit&id=9', forceReload: true});
+        ShelfDB.GUI.Popup.openExternalPopup({url: ShelfDB.Core.basePath+'pages/popup-editfootprint.php?method=edit&id=9', forceReload: true});
       });
 
       $('#partSearch').click( function() {
@@ -58,7 +58,7 @@
 
       $('#login').click( function() {
         ShelfDB.GUI.Popup.openExternalPopup({
-          url: '/pages/popup-login.php'
+          url: ShelfDB.Core.basePath+'pages/popup-login.php'
         });
       });
     });

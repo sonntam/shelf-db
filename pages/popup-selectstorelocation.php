@@ -48,7 +48,7 @@
       ok: function(value){
         // Set name AJAX call to mysql script
         $.ajax({
-          url: '/lib/edit-footprint.php',
+          url: ShelfDB.Core.basePath+'lib/edit-footprint.php',
           type: 'POST',
           dataType: 'json',
           data: {

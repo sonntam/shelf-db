@@ -51,7 +51,7 @@
     function postUploadReaction(formData) {
 
       $.ajax({
-        url: '/lib/edit-storelocation.php',
+        url: ShelfDB.Core.basePath+'lib/edit-storelocation.php',
         type: 'POST',
         data: formData,
         cache: false,

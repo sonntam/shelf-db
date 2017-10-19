@@ -64,7 +64,7 @@
 
 			$('#newSupplier').click( function(evt) {
 				ShelfDB.GUI.Popup.openExternalPopup({
-					url: '/pages/popup-editsupplier.php?method=add',
+					url: ShelfDB.Core.basePath+'pages/popup-editsupplier.php?method=add',
 					customEventName: "positiveResponse",
 					customEventHandler: function(evt, data) {
 						var action = data.buttonresult;
@@ -77,7 +77,7 @@
 								// Reload item
 								$.mobile.referencedLoading('show');
 								$.ajax({
-									url: '/lib/json.suppliers.php?id='+newid,
+									url: ShelfDB.Core.basePath+'lib/json.suppliers.php?id='+newid,
 									cache: false,
 									dataType: 'json',
 									success: function(data) {
@@ -110,7 +110,7 @@
 							// TODO: Database action
 							$.mobile.referencedLoading('show');
 							$.ajax({
-								url: '/lib/edit-supplier.php',
+								url: ShelfDB.Core.basePath+'lib/edit-supplier.php',
 								type: 'POST',
 								data: {
 									method: 'delete',
@@ -142,7 +142,7 @@
             ShelfDB.GUI.Popup.openExternalPopup({
 							constrainHeight: false,
 							fixedMaxWidth: '525px',
-							url: '/pages/popup-editsupplier.php?id='+id+'&method=edit',
+							url: ShelfDB.Core.basePath+'pages/popup-editsupplier.php?id='+id+'&method=edit',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
 								var action = data.buttonresult;
@@ -154,7 +154,7 @@
 										// Reload item
 										$.mobile.referencedLoading('show');
 										$.ajax({
-											url: '/lib/json.suppliers.php?partNr=example&id='+id,
+											url: ShelfDB.Core.basePath+'lib/json.suppliers.php?partNr=example&id='+id,
 											cache: false,
 							        dataType: 'json',
 											success: function(data) {
@@ -185,7 +185,7 @@
         if( id )
         {
             ShelfDB.GUI.Popup.openExternalPopup({
-							url: '/pages/popup-editsupplier.php?id='+id+'&method=copy',
+							url: ShelfDB.Core.basePath+'pages/popup-editsupplier.php?id='+id+'&method=copy',
 							customEventName: "positiveResponse",
 							customEventHandler: function(evt, data) {
 								var action = data.buttonresult;
@@ -198,7 +198,7 @@
 										$.mobile.referencedLoading('show');
 
 										$.ajax({
-											url: '/lib/json.suppliers.php?id='+data.id,
+											url: ShelfDB.Core.basePath+'lib/json.suppliers.php?id='+data.id,
 											cache: false,
 							        dataType: 'json',
 											success: function(data) {
