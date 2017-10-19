@@ -106,6 +106,7 @@ var Lang = (function(){
       },
 
       deDE: {
+        ok: 'Ok',
         yes: 'Ja',
         no: 'Nein',
         date: 'Datum',
