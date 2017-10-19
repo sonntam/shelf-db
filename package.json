@@ -3,10 +3,14 @@
   "version": "1.2",
   "devDependencies": {
     "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.2.1",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-uglify": "^3.1.0",
-    "jshint-html-reporter": "^0.2.5",
-    "jshint-stylish": "^2.2.1"
+    "grunt-contrib-watch": "^1.0.0",
+    "jshint-html-reporter": "^0.2.5"
   },
   "dependencies": {}
 }
