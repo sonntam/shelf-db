@@ -3,5 +3,5 @@ phpmyadmin
 img/parts/*
 img/footprint/*
 img/supplier/*
-cache
+cache/*
 img/tmp/*
