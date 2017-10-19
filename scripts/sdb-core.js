@@ -92,7 +92,7 @@ var ShelfDB = (function(sdb, $) {
         });
       },
       basePath: _basePath,
-      uploadFile: function(opts, event = null) {
+      uploadFile: function(opts, event) {
         var defaults = {
           uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
           files: null,
@@ -166,7 +166,6 @@ var ShelfDB = (function(sdb, $) {
               opts.error(errorThrown, data);
           }
         });
-
       },
       moveUploadedFile: function(opts) {
         var defaults = {
