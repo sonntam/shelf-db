@@ -24,7 +24,7 @@ var ShelfDB = (function(sdb,$) {
             if(e.which == 13) {//Enter key pressed
                 if( $(e.target).val().trim() != "" ) {
                   $(':mobile-pagecontainer').pagecontainer("change",
-                    sdb.Core.basePath + "pages/page-showsearchresults.php?catid=0&search="+encodeURIComponent($(e.target).val()),
+                    sdb.Core.basePath + "pages/page-showsearchresults.php?search="+encodeURIComponent($(e.target).val()),
                     {
                       allowSamePageTransition: true,
                       reload: true
