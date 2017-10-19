@@ -290,7 +290,7 @@
 									$('[name=showPartNumber]').val(newnumber);
 									// Get url for part and update picture
 									//
-									$.shelfdb.getSupplierByIdAsync({
+									ShelfDB.Supplier.getSupplierByIdAsync({
 										id: $('[name=showSupplier]').attr('supplierId'),
 										partNr: newnumber,
 										done: function(data) {
