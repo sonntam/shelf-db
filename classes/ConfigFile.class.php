@@ -70,6 +70,19 @@ namespace {
 				return false;
 			}
 
+			// Check access rights
+			$ac = fileperms($filename);
+			if( ($ac & 0x07) != 0 ) {
+				Log::Warning("Config file \"$filename\" is publicly visible (mod=$ac). Trying to change access rights..." );
+				$newac = $ac & ~0x7;
+				if( !chmod( $filename, $newac ) ) {
+					throw new Exception("Could not change access rights of config file. Please try to do it manually. Exiting.");
+					exit;
+				} else {
+					Log::Info("Config file \"$filename\" chmod from $ac to $newac successful.");
+				}
+			}
+
 			$this->filename = $filename;
 
 			$cfg = json_decode( file_get_contents($filename), true ) or Log::Error("Invalid configuration file at \"$filename\"");
