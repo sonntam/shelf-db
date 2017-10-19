@@ -72,7 +72,11 @@ module.exports = function(grunt) {
         tasks: ['uglify']
       }
     },
-    clean: [buildDir+'/*', releaseDir+'/*'],
+    clean: {
+      all: [buildDir+'/*', releaseDir+'/*'],
+      release: [releaseDir+'/*'],
+      build: [buildDir+'/*']
+    },
     copy: {
       release: {
         files: [
@@ -108,11 +112,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-
+  grunt.loadNpmTasks('grunt-newer');
 
   // Default task(s).
-  grunt.registerTask('all', ['cssmin', 'uglify', 'jshint']);
-  grunt.registerTask('merged', ['cssmin:merge', 'uglify:merge']);
-  grunt.registerTask('release', ['clean', 'all', 'copy:release']);
+  grunt.registerTask('all', ['newer:cssmin:build', 'newer:uglify:build', 'newer:jshint']);
+  grunt.registerTask('rebuild_all', ['clean:build', 'all'])
+  grunt.registerTask('merged', ['newer:cssmin:merge', 'newer:uglify:merge']);
+  grunt.registerTask('release', ['all', 'newer:copy:release']);
 
 };
