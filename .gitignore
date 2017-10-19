@@ -8,3 +8,6 @@ img/tmp/*
 package-lock.json
 node_modules/*
 build/*
+release/*
+*.min.js
+*.min.css
