@@ -8,7 +8,7 @@ var ShelfDB = (function(sdb,$) {
       var retstr = '';
 
       retstr = '<img style="max-width: 32px; max-height: 32px; height:auto; '
-      + 'width:auto" data-other-src="'+rowObject.mainPicFile+'" src="'+rowObject.mainPicThumbFile+'">'
+      + 'width:auto" data-other-src="'+rowObject.mainPicFile+'" src="'+rowObject.mainPicThumbFile+'">';
 
       retstr = '<a href="#imgViewer" data-rel="popup" data-position-to="window">'
                 + retstr + '</a>';
@@ -31,7 +31,7 @@ var ShelfDB = (function(sdb,$) {
 
           // Tree callback
           $subtree.bind('tree.init', function(e) {
-            $subtree.tree('openNode',$subtree.tree('getTree').children[0])
+            $subtree.tree('openNode',$subtree.tree('getTree').children[0]);
           });
 
           $subtree.tree();
@@ -120,7 +120,6 @@ var ShelfDB = (function(sdb,$) {
   					sortname: 'name',
   					viewrecords: true,
   					sortorder: 'asc',
-  					viewrecords: false,
   					gridComplete: function() {
 
   						var ids = $(this).jqGrid('getDataIDs');

@@ -12,7 +12,7 @@ var ShelfDB = (function(sdb, $) {
   var _init = function() {
     coreModule.pageHookClear();
     coreModule.pageHookInit();
-  }
+  };
 
   // The core submodule
   var coreModule = (function() {

@@ -31,7 +31,7 @@ var ShelfDB = (function(sdb,$) {
                     });
                 }
               }
-            })
+            });
           }
       },
       CategoryTree: {
@@ -44,7 +44,7 @@ var ShelfDB = (function(sdb,$) {
             treeSelector: '#categorytree',
             btnCollapseSelector: '#collapse',
             btnExpandSelector: '#expand'
-          }
+          };
 
           opts = $.extend({}, defaults, opts);
 
@@ -96,7 +96,7 @@ var ShelfDB = (function(sdb,$) {
             loginLinkSelector: 'a#navUserLogin',
             logoutLinkSelector:'a#navUserLogout',
             pageAfterLogon:    'index.php'
-          }
+          };
 
           opts = $.extend({}, defaults, opts);
 
@@ -123,7 +123,7 @@ var ShelfDB = (function(sdb,$) {
             isAdminSelector:   null,
             pageAfterLogon:    'index.php',
             success:           null
-          }
+          };
 
           opts = $.extend({}, defaults, opts);
 
@@ -156,7 +156,7 @@ var ShelfDB = (function(sdb,$) {
           });
         }
       }
-    }
+    };
   })();
 
   if( typeof sdb.GUI === 'undefined' ) {

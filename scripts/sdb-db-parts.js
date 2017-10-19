@@ -13,7 +13,7 @@ var ShelfDB = (function(sdb, $, Lang) {
         categoryFilterString: "undefined"
       };
 
-      opts = $.extend(defaults, opts)
+      opts = $.extend(defaults, opts);
 
       var _linkFormatterFactory = function(parameter, dataFieldName) {
         return function (cellvalue, options, rowObject) {
@@ -24,8 +24,8 @@ var ShelfDB = (function(sdb, $, Lang) {
   									+ cellvalue + '</a>';
 
   				return retstr;
-  			}
-      }
+  			};
+      };
 
       return [
           {
@@ -192,7 +192,7 @@ var ShelfDB = (function(sdb, $, Lang) {
               value: opts.categoryFilterString
             }
           }
-      ]
+      ];
     };
 
     var editPartFieldData = function( id, fieldName, fieldData, success ) {
@@ -213,7 +213,7 @@ var ShelfDB = (function(sdb, $, Lang) {
   			}
   			$.mobile.referencedLoading('hide');
   		});
-  	}
+  	};
 
     var getPartFieldData = function( id, fieldName, success ) {
   		$.mobile.referencedLoading('show');
@@ -231,7 +231,7 @@ var ShelfDB = (function(sdb, $, Lang) {
   			}
   			$.mobile.referencedLoading('hide');
   		});
-  	}
+  	};
 
     var _addPartCount = function(opts) {
       var defaults = {
@@ -242,7 +242,7 @@ var ShelfDB = (function(sdb, $, Lang) {
       };
 
       opts = $.extend(defaults,opts);
-      opts.type = opts.type.toLowerCase()
+      opts.type = opts.type.toLowerCase();
 
       if( opts.id === null ) return false;
 
@@ -257,20 +257,21 @@ var ShelfDB = (function(sdb, $, Lang) {
                   opts.success(newData);
               } );
           });
+          break;
         default:
           return false;
       }
 
       return newval;
-    }
+    };
 
     // Return the column model for jqGrid for the parts view
     return  {
       getListViewModel: getListViewModel,
-      incrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:1, success:success})},
-      decrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:-1, success:success})},
-      incrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:1, success:success})},
-      decrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:-1, success:success})},
+      incrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:1, success:success}); },
+      decrementTotal: function(id, success) { return _addPartCount({id:id, type: "totalstock", inc:-1, success:success}); },
+      incrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:1, success:success}); },
+      decrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:-1, success:success}); },
       editPartFieldData: editPartFieldData
     };
   })();

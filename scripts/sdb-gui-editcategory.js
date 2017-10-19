@@ -3,7 +3,7 @@ var ShelfDB = (function(sdb,$) {
 
     var editCategoryModule = (function(){
 
-    var _ctrlBoxSelector = undefined;
+    var _ctrlBoxSelector;
 
     var hideControls = function() {
       var $ctrl = $(_ctrlBoxSelector);
@@ -86,13 +86,13 @@ var ShelfDB = (function(sdb,$) {
     							}
     						}).done(function(data) {
 
-    							if( data['success'] == true )
+    							if( data.success == true )
     							{
     									// Open tree to new node (but do not select it)
     									$ctrl.detach();
     									$tree.tree('prependNode', {
-    										name: data['newname'],
-    										id: data['newid'],
+    										name: data.newname,
+    										id: data.newid,
     										partcount: 0
     									} );
     									$tree.trigger('tree.init');
@@ -112,7 +112,7 @@ var ShelfDB = (function(sdb,$) {
     				evt.stopPropagation();
 
     				var id      = $ctrl.attr("data-id");
-    				var node    = $tree.tree('getNodeById', id)
+    				var node    = $tree.tree('getNodeById', id);
     				var curname = node.name;
 
     				ShelfDB.GUI.Popup.inputPopUp({
@@ -137,11 +137,11 @@ var ShelfDB = (function(sdb,$) {
     								}
     							}).done(function(data) {
 
-    								if( data['success'] == true )
+    								if( data.success == true )
     								{
     										// Change name in tree
     										$ctrl.detach();
-    										$tree.tree('updateNode', node, data['newname'] );
+    										$tree.tree('updateNode', node, data.newname );
     										$ctrl.prependTo($(node.element).find("span").first());
     										$tree.trigger('tree.init');
 
@@ -159,7 +159,7 @@ var ShelfDB = (function(sdb,$) {
     				evt.stopPropagation();
 
     				var id      = $ctrl.attr("data-id");
-    				var node    = $tree.tree('getNodeById', id)
+    				var node    = $tree.tree('getNodeById', id);
 
     				ShelfDB.GUI.Popup.inputPopUp({
     			    header: Lang.get('editCategoryAdd'),
@@ -181,13 +181,13 @@ var ShelfDB = (function(sdb,$) {
     							}
     						}).done(function(data) {
 
-    							if( data['success'] == true )
+    							if( data.success == true )
     							{
     									// Open tree to new node (but do not select it)
     									$ctrl.detach();
     									$tree.tree('appendNode', {
-    										name: data['newname'],
-    										id: data['newid'],
+    										name: data.newname,
+    										id: data.newid,
     										partcount: 0
     									} , node);
     									$tree.trigger('tree.init');
@@ -207,7 +207,7 @@ var ShelfDB = (function(sdb,$) {
     				evt.stopPropagation();
 
     				var id      = $ctrl.attr("data-id");
-    				var node    = $tree.tree('getNodeById', id)
+    				var node    = $tree.tree('getNodeById', id);
     				var curname = node.name;
 
     				// Check if category has parts
@@ -220,7 +220,7 @@ var ShelfDB = (function(sdb,$) {
     				// Check if category has children
     				var subcatstring = "";
     				if( node.children.length > 0 ) {
-    					var subcatstring = (Lang.get('editCategoryRemoveSubLeavesHint',true))(node.children.map(function(el){
+    					subcatstring = (Lang.get('editCategoryRemoveSubLeavesHint',true))(node.children.map(function(el){
     							return "\""+el.name+"\"";
     						}).join(", "));
     				}
@@ -242,7 +242,7 @@ var ShelfDB = (function(sdb,$) {
     							}
     						}).done(function(data) {
 
-    							if( data['success'] == true )
+    							if( data.success == true )
     							{
     									// Open tree to new node (but do not select it)
     									$ctrl.detach();
@@ -301,7 +301,7 @@ var ShelfDB = (function(sdb,$) {
     								}
     							}).done(function(data) {
 
-    								if( data['success'] == true )
+    								if( data.success == true )
     								{
     										// Update main tree
     										//$maintree.tree('removedNode', $maintree.tree('getNodeById', data['id']) );

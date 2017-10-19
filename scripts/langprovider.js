@@ -52,7 +52,7 @@ var Lang = (function(){
     /**
     * All the html elements with this attributes are translated on the fly
     */
-    var LANG_ATTRIBUTE_NAME = "uilang"
+    var LANG_ATTRIBUTE_NAME = "uilang";
 
     var _Languages = {
       enUS: {
@@ -374,7 +374,7 @@ var Lang = (function(){
           return user + ' hat das Teil "' + partname + '" angelegt.';
         }
       }
-    }
+    };
 
     // Verify if language exists, else return to default
     if( !_Languages.hasOwnProperty(language) ) {
@@ -525,7 +525,7 @@ var Lang = (function(){
       searchAndReplace: searchAndReplace,
       setLanguage: setLanguage
     };
-  }
+  };
 
   return _Lang(_lang, _replace);
 })();

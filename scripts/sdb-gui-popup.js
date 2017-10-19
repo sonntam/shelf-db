@@ -245,7 +245,7 @@ var ShelfDB = (function(sdb,$) {
             afteropen: null
           };
 
-          options = $.extend(defaults,options)
+          options = $.extend(defaults,options);
 
           var $popup = $('#popupInputMultilineDialog');
 
@@ -422,7 +422,7 @@ var ShelfDB = (function(sdb,$) {
         };
 
         options = $.extend({},defaults, options);
-        debugger;
+
         sdb.GUI.Popup.openExternalPopup({
           url: sdb.Core.basePath+'pages/popup-login.php',
           submit: function(evt) {
@@ -470,7 +470,7 @@ var ShelfDB = (function(sdb,$) {
           }
         });
       }
-    }
+    };
   })();
 
   if( typeof sdb.GUI === 'undefined' ) {
