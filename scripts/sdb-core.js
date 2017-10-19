@@ -91,7 +91,128 @@ var ShelfDB = (function(sdb, $) {
             });
         });
       },
-      basePath: _basePath
+      basePath: _basePath,
+      uploadFile: function(opts, event = null) {
+        var defaults = {
+          uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
+          files: null,
+          success: null,
+          error: null
+        };
+
+        opts = $.extend(true,{},defaults,opts);
+
+        var abortEvent = function(){
+          event.stopPropagation();
+          event.preventDefault();
+        };
+
+        if( event && !opts.files ) {
+          opts.files = event.target.files;
+        }
+
+        if( opts.files.length <= 0 ) {
+          if( event )
+            abortEvent();
+
+          return;
+        }
+
+        $.mobile.referencedLoading('show', {
+          theme: "a"
+        });
+
+        // Add the files
+        var data = new FormData();
+        $.each(opts.files, function(key, value) {
+          data.append(key,value);
+        });
+
+        $.each({
+          type: 'uploadToTemp',
+          target: opts.uploadTarget
+        }, function(key, value) {
+          data.append(key,value);
+        });
+
+        $.ajax({
+          url: ShelfDB.Core.basePath+'lib/upload-files.php',
+          type: 'POST',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          processData: false,
+          contentType: false,
+          success: function(data, textStatus, jqXHR) {
+            if( typeof data.error === 'undefined')
+            {
+              // Success
+              if( typeof opts.success === 'function' )
+                opts.success(data);
+            } else {
+              // Handle error
+              if( typeof opts.error === 'function' )
+                opts.error(textStatus, data);
+            }
+            $.mobile.referencedLoading('hide');
+
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            // Handle error
+            console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
+            $.mobile.referencedLoading('hide');
+
+            if( typeof opts.error === 'function' )
+              opts.error(errorThrown, data);
+          }
+        });
+
+      },
+      moveUploadedFile: function(opts) {
+        var defaults = {
+          targetType: null, //'footprintImage', ...
+          tempFilename: null,
+          success: null,
+          error: null,
+          data: null
+        };
+
+        opts = $.extend(true,{},defaults,opts);
+
+        $.ajax({
+        url: ShelfDB.Core.basePath+'lib/upload-files.php',
+        type: 'POST',
+        data: {
+          tempFilename: opts.tempFilename,
+          type: 'moveTempToTarget',
+          target: opts.targetType,
+        },
+        cache: false,
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+          if( typeof data.error === 'undefined') {
+            // Success -> create new footprint entry in database
+            if( typeof opts.success === 'function' )
+              opts.success(data, opts.data);
+          } else {
+            // Handle error
+            $.mobile.referencedLoading('hide');
+
+            if( typeof opts.error === 'function' )
+              opts.error(textStatus, data);
+          }
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // Handle error
+          console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
+          $.mobile.referencedLoading('hide');
+
+          if( typeof opts.error === 'function' )
+            opts.error(errorThrown, opts.data);
+        }
+      });
+      }
     };
   })();
 
