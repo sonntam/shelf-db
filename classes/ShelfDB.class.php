@@ -67,6 +67,11 @@ class ShelfDB
     $this->twig->addGlobal('debugMode', \ConfigFile\Config::$debug );
     $this->twig->addGlobal('relRoot',   $this->RelRoot() );
     $this->twig->addGlobal('lang',      \ConfigFile\Language::$default);
+    $this->twig->addGlobal('jsRoot',    $this->RelRoot().'scripts/');
+    $this->twig->addGlobal('jsExt',     \ConfigFile\Config::$debug ? '.js' : '.min.js');
+    $this->twig->addGlobal('cssRoot',   $this->RelRoot().'styles/');
+    $this->twig->addGlobal('cssExt',    \ConfigFile\Config::$debug ? '.css' : '.min.css');
+    $this->twig->addGlobal('extSources',\ConfigFile\Config::$extSources);
     if( \ConfigFile\Config::$debug ) {
       $this->twig->addExtension(new Twig_Extension_Debug());
 

@@ -3,64 +3,60 @@
   <title uilang="mainTitle"></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- JQUERY -->
-  <!--<script src="https://code.jquery.com/jquery-2.1.4.js"></script>-->
-  <!--<script src="{{ relRoot }}scripts/lib/jquery-2.1.4.min.js"></script>-->
-  <script src="{{ relRoot }}scripts/lib/jquery-2.1.4.js"></script>
-  <!--<script src="./js/jquery-3.2.0.js"></script>-->
-  <!--<script src="https://code.jquery.com/jquery-migrate-3.0.0.js"></script>-->
+  <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-2.1.4{{ jsExt }}"></script>
 
   <!-- JQTREE -->
-  <script src="{{ relRoot }}scripts/lib/tree.jquery.js"></script>
-  <link href="{{ relRoot }}styles/jqtree.css" rel="stylesheet"/>
-  <!-- <link href="./css/jqtree.style.css" rel="stylesheet"/> -->
+  <script type="text/javascript" src="{{ jsRoot }}lib/tree.jquery{{ jsExt }}"></script>
+  <link href="{{ cssRoot }}jqtree{{ cssExt }}" rel="stylesheet"/>
 
   <!-- FONT AWESOME -->
-  <link href="{{ relRoot }}styles/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  <link href="{{ cssRoot }}font-awesome-4.7.0/css/font-awesome{{ cssExt }}" rel="stylesheet"/>
 
   <!-- JQUERY UI -->
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">-->
-  <link rel="stylesheet" href="{{ relRoot }}styles/jquery-ui.min.css">
+  <link rel="stylesheet" href="{{ cssRoot }}jquery-ui{{ cssExt }}">
 
   <!-- JQGRID FREE -->
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/jquery.jqgrid.src.js"></script>-->
-  <script src="{{ relRoot }}scripts/lib/jquery.jqgrid.src.js"></script>
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.jqgrid.src{{ jsExt }}"></script>
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/js/i18n/grid.locale-de.js"></script>-->
-  <script src="{{ relRoot }}scripts/lib/grid.locale-de.js"></script>
+  <script type="text/javascript" src="{{ jsRoot }}lib/grid.locale-de{{ jsExt }}"></script>
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/css/ui.jqgrid.min.css">-->
-  <link rel="stylesheet" href="{{ relRoot }}styles/ui.jqgrid.min.css">
+  <link rel="stylesheet" href="{{ cssRoot }}ui.jqgrid{{ cssExt }}">
 
   <!-- jquery-validation -->
-  <script src="{{ relRoot }}scripts/lib/jquery-validation/jquery.validate.js"></script>
-  <script src="{{ relRoot }}scripts/lib/jquery-validation/localization/messages_de.min.js"></script>
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-validation/jquery.validate{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-validation/localization/messages_de{{ jsExt }}"></script>
 
   <!-- Localization -->
   <!-- This has to be loaded BEFORE jQuery mobile! -->
-  <script type="text/javascript" src="{{ relRoot }}scripts/langprovider.js?language={{ lang }}&replace=true"></script>
+  <script type="text/javascript" src="{{ jsRoot }}langprovider{{ jsExt }}?language={{ lang }}&replace=true"></script>
 
   <!-- JQUERY MOBILE -->
-  <script src="{{ relRoot }}scripts/lib/jquery.mobile-1.4.5.js"></script>
-  <script src="{{ relRoot }}scripts/jquery.mobile-1.4.5.menupanel.js"></script>
-  <link href="{{ relRoot }}styles/jquery.mobile-1.4.5.css" rel="stylesheet"/>
-  <!--<link rel="stylesheet" href="./css/jquery-ui.min.css">-->
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile-1.4.5{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}jquery.mobile-1.4.5.menupanel{{ jsExt }}"></script>
+  <link href="{{ cssRoot }}jquery.mobile-1.4.5{{ cssExt }}" rel="stylesheet"/>
 
   <!-- jquery-mobile-font-awesome -->
-  <link rel="stylesheet" href="{{ relRoot }}styles/jqm-font-awesome-usvg-upng.css" />
+  <link rel="stylesheet" href="{{ cssRoot }}jqm-font-awesome-usvg-upng{{ cssExt }}" />
 
   <!-- jquery-mobile-simpledialogs2 -->
-  <link rel="stylesheet" href="{{ relRoot }}styles/jquery.mobile.simpledialog.css" />
-  <script src="{{ relRoot }}scripts/lib/jquery.mobile.simpledialog2.js"></script>
+  <link rel="stylesheet" href="{{ cssRoot }}jquery.mobile.simpledialog{{ cssExt }}" />
+  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile.simpledialog2{{ jsExt }}"></script>
 
   <!-- CUSTOM EXTENSIONS -->
-  <link href="{{ relRoot }}styles/shelfdb.css" rel="stylesheet"/>
-  <script src="{{ relRoot }}scripts/lib/js.cookie.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-core.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-db-parts.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-gui-popup.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-gui-nav.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-gui-editcategory.js"></script>
-  <script src="{{ relRoot }}scripts/sdb-gui-part.js"></script>
-  <script src="{{ relRoot }}scripts/custom.ext.js"></script>
-  <script src="{{ relRoot }}scripts/shelfdb.class.js.php"></script>
+  <link href="{{ cssRoot }}shelfdb{{ cssExt }}" rel="stylesheet"/>
+  <script type="text/javascript" src="{{ jsRoot }}lib/js.cookie{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-core{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-db-parts{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-db-supplier{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-gui-popup{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-gui-nav{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-gui-editcategory{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}sdb-gui-part{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}custom.ext{{ jsExt }}"></script>
 
   {% block additionalHead %}
   {% endblock %}
