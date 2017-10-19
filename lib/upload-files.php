@@ -34,6 +34,12 @@
     case 'tempImage':
       $uploadDir = '/img/tmp';
       break;
+    case 'tempFile':
+      $uploadDir = '/img/attachments';
+      break;
+    case 'datasheetFile':
+      $uploadDir = '/attachments/datasheet';
+      break;
     default:
       return;
   }
