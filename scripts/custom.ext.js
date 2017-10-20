@@ -26,36 +26,38 @@ $.fn.formData = function() {
   }, {});
 };
 
-// Show second popup over another one
-$.mobile.switchPopup = function(sourceElement, destinationElement, onswitched) {
-    var afterClose = function() {
-        destinationElement.popup("open");
-        sourceElement.off("popupafterclose", afterClose);
+if( 0 ) {
+  // Show second popup over another one
+  $.mobile.switchPopup = function(sourceElement, destinationElement, onswitched) {
+      var afterClose = function() {
+          destinationElement.popup("open");
+          sourceElement.off("popupafterclose", afterClose);
 
-        if (onswitched && typeof onswitched === "function"){
-            onswitched();
-        }
-    };
+          if (onswitched && typeof onswitched === "function"){
+              onswitched();
+          }
+      };
 
-    sourceElement.on("popupafterclose", afterClose);
-    sourceElement.popup("close");
-};
+      sourceElement.on("popupafterclose", afterClose);
+      sourceElement.popup("close");
+  };
 
-// Show loading spinner with refcount
-// Spinner count
-$.mobile.spinnerRefCount = 0;
-$.mobile.referencedLoading = function(cmd) {
-  switch(cmd) {
-    case 'show':
-      if( this.spinnerRefCount == 0 )
-        this.loading('show');
+  // Show loading spinner with refcount
+  // Spinner count
+  $.mobile.spinnerRefCount = 0;
+  $.mobile.referencedLoading = function(cmd) {
+    switch(cmd) {
+      case 'show':
+        if( this.spinnerRefCount == 0 )
+          this.loading('show');
 
-      this.spinnerRefCount++;
-      break;
-    case 'hide':
-      this.spinnerRefCount--;
-      if( this.spinnerRefCount <= 0 )
-      this.loading('hide');
-      break;
-  }
-};
+        this.spinnerRefCount++;
+        break;
+      case 'hide':
+        this.spinnerRefCount--;
+        if( this.spinnerRefCount <= 0 )
+        this.loading('hide');
+        break;
+    }
+  };
+}

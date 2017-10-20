@@ -127,7 +127,7 @@ var ShelfDB = (function(sdb,$) {
 
           opts = $.extend({}, defaults, opts);
 
-          $.mobile.referencedLoading('show');
+          sdb.GUI.Core.waitAnimationReferenced('show');
 
           $.ajax({
             url: sdb.Core.basePath+'lib/edit-user.php',
@@ -147,11 +147,11 @@ var ShelfDB = (function(sdb,$) {
               $(opts.loggedInSelector).addClass('ui-screen-hidden');
               $(opts.loggedOutSelector).removeClass('ui-screen-hidden');
 
-              $.mobile.referencedLoading('hide');
+              sdb.GUI.Core.waitAnimationReferenced('hide');
             },
             error: function() {
               // Show error
-              $.mobile.referencedLoading('hide');
+              sdb.GUI.Core.waitAnimationReferenced('hide');
             }
           });
         }

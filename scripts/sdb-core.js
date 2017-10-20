@@ -17,14 +17,20 @@ var ShelfDB = (function(sdb, $) {
   // The core submodule
   var coreModule = (function() {
 
+    var pageCreateTasks = [];
+    var pageContainerBeforeShowTasks = [];
+    var pageContainerBeforeLoadTasks = [];
+    var pageContainerBeforeChangeTasks = [];
+    var pageContainerChangeTasks = [];
+
     return {
       pageHookClear: function() {
         console.log("DEBUG: clearing page hooks");
-        $.mobile.pageCreateTasks = [];
-        $.mobile.pageContainerBeforeShowTasks = [];
-        $.mobile.pageContainerBeforeLoadTasks = [];
-        $.mobile.pageContainerBeforeChangeTasks = [];
-        $.mobile.pageContainerChangeTasks = [];
+        pageCreateTasks = [];
+        pageContainerBeforeShowTasks = [];
+        pageContainerBeforeLoadTasks = [];
+        pageContainerBeforeChangeTasks = [];
+        pageContainerChangeTasks = [];
       },
       pageHookInit: function() {
 
@@ -48,13 +54,13 @@ var ShelfDB = (function(sdb, $) {
             $(':mobile-pagecontainer').on('pagecontainerbeforeshow', function(event,ui) {
               console.log("DEBUG: pagecontainer - beforeshow");
 
-              $.mobile.pageContainerBeforeShowTasks.forEach(function(fun) { fun(event,ui); });
+              pageContainerBeforeShowTasks.forEach(function(fun) { fun(event,ui); });
             });
 
             $(':mobile-pagecontainer').on('pagecontainerbeforeload', function(event,ui) {
               console.log("DEBUG: pagecontainer - beforeload");
 
-              $.mobile.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
+              pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
 
               sdb.Core.pageHookClear();
             });
@@ -62,7 +68,7 @@ var ShelfDB = (function(sdb, $) {
             $(':mobile-pagecontainer').on('pagecontainerchange', function(event,ui) {
               console.log("DEBUG: pagecontainer - change");
 
-              $.mobile.pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
+              pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
 
               sdb.Core.pageHookClear();
             });
@@ -70,7 +76,7 @@ var ShelfDB = (function(sdb, $) {
             $(':mobile-pagecontainer').on('pagecontainerbeforechange', function(event,ui) {
               console.log("DEBUG: pagecontainer - beforechange");
 
-              $.mobile.pageContainerBeforeChangeTasks.forEach(function(fun) { fun(event,ui); });
+              pageContainerBeforeChangeTasks.forEach(function(fun) { fun(event,ui); });
             });
         });
         $(document).on('popupcreate', function() {
@@ -83,15 +89,21 @@ var ShelfDB = (function(sdb, $) {
               console.log('Panel close');
             });
 
-            $.mobile.pageCreateTasks.forEach(function(fun) { fun(); });
+            pageCreateTasks.forEach(function(fun) { fun(); });
 
             $("[data-role=menupanel]").one("panelbeforeopen", function() {
-              var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
-              $(".ui-panel-wrapper").css("height", height+1);
+              // DOH
+              //var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
+              //$(".ui-panel-wrapper").css("height", height+1);
             });
         });
       },
       basePath: _basePath,
+      pageCreateTasks: pageCreateTasks,
+      pageContainerBeforeShowTasks: pageContainerBeforeShowTasks,
+      pageContainerBeforeLoadTasks: pageContainerBeforeLoadTasks,
+      pageContainerBeforeChangeTasks: pageContainerBeforeChangeTasks,
+      pageContainerChangeTasks: pageContainerChangeTasks,
       uploadFile: function(opts, event) {
         var defaults = {
           uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
@@ -118,7 +130,7 @@ var ShelfDB = (function(sdb, $) {
           return;
         }
 
-        $.mobile.referencedLoading('show', {
+        sdb.GUI.Core.waitAnimationReferenced('show', {
           theme: "a"
         });
 
@@ -154,13 +166,13 @@ var ShelfDB = (function(sdb, $) {
               if( typeof opts.error === 'function' )
                 opts.error(textStatus, data);
             }
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
           },
           error: function(jqXHR, textStatus, errorThrown) {
             // Handle error
             console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
             if( typeof opts.error === 'function' )
               opts.error(errorThrown, data);
@@ -195,7 +207,7 @@ var ShelfDB = (function(sdb, $) {
               opts.success(data, opts.data);
           } else {
             // Handle error
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
             if( typeof opts.error === 'function' )
               opts.error(textStatus, data);
@@ -205,7 +217,7 @@ var ShelfDB = (function(sdb, $) {
         error: function(jqXHR, textStatus, errorThrown) {
           // Handle error
           console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-          $.mobile.referencedLoading('hide');
+          sdb.GUI.Core.waitAnimationReferenced('hide');
 
           if( typeof opts.error === 'function' )
             opts.error(errorThrown, opts.data);

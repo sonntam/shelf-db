@@ -11,3 +11,4 @@ build/*
 release/*
 *.min.js
 *.min.css
+.sass-cache/*

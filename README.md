@@ -48,6 +48,14 @@ Used libraries
 
  Special thanks to all the people that contributed to these projects.
 
+Development
+-----------
+
+To update SASS styles:
+ - Edit the `scss/bootstrap-custom.scss` file
+ - Run `grunt scss`
+ - The compiled file is placed in `styles\bootstrap-custom.scss`
+
 TODOs
 -----
 

@@ -73,9 +73,9 @@ module.exports = function(grunt) {
       }
     },
     clean: {
-      all: [buildDir+'/*', releaseDir+'/*'],
+      all: [buildDir+'/*', releaseDir+'/*', 'styles/bootstrap-custom.css'],
       release: [releaseDir+'/*'],
-      build: [buildDir+'/*']
+      build: [buildDir+'/*', 'styles/bootstrap-custom.css']
     },
     copy: {
       release: {
@@ -113,6 +113,18 @@ module.exports = function(grunt) {
           }
         ]
       },
+    },
+    sass: {
+      options: {
+        style: 'expanded',
+        loadPath: './'
+      },
+      build: {
+        files: [{
+          src: 'scss/bootstrap-custom.scss',
+          dest: 'styles/bootstrap-custom.css'
+        }]
+      }
     }
   });
 
@@ -124,10 +136,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-newer');
 
   // Default task(s).
-  grunt.registerTask('all', ['newer:cssmin:build', 'newer:uglify:build', 'newer:jshint']);
+  grunt.registerTask('all', ['newer:sass', 'newer:cssmin:build', 'newer:uglify:build', 'newer:jshint']);
   grunt.registerTask('rebuild_all', ['clean:build', 'all'])
   grunt.registerTask('merged', ['newer:cssmin:merge', 'newer:uglify:merge']);
   grunt.registerTask('release', ['all', 'newer:copy:release', 'newer:copy:release_config']);

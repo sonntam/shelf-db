@@ -14,7 +14,7 @@ var ShelfDB = (function(sdb, $, Lang) {
 
       $.extend(opts, args);
 
-      $.mobile.referencedLoading('show');
+      sdb.GUI.Core.waitAnimationReferenced('show');
       $.ajax({
         url: sdb.Core.basePath + 'lib/json.suppliers.php',
         type: 'POST',
@@ -27,7 +27,7 @@ var ShelfDB = (function(sdb, $, Lang) {
         if( opts.done )
           opts.done(data);
 
-        $.mobile.referencedLoading('hide');
+        sdb.GUI.Core.waitAnimationReferenced('hide');
       });
     };
 

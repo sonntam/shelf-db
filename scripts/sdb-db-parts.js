@@ -196,7 +196,7 @@ var ShelfDB = (function(sdb, $, Lang) {
     };
 
     var editPartFieldData = function( id, fieldName, fieldData, success ) {
-  		$.mobile.referencedLoading('show');
+  		sdb.GUI.Core.waitAnimationReferenced('show');
   		$.ajax({
   			url: sdb.Core.basePath + 'lib/edit-part.php',
   			data: {
@@ -211,12 +211,12 @@ var ShelfDB = (function(sdb, $, Lang) {
   			if( data && data.success && success) {
   				success(data);
   			}
-  			$.mobile.referencedLoading('hide');
+  			sdb.GUI.Core.waitAnimationReferenced('hide');
   		});
   	};
 
     var getPartFieldData = function( id, fieldName, success ) {
-  		$.mobile.referencedLoading('show');
+  		sdb.GUI.Core.waitAnimationReferenced('show');
   		$.ajax({
   			url: sdb.Core.basePath + 'lib/json.parts.php',
   			data: {
@@ -229,7 +229,7 @@ var ShelfDB = (function(sdb, $, Lang) {
   			if( data  && success && data.hasOwnProperty(fieldName)) {
 			    success(data[fieldName]);
   			}
-  			$.mobile.referencedLoading('hide');
+  			sdb.GUI.Core.waitAnimationReferenced('hide');
   		});
   	};
 

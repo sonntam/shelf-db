@@ -81,7 +81,7 @@ var ShelfDB = (function(sdb,$) {
 
           var $popuptarget = $('<div />').appendTo('body');
 
-          $.mobile.referencedLoading('show');
+          sdb.GUI.Core.waitAnimationReferenced('show');
 
           $popuptarget.load(sdb.Core.basePath+'pages/popup-confirmdialog.php', function() {
             var $popup = $('#popupConfirmDialog');
@@ -89,7 +89,7 @@ var ShelfDB = (function(sdb,$) {
             setupPopup($popup);
             $(this).enhanceWithin();
 
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
             $popup.popup('open', { transition: options.transition});
           });
@@ -213,7 +213,7 @@ var ShelfDB = (function(sdb,$) {
 
           var $popuptarget = $('<div />').appendTo('body');
 
-          $.mobile.referencedLoading('show');
+          sdb.GUI.Core.waitAnimationReferenced('show');
 
           $popuptarget.load(sdb.Core.basePath+'pages/popup-inputdialog.php', function() {
             var $popup = $('#popupInputDialog');
@@ -221,7 +221,7 @@ var ShelfDB = (function(sdb,$) {
             setupPopup($popup);
             $(this).enhanceWithin();
 
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
             $popup.popup('open', { transition: options.transition });
           });
@@ -299,7 +299,7 @@ var ShelfDB = (function(sdb,$) {
           } else {
             $popuptarget = $('<div />').appendTo('body');
 
-            $.mobile.referencedLoading('show');
+            sdb.GUI.Core.waitAnimationReferenced('show');
 
             $popuptarget.load(sdb.Core.basePath+'pages/popup-inputmultilinedialog.php', function() {
               $popup = $('#popupInputMultilineDialog');
@@ -308,7 +308,7 @@ var ShelfDB = (function(sdb,$) {
               setupPopup($popup);
               $(this).enhanceWithin();
 
-              $.mobile.referencedLoading('hide');
+              sdb.GUI.Core.waitAnimationReferenced('hide');
 
               $popup.popup('open', { transition: options.transition });
             });
@@ -372,7 +372,7 @@ var ShelfDB = (function(sdb,$) {
               'pageparams': urlParams
           });
 
-          $.mobile.referencedLoading('show');
+          sdb.GUI.Core.waitAnimationReferenced('show');
 
           $popuptarget.load(options.url + (urlParams?"?"+urlParams:""), options.postdata, function() {
 
@@ -406,7 +406,7 @@ var ShelfDB = (function(sdb,$) {
             if( options.submit )
               dialogId.find('form').on( 'submit', options.submit );
 
-            $.mobile.referencedLoading('hide');
+            sdb.GUI.Core.waitAnimationReferenced('hide');
 
             dialogId.popup('open', { transition: options.transition});
           });
@@ -432,7 +432,7 @@ var ShelfDB = (function(sdb,$) {
             if( !$(evt.target).valid() )
               return;
 
-            $.mobile.referencedLoading('show');
+            sdb.GUI.Core.waitAnimationReferenced('show');
 
             $.ajax({
               url: sdb.Core.basePath+'lib/edit-user.php',
@@ -441,7 +441,7 @@ var ShelfDB = (function(sdb,$) {
               cache: false,
               dataType: 'json',
               success: function(data) {
-                $.mobile.referencedLoading('hide');
+                sdb.GUI.Core.waitAnimationReferenced('hide');
 
                 if( data.success ) {
                   if( options.success && typeof options.success === 'function' )
@@ -459,7 +459,7 @@ var ShelfDB = (function(sdb,$) {
               },
               error: function() {
                 // Show error
-                $.mobile.referencedLoading('hide');
+                sdb.GUI.Core.waitAnimationReferenced('hide');
               }
             });
           },

@@ -1,10 +1,14 @@
-<head lang="de">
+<head>
   <meta charset="utf-8"/>
   <title uilang="mainTitle"></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- BOOTSTRAP STYLES -->
+  <link rel="stylesheet" href="{{ libRoot }}js/bootstrap/css/bootstrap{{ cssExt }}">
+
   <!-- JQUERY -->
   <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-2.1.4{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/jquery/jquery-3.2.1{{ jsExt }}"></script>
 
   <!-- JQTREE -->
   <script type="text/javascript" src="{{ jsRoot }}lib/tree.jquery{{ jsExt }}"></script>
@@ -34,17 +38,23 @@
   <!-- This has to be loaded BEFORE jQuery mobile! -->
   <script type="text/javascript" src="{{ jsRoot }}langprovider{{ jsExt }}?language={{ lang }}&replace=true"></script>
 
+  <!-- POPPER -->
+  <script type="text/javascript" src="{{ libRoot }}js/popper/popper{{ jsExt }}"></script>
+
+  <!-- BOOTSTRAP -->
+  <script type="text/javascript" src="{{ libRoot }}js/bootstrap/js/bootstrap{{ jsExt }}"></script>
+
   <!-- JQUERY MOBILE -->
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile-1.4.5{{ jsExt }}"></script>
+  <!--<script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile-1.4.5{{ jsExt }}"></script>
   <script type="text/javascript" src="{{ jsRoot }}jquery.mobile-1.4.5.menupanel{{ jsExt }}"></script>
-  <link href="{{ cssRoot }}jquery.mobile-1.4.5{{ cssExt }}" rel="stylesheet"/>
+  <link href="{{ cssRoot }}jquery.mobile-1.4.5{{ cssExt }}" rel="stylesheet"/>-->
 
   <!-- jquery-mobile-font-awesome -->
-  <link rel="stylesheet" href="{{ cssRoot }}jqm-font-awesome-usvg-upng{{ cssExt }}" />
+  <!--<link rel="stylesheet" href="{{ cssRoot }}jqm-font-awesome-usvg-upng{{ cssExt }}" />-->
 
   <!-- jquery-mobile-simpledialogs2 -->
-  <link rel="stylesheet" href="{{ cssRoot }}jquery.mobile.simpledialog{{ cssExt }}" />
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile.simpledialog2{{ jsExt }}"></script>
+  <!--<link rel="stylesheet" href="{{ cssRoot }}jquery.mobile.simpledialog{{ cssExt }}" />-->
+  <!--<script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile.simpledialog2{{ jsExt }}"></script>-->
 
   <!-- CUSTOM EXTENSIONS -->
   <link href="{{ cssRoot }}shelfdb{{ cssExt }}" rel="stylesheet"/>
