@@ -6,6 +6,11 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+
+
+    /*
+     * UGLIFY
+     */
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
@@ -33,6 +38,11 @@ module.exports = function(grunt) {
       }
 
     },
+
+
+    /*
+     * JSHINT
+     */
     jshint: {
       options: {
         reporterOutput: buildDir+'/jshint-output.html',
@@ -41,6 +51,11 @@ module.exports = function(grunt) {
       },
       all: ['Gruntfile.js','scripts/*.js']
     },
+
+
+    /*
+     * CSSMIN
+     */
     cssmin: {
       options: {
         sourceMap: true,
@@ -62,6 +77,11 @@ module.exports = function(grunt) {
         }]
       }
     },
+
+
+    /*
+     * WATCH
+     */
     watch: {
       css: {
         files: ['styles/**/*.css', '!styles/**/*.min.css'],
@@ -72,12 +92,39 @@ module.exports = function(grunt) {
         tasks: ['uglify']
       }
     },
+
+
+    /*
+     * CLEAN
+     */
     clean: {
       all: [buildDir+'/*', releaseDir+'/*', 'styles/bootstrap-custom.css'],
       release: [releaseDir+'/*'],
       build: [buildDir+'/*', 'styles/bootstrap-custom.css']
     },
+
+
+    /*
+     * COPY
+     */
     copy: {
+      deps: {
+        files: [
+        {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/jqtree/',
+          src: ['build/tree.jquery.js', 'jqtree.css'],
+          dest: 'lib/js/jqtree/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/free-jqgrid/dist/',
+          src: ['jquery.jqgrid.src.js', 'css/ui.jqgrid.css', 'i18n/*.js'],
+          dest: 'lib/js/free-jqgrid/'
+        }
+        ]
+      },
       release: {
         files: [
           {
@@ -114,6 +161,11 @@ module.exports = function(grunt) {
         ]
       },
     },
+
+
+    /*
+     * SASS
+     */
     sass: {
       options: {
         style: 'expanded',
@@ -140,7 +192,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-newer');
 
   // Default task(s).
-  grunt.registerTask('all', ['newer:sass', 'newer:cssmin:build', 'newer:uglify:build', 'newer:jshint']);
+  grunt.registerTask('all', ['newer:sass', 'newer:cssmin:build', 'newer:uglify:build', 'newer:jshint', 'newer:copy:deps']);
   grunt.registerTask('rebuild_all', ['clean:build', 'all'])
   grunt.registerTask('merged', ['newer:cssmin:merge', 'newer:uglify:merge']);
   grunt.registerTask('release', ['all', 'newer:copy:release', 'newer:copy:release_config']);
