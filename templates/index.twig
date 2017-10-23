@@ -3,92 +3,47 @@
 
   {% embed 'ext-element-head.twig' %}
     {% block additionalHead %}
-
-      <script>
-
-        $(function(){
-          // Document ready
-          //
-          console.log("DEBUG: document ready");
-
-          // Setup the controls
-          //
-
-          // Category tree
-          ShelfDB.GUI.Nav.CategoryTree.setup({
-            treeSelector: '#navCategorytree',
-            btnCollapseSelector: '#navCollapse',
-            btnExpandSelector: '#navExpand'
-          });
-
-          // Search
-          ShelfDB.GUI.Nav.Search.setup({
-            searchBoxSelector: '#navSearchbar'
-          });
-
-          // Panel
-          $panel = $("body>[data-role='menupanel']");
-          $panel.menupanel({'_transitionClose': false}).enhanceWithin();
-
-          // Image viewer popup
-          $( "#imgViewer" ).enhanceWithin().popup();
-          $( "#imgViewer" ).on({
-            popupbeforeposition: function(evt) {
-              var maxHeight = $( window ).height() - 60 + "px";
-             	$( ".photopopup img" ).css( "max-height", maxHeight );
-          	}
-      	  });
-          $(document).on('click', 'a[data-rel=popup]', function(evt) {
-    					// Set data
-    					if( evt.target.localName.toLowerCase() === 'img' ) {
-      					var $tn = $(evt.target);
-      					$( ".photopopup img" ).attr('src', $tn.attr('data-other-src'));
-              }
-    			});
-
-          // Logon
-          ShelfDB.GUI.Nav.Logon.setup({
-            loggedInSelector:  '[data-group=loggedIn]',
-            loggedOutSelector: '[data-group=loggedOut]',
-            loginLinkSelector: 'a#navUserLogin',
-            logoutLinkSelector:'a#navUserLogout',
-            pageAfterLogon:    'index.php'
-          });
-        });
-
-      </script>
-
     {% endblock %}
   {% endembed %}
 
-  <body class="ui-responsive-panel">
+  <body>
+
 
     {% set pageId = (pageId ?? 'index') %}
-    {% embed 'ext-element-page.twig' %}
 
-      {# Remove forwarding block for index page #}
-      {% block pageForwarding %}
-      {% endblock %}
+    {% input 'ext-element-navbar.twig' %}
 
-      {% set langLabels = { mainHeader: 'componentDatabase' } %}
+    <!-- Main container -->
+    <div class="container-fluid">
+      <div class="row flex-xl-nowrap">
 
-      {% block pageContent %}
+        {% input 'ext-element-sidebar.twig' %}
 
-        <p><a href="{{ relRoot }}pages/test.php">Testlink</a></p>
-        <p><a href="#imgViewer" data-rel="popup" data-position-to="window">Testlink Popup</a></p>
-        <p><a href="{{ relRoot }}pages/page-recentactivity.php">History</a></p>
+        <!-- PAGE BEGIN -->
+        {% embed 'ext-element-page.twig' %}
+          {% block pageForwarding %}
+          {% endblock %}
 
-      {% endblock %}
+          {% block pageContent %}
+            
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Links</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Simple</h6>
+                <p class="card-text">
+                  <a href="#" class="btn btn-primary">Testlink</a>
+                  <a href="#" class="btn btn-primary">Testlink Popup</a>
+                  <a href="#" class="btn btn-primary">History</a>
+                </p>
+              </div>
+            </div>
 
-    {% endembed %}
+          {% endblock %}
+        {% endembed %}
 
-    <!-- Popup image viewer -->
-		<div data-role="popup" id="imgViewer" class="photopopup" data-overlay-theme="a" data-corners="false" data-tolerance="30,15">
-			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" uilang="close"></a>
-			<img src="" alt="">
-		</div>
-
-    {% include 'ext-element-navpanel.twig' %}
+        <!-- PAGE END -->
+      </div>
+    </div>
 
   </body>
 </html>

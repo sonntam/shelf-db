@@ -5,19 +5,21 @@
 </script>
 {% endblock %}
 
-<div id="{{ pageId }}" data-role="page">
+<div data-rel="pageContainer" class="col-12 col-md-9 col-xl-9">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <main id="{{ pageId }}" role="main" class="py-md-3 px-md-5 px-sm-3 px-2">
 
-  {# You can put e.g. additional page specific scripts in this block #}
-  {% block pagePre %}
-  {% endblock %}
+        {# You can put e.g. additional page specific scripts in this block #}
+        {% block pagePre %}
+        {% endblock %}
 
-  {# Set lang.mainHeader or title and may overwrite headerContent #}
-  {% input 'ext-element-header.twig' %}
-
-  <div role="main" class="ui-content">
-    {% block pageContent %}
-    {% endblock %}
+        {% block pageContent %}
+        {% endblock %}
+      </main>
+    </div>
+    <div class="row">
+      {% input 'ext-element-footer.twig' %}
+    </div>
   </div>
-
-  {% input 'ext-element-footer.twig' %}
 </div>

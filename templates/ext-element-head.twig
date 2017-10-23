@@ -4,35 +4,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- BOOTSTRAP STYLES -->
-  <link rel="stylesheet" href="{{ libRoot }}js/bootstrap/css/bootstrap{{ cssExt }}">
+  <!--<link rel="stylesheet" href="{{ libRoot }}js/bootstrap/bootstrap{{ cssExt }}">-->
+  <link rel="stylesheet" href="{{ cssRoot }}bootstrap-custom{{ cssExt }}">
 
   <!-- JQUERY -->
   <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-  <script type="text/javascript" src="{{ libRoot }}js/jquery/jquery-3.2.1{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/jquery/jquery{{ jsExt }}"></script>
 
   <!-- JQTREE -->
   <script type="text/javascript" src="{{ libRoot }}js/jqtree/tree.jquery{{ jsExt }}"></script>
   <link href="{{ libRoot }}js/jqtree/jqtree{{ cssExt }}" rel="stylesheet"/>
 
   <!-- FONT AWESOME -->
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
   <link href="{{ cssRoot }}font-awesome-4.7.0/css/font-awesome{{ cssExt }}" rel="stylesheet"/>
 
   <!-- JQUERY UI -->
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">-->
-  <link rel="stylesheet" href="{{ cssRoot }}jquery-ui{{ cssExt }}">
+  <!-- <link rel="stylesheet" href="{{ cssRoot }}jquery-ui{{ cssExt }}"> -->
 
   <!-- JQGRID FREE -->
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/jquery.jqgrid.src.js"></script>-->
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery.jqgrid.src{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/free-jqgrid/jquery.jqgrid.src{{ jsExt }}"></script>
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/js/i18n/grid.locale-de.js"></script>-->
-  <script type="text/javascript" src="{{ jsRoot }}lib/grid.locale-de{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/free-jqgrid/grid.locale-de{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ jsRoot }}lib/free-jqgrid/grid.navcheckbox{{ jsExt }}"></script>
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.14.0/css/ui.jqgrid.min.css">-->
-  <link rel="stylesheet" href="{{ cssRoot }}ui.jqgrid{{ cssExt }}">
+  <link rel="stylesheet" href="{{ libRoot }}js/free-jqgrid/ui.jqgrid{{ cssExt }}">
 
   <!-- jquery-validation -->
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-validation/jquery.validate{{ jsExt }}"></script>
-  <script type="text/javascript" src="{{ jsRoot }}lib/jquery-validation/localization/messages_de{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/jquery-validation/jquery.validate{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/jquery-validation/messages_de{{ jsExt }}"></script>
 
   <!-- Localization -->
   <!-- This has to be loaded BEFORE jQuery mobile! -->
@@ -42,7 +44,7 @@
   <script type="text/javascript" src="{{ libRoot }}js/popper/popper{{ jsExt }}"></script>
 
   <!-- BOOTSTRAP -->
-  <script type="text/javascript" src="{{ libRoot }}js/bootstrap/js/bootstrap{{ jsExt }}"></script>
+  <script type="text/javascript" src="{{ libRoot }}js/bootstrap/bootstrap{{ jsExt }}"></script>
 
   <!-- JQUERY MOBILE -->
   <!--<script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile-1.4.5{{ jsExt }}"></script>
@@ -57,7 +59,8 @@
   <!--<script type="text/javascript" src="{{ jsRoot }}lib/jquery.mobile.simpledialog2{{ jsExt }}"></script>-->
 
   <!-- CUSTOM EXTENSIONS -->
-  <link href="{{ cssRoot }}shelfdb{{ cssExt }}" rel="stylesheet"/>
+  <!--<link href="{{ cssRoot }}shelfdb{{ cssExt }}" rel="stylesheet"/>-->
+  <link href="{{ cssRoot }}sdb-overrides{{ cssExt }}" rel="stylesheet"/>
   <script type="text/javascript" src="{{ jsRoot }}lib/js.cookie{{ jsExt }}"></script>
   <script type="text/javascript" src="{{ jsRoot }}sdb-core{{ jsExt }}"></script>
   <script type="text/javascript" src="{{ jsRoot }}sdb-db-parts{{ jsExt }}"></script>
