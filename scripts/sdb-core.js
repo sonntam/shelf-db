@@ -12,6 +12,7 @@ var ShelfDB = (function(sdb, $) {
   var _init = function() {
     coreModule.pageHookClear();
     coreModule.pageHookInit();
+    coreModule.PageLoader.setup({});
   };
 
   // The core submodule
@@ -23,7 +24,66 @@ var ShelfDB = (function(sdb, $) {
     var pageContainerBeforeChangeTasks = [];
     var pageContainerChangeTasks = [];
 
+    var _handlePageLoad = function(opts){
+      // AJAX request
+      var container = opts.container;
+
+      var res = $(document).triggerHandler("pagebeforeload");
+      if( !(typeof res === 'undefined') && res === false ) {
+        return;
+      }
+
+      $(container).load(opts.url, opts.data, function(responseText, textStatus, jqXHR) {
+        if( typeof opts.complete === 'function' )
+          opts.complete(responseText, textStatus, jqXHR);
+
+        $(document).triggerHandler("pageafterload");
+      });
+
+    };
+
+    var _handlePageLink = function(e){
+      debugger;
+      var opts = e.data;
+      opts.url = $(e.currentTarget).attr('href');
+      opts.complete = null;
+      _handlePageLoad(opts);
+    };
+
+    var pageLoader = {
+      // Setup to register pagelink event
+      setup: function(opts) {
+        debugger;
+        defaults = {
+          container: 'div[data-rel=pagecontainer]',
+          data: null
+        }
+        if( typeof opts === 'undefined' )
+          return defaults;
+
+        opts = $.extend({},defaults,opts);
+
+        $(document).on('click', '[data-rel=pagelink]', opts, _handlePageLink);
+      },
+
+      load: function(opts) {
+        defaults = {
+          url: '',
+          data: null,
+          complete: null,
+          container: 'main'
+        }
+        if( typeof opts === 'undefined' )
+          return defaults;
+
+        opts = $.extend({},defaults,opts);
+
+        _handlePageLoad(opts);
+      }
+    };
+
     return {
+      PageLoader: pageLoader,
       pageHookClear: function() {
         console.log("DEBUG: clearing page hooks");
         pageCreateTasks = [];
