@@ -122,7 +122,37 @@ module.exports = function(grunt) {
           cwd: 'node_modules/free-jqgrid/dist/',
           src: ['jquery.jqgrid.src.js', 'css/ui.jqgrid.css', 'i18n/*.js'],
           dest: 'lib/js/free-jqgrid/'
-        }
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/bootstrap/dist/',
+          src: ['css/bootstrap.css', 'js/bootstrap.js'],
+          dest: 'lib/js/bootstrap/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/popper.js/dist/',
+          src: ['popper.js'],
+          dest: 'lib/js/popper/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/jquery/dist/',
+          src: ['jquery.js'],
+          dest: 'lib/js/jquery/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/requirejs/',
+          src: ['require.js'],
+          dest: 'lib/js/requirejs/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/jquery-validation/dist/',
+          src: ['jquery.validate.js', 'localization/*.js'],
+          dest: 'lib/js/jquery-val/'
+        },
         ]
       },
       release: {
