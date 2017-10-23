@@ -173,8 +173,12 @@ module.exports = function(grunt) {
       },
       build: {
         files: [{
-          src: 'scss/bootstrap-custom.scss',
-          dest: 'styles/bootstrap-custom.css'
+          expand: true,
+          cwd: 'scss/',
+          src: ['bootstrap-custom.scss', 'sdb-overrides.scss'],
+          ext: '.css',
+          extDot: 'last',
+          dest: 'styles/'
         }]
       }
     }

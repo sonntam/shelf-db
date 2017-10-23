@@ -1,0 +1,52 @@
+@import "scss/sdb-globals.scss";
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+/*
+ * JQTree overrides
+ */
+.jqtree-toggler {
+  font-family: initial;
+}
+
+.jqtree-element:hover {
+  background-color: $gray-300;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+ul.jqtree-tree {
+
+  .jqtree-title {
+    text-decoration-color: gray;
+  }
+  .jqtree-empty {
+    color: gray;
+  }
+
+  /** Selected row */
+  li.jqtree-selected > .jqtree-element {
+    background: none;
+    background-color: $gray-400;
+    text-decoration-color: $gray-800;
+    text-decoration-line: none;
+    text-shadow: none;
+    font-weight: bold;
+    /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+  }
+}
+
+div {
+  .jqtree-element.jqtree_common {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    > span {
+      display: inline-block;
+      width: 90%;
+      white-space: normal;
+      word-wrap: break-word;
+      vertical-align: top;
+    }
+  }
+}
