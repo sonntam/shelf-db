@@ -1,0 +1,45 @@
+/*
+ * JQTree overrides
+ */
+.jqtree-toggler {
+  font-family: initial;
+}
+
+.jqtree-element:hover {
+  background-color: #dee2e6;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+ul.jqtree-tree {
+  /** Selected row */
+}
+ul.jqtree-tree .jqtree-title {
+  text-decoration-color: gray;
+}
+ul.jqtree-tree .jqtree-empty {
+  color: gray;
+}
+ul.jqtree-tree li.jqtree-selected > .jqtree-element {
+  background: none;
+  background-color: #ced4da;
+  text-decoration-color: #343a40;
+  text-decoration-line: none;
+  text-shadow: none;
+  font-weight: bold;
+  /*background: -webkit-gradient(linear, left top, left bottom, from(#FEE0F5), to(#FFAFCA));*/
+}
+
+div .jqtree-element.jqtree_common {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+div .jqtree-element.jqtree_common > span {
+  display: inline-block;
+  width: 90%;
+  white-space: normal;
+  word-wrap: break-word;
+  vertical-align: top;
+}
+
+/*# sourceMappingURL=sdb-overrides.css.map */
