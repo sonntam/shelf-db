@@ -61,7 +61,10 @@ var ShelfDB = (function(sdb,$) {
           $tree.bind('tree.click', function(e) {
             // e.node.name - Name string
             // e.node.id   - ID string
-            $(':mobile-pagecontainer').pagecontainer("change", sdb.Core.basePath + "pages/page-showparts.php?catid=" + e.node.id + "&showSubcategories=" + Number(e.node.children.length > 0));
+            debugger;
+            sdb.Core.PageLoader.load({
+              url: sdb.Core.basePath + "pages/page-showparts.php?catid=" + e.node.id + "&showSubcategories=" + Number(e.node.children.length > 0)
+            });
           });
 
           $(opts.btnCollapseSelector).click(function() {
