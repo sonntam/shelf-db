@@ -87,6 +87,7 @@ var ShelfDB = (function(sdb,$) {
 
           $(opts.listSelector).jqGrid({
   					caption: opts.caption,
+            guiStyle: 'bootstrap',
   					url: opts.baseDataUrl + ( opts.filterParameters ? '?' + $.param(opts.filterParameters) : "" ),
   					editurl: sdb.Core.basePath + 'lib/edit-part.php',
   					autowidth: true,
