@@ -111,6 +111,8 @@ var Lang = (function(){
         no: 'Nein',
         date: 'Datum',
         add: 'Anlegen',
+        show: 'Zeigen',
+        new: 'Neu',
         edit: 'Bearbeiten',
         close: 'Schließen',
         name: 'Name',
