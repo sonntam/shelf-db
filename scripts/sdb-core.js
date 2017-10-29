@@ -19,10 +19,8 @@ var ShelfDB = (function(sdb, $) {
   var coreModule = (function() {
 
     var pageCreateTasks = [];
-    var pageContainerBeforeShowTasks = [];
+    var pageContainerAfterLoadTasks = [];
     var pageContainerBeforeLoadTasks = [];
-    var pageContainerBeforeChangeTasks = [];
-    var pageContainerChangeTasks = [];
 
     var _handlePageLoad = function(opts){
       // AJAX request
@@ -33,29 +31,63 @@ var ShelfDB = (function(sdb, $) {
         return;
       }
 
-      $(container).load(opts.url, opts.data, function(responseText, textStatus, jqXHR) {
-        if( typeof opts.complete === 'function' )
-          opts.complete(responseText, textStatus, jqXHR);
+      $.get( {
+        url: opts.url,
+        data: opts.data,
+        dataType: 'html',
+        success: function(responseText, textStatus, jqXHR) {
+          var $html = $(responseText);
+          var page = $html.filter(container);
+          if( page.length == 0 ) {
+            page = $(responseText).find(container);
+          }
+          if( page.length > 0 ) {
+            // Replace current page
+            $(document).find(container).replaceWith(page).promise().done( function() {
+              // Trigger events
+              if( typeof opts.complete === 'function' )
+                opts.complete(responseText, textStatus, jqXHR);
 
-        $(document).triggerHandler("pageafterload");
+              $(document).triggerHandler("pageafterload");
+            });
+          } else {
+            $(document).append(page);
+          }
+        }
       });
-
     };
 
     var _handlePageLink = function(e){
-      debugger;
       var opts = e.data;
       opts.url = $(e.currentTarget).attr('href');
       opts.complete = null;
+
+      if( $(e.currentTarget).attr('data-nodefault') ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      e.preventDefault();
+
       _handlePageLoad(opts);
+    };
+
+    var _isHashValid = function( hash ) {
+      return ( /^#[^#]+$/ ).test( hash );
+    };
+
+    var _isPath = function( url ) {
+      return ( /\// ).test( url );
+    };
+
+    var _stripHash = function( url ) {
+      return url.replace( /^#/, "" );
     };
 
     var pageLoader = {
       // Setup to register pagelink event
       setup: function(opts) {
-        debugger;
         defaults = {
-          container: 'div[data-rel=pagecontainer]',
+          container: 'div[data-rel=pageContainer]',
           data: null
         }
         if( typeof opts === 'undefined' )
@@ -64,6 +96,22 @@ var ShelfDB = (function(sdb, $) {
         opts = $.extend({},defaults,opts);
 
         $(document).on('click', '[data-rel=pagelink]', opts, _handlePageLink);
+
+        // Check if we do have an url after the hash, if so - navigate
+        var path;
+        if( _isHashValid(location.hash) && _isPath(path = _stripHash(location.hash)) ) {
+          var loadFn = function() {
+            sdb.Core.PageLoader.load({
+              url: path
+            });
+          };
+          if( $.isReady ) {
+            loadFn();
+          } else {
+            $(loadFn);
+          }
+
+        }
       },
 
       load: function(opts) {
@@ -71,7 +119,7 @@ var ShelfDB = (function(sdb, $) {
           url: '',
           data: null,
           complete: null,
-          container: 'main'
+          container: 'div[data-rel=pageContainer]'
         }
         if( typeof opts === 'undefined' )
           return defaults;
@@ -84,86 +132,42 @@ var ShelfDB = (function(sdb, $) {
 
     return {
       PageLoader: pageLoader,
+
       pageHookClear: function() {
         console.log("DEBUG: clearing page hooks");
         pageCreateTasks = [];
-        pageContainerBeforeShowTasks = [];
+        pageContainerAfterLoadTasks = [];
         pageContainerBeforeLoadTasks = [];
-        pageContainerBeforeChangeTasks = [];
-        pageContainerChangeTasks = [];
       },
+
       pageHookInit: function() {
 
-        $(document).on('updatelayout',function() {
-          console.log("DEBUG: updatelayout");
+        $(document).on('pagebeforeload',function(event) {
+          console.log("DEBUG: pagebeforeload");
+          sdb.Core.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event); });
         });
 
-        $(document).on('menupanelopen',function() {
-          console.log("DEBUG: menupanelopen");
-          $(window).trigger('resize');
+        $(document).on('pageafterload', function() {
+          console.log("DEBUG: pageafterload");
+          sdb.Core.pageContainerAfterLoadTasks.forEach(function(fun) { fun(event); });
+
         });
 
-        $(document).on('menupanelclose',function() {
-          console.log("DEBUG: menupanelclose");
-          $(window).trigger('resize');
-        });
-
-        $(document).one('pagecreate', function() {
-            console.log("DEBUG: page - create (once)");
-
-            $(':mobile-pagecontainer').on('pagecontainerbeforeshow', function(event,ui) {
-              console.log("DEBUG: pagecontainer - beforeshow");
-
-              pageContainerBeforeShowTasks.forEach(function(fun) { fun(event,ui); });
-            });
-
-            $(':mobile-pagecontainer').on('pagecontainerbeforeload', function(event,ui) {
-              console.log("DEBUG: pagecontainer - beforeload");
-
-              pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event,ui); });
-
-              sdb.Core.pageHookClear();
-            });
-
-            $(':mobile-pagecontainer').on('pagecontainerchange', function(event,ui) {
-              console.log("DEBUG: pagecontainer - change");
-
-              pageContainerChangeTasks.forEach(function(fun) { fun(event,ui); });
-
-              sdb.Core.pageHookClear();
-            });
-
-            $(':mobile-pagecontainer').on('pagecontainerbeforechange', function(event,ui) {
-              console.log("DEBUG: pagecontainer - beforechange");
-
-              pageContainerBeforeChangeTasks.forEach(function(fun) { fun(event,ui); });
-            });
-        });
         $(document).on('popupcreate', function() {
           console.log("DEBUG: popup - create");
         });
+
         $(document).on('pagecreate', function() {
-            console.log("DEBUG: page - create");
-
-            $(document).on( "panelclose", "[data-role=menupanel]", function() {
-              console.log('Panel close');
-            });
-
-            pageCreateTasks.forEach(function(fun) { fun(); });
-
-            $("[data-role=menupanel]").one("panelbeforeopen", function() {
-              // DOH
-              //var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
-              //$(".ui-panel-wrapper").css("height", height+1);
-            });
+          console.log("DEBUG: page - create");
+          sdb.Core.pageCreateTasks.forEach(function(fun) { fun(event); });
         });
       },
+
       basePath: _basePath,
       pageCreateTasks: pageCreateTasks,
-      pageContainerBeforeShowTasks: pageContainerBeforeShowTasks,
+      pageContainerAfterLoadTasks: pageContainerAfterLoadTasks,
       pageContainerBeforeLoadTasks: pageContainerBeforeLoadTasks,
-      pageContainerBeforeChangeTasks: pageContainerBeforeChangeTasks,
-      pageContainerChangeTasks: pageContainerChangeTasks,
+
       uploadFile: function(opts, event) {
         var defaults = {
           uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
@@ -239,6 +243,7 @@ var ShelfDB = (function(sdb, $) {
           }
         });
       },
+
       moveUploadedFile: function(opts) {
         var defaults = {
           targetType: null, //'footprintImage', ...
@@ -287,13 +292,12 @@ var ShelfDB = (function(sdb, $) {
     };
   })();
 
-
-  // Actions
-  _init();
-
   $.extend(sdb, {
     Core: coreModule
   });
+
+  // Actions
+  _init();
 
   return sdb;
 })(typeof ShelfDB !== 'undefined' ? ShelfDB : {}, jQuery);

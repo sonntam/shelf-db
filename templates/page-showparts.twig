@@ -28,8 +28,7 @@
 
 <script>
   console.log("DEBUG: page-showparts executing...");
-
-  $.mobile.pageContainerChangeTasks.push( function( event, ui ){
+  ShelfDB.Core.pageContainerAfterLoadTasks.push( function( event ){
     console.log("DEBUG: pagecontainer - change (id = {{ category.id }})");
 
     // Category tree
