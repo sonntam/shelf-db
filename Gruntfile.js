@@ -131,7 +131,7 @@ module.exports = function(grunt) {
         }, {
           expand: true,
           flatten: true,
-          cwd: 'node_modules/popper.js/dist/',
+          cwd: 'node_modules/popper.js/dist/umd/',
           src: ['popper.js'],
           dest: 'lib/js/popper/'
         }, {
