@@ -19,6 +19,21 @@
 
         {% input 'ext-element-sidebar.twig' %}
 
+        <!-- LOADING SPINNER -->
+        <script type="text/javascript">
+          $(function() {
+            $(document).ajaxStop(function(){
+                $("#ajax_loader").hide();
+             });
+             $(document).ajaxStart(function(){
+                 $("#ajax_loader").show();
+             });
+          });
+        </script>
+        <div id='ajax_loader' class="sdb-spinner">
+          <img src="{{ imgRoot }}shelfdb/ajax-loader.gif"></img>
+        </div>
+
         <!-- PAGE BEGIN -->
         {% embed 'ext-element-page.twig' %}
           {% block pageForwarding %}
