@@ -39,7 +39,7 @@ div {
   .jqtree-element.jqtree_common {
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
 
     > span {
       display: inline-block;
