@@ -62,7 +62,7 @@
 
     var lastwidth = 9999;
     $(window).on('resize', function() {
-      var width = $("#partList").closest('.ui-content').width();
+      var width = $("#partList").closest('div[data-rel=pageContainer]').width();
 
       if( width < 520 && lastwidth >= 520 ) {
         $('#partList').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
@@ -85,18 +85,6 @@
     // Initial column hide/show
     $(window).triggerHandler('resize');
 
-  });
-
-  //$(':mobile-pagecontainer').off("pagecontainerbeforeload");
-  //$(':mobile-pagecontainer').on("pagecontainerbeforeload",
-  $.mobile.pageContainerBeforeLoadTasks.push( function(event,ui) {
-
-    console.log("DEBUG: pagecontainer - beforeload (id = {{ category.id }})");
-
-    $(window).off('resize');
-    //if( $('#subcattree').length ) {
-      //$('#subcattree').tree('destroy');
-    //}
   });
 
 </script>
