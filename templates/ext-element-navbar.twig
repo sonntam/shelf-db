@@ -1,6 +1,6 @@
 <!-- NAVBAR START -->
 <header class="navbar navbar-expand-md navbar-dark sdb-navbar">
-  <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="ShelfDB">
+  <a class="navbar-brand mr-0 mr-md-2" data-rel="pagelink" href="/" aria-label="ShelfDB">
     <img src="{{ imgRoot }}shelfdb/logo-36.png">
   </a>
 
@@ -20,7 +20,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdownEdit" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" uilang="edit"></a>
         <div class="dropdown-menu" aria-labelledby="dropdownEdit">
-          <a class="dropdown-item" href="#" uilang="editCategories"></a>
+          <a class="dropdown-item" data-rel="pagelink" href="{{ relRoot }}pages/page-showparts.php" uilang="editCategories"></a>
           <a class="dropdown-item" href="#" uilang="editSuppliers"></a>
           <a class="dropdown-item" href="#" uilang="editFootprints"></a>
         </div>
