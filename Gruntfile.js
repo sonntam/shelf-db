@@ -151,7 +151,7 @@ module.exports = function(grunt) {
           flatten: true,
           cwd: 'node_modules/jquery-validation/dist/',
           src: ['jquery.validate.js', 'localization/*.js'],
-          dest: 'lib/js/jquery-val/'
+          dest: 'lib/js/jquery-validation/'
         },
         ]
       },
