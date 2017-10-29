@@ -39,7 +39,7 @@ body {
     @supports (position: sticky) {
       position: sticky;
       top: 0;
-      z-index: $zindex-tooltip+1; // over everything in bootstrap
+      z-index: $zindex-sticky; // over everything in bootstrap
     }
   }
 
