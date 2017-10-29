@@ -12,3 +12,10 @@ release/*
 *.min.js
 *.min.css
 .sass-cache/*
+lib/js/bootstrap/*
+lib/js/free-jqgrid/*
+lib/js/jqtree/*
+lib/js/jquery/*
+lib/js/jquery-validation/*
+lib/js/popper/*
+lib/js/requirejs/*
