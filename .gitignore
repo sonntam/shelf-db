@@ -19,6 +19,7 @@ lib/js/jquery/*
 lib/js/jquery-validation/*
 lib/js/popper/*
 lib/js/requirejs/*
+lib/js/bootstrap-list-filter/*
 *.css.map
 *.js.map
 styles/bootstrap-custom.css
