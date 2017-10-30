@@ -129,6 +129,7 @@ var Lang = (function(){
         abort: 'Abbrechen',
         none: 'Keine',
         tools: 'Werkzeuge',
+        settings: 'Einstellungen',
         image: 'Bild',
         price: 'Preis',
         images: 'Bilder',
