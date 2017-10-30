@@ -50,3 +50,12 @@ div {
     }
   }
 }
+
+/** jqGrid free overrides */
+.ui-jqdialog.ui-jqgrid-bootstrap > .modal-dialog {
+  max-width: none;  // Fix for strange resizing of elements within dialog
+}
+
+.searchFilter .form-control:not([size]):not([multiple]) {
+  height: unset;
+}
