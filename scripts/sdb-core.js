@@ -13,6 +13,9 @@ var ShelfDB = (function(sdb, $) {
     coreModule.pageHookClear();
     coreModule.pageHookInit();
     coreModule.PageLoader.setup({});
+
+    // Bootstrap 4 Modal zIndex for jqgrid dialogs
+    $.jgrid.jqModal.zIndex = 1050;
   };
 
   // The core submodule
