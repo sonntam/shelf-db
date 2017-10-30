@@ -31,20 +31,21 @@ Installation
 Used libraries
 --------------
 
- - [Plain-jqTree-Theme](https://github.com/artlung/Plain-jqTree-Theme) - MIT License
  - [jqTree](http://mbraak.github.io/jqTree/) - Apache License 2.0
  - [jQuery](https://jquery.org) - MIT License
  - [font awesome](http://http://fontawesome.io) - SIL Open Font License / MIT License
- - [jquery-mobile](https://jquerymobile.com/) - MIT License (same as jQuery)
  - [jquery-validation](https://github.com/jquery-validation/jquery-validation) - MIT License
- - [jquery-mobile-font-awesome](https://github.com/dotcastle/jquery-mobile-font-awesome) - GNU GPLv3
  - [jQueryFileUpload](https://github.com/Abban/jQueryFileUpload) - MIT License
- - [simpledialog2 jquery mobile plugin](https://github.com/jtsage/jquery-mobile-simpledialog) - Creative Commons 3
  - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) - MIT License
+ - [free-jqgrid/jqGrid](https://github.com/free-jqgrid/jqGrid) - MIT/GPL License
  - [NameSpaceFinder php class](https://stackoverflow.com/a/22762333) - Creative Commons BY-SA 2.5 License (Share & Adapt)
  - [BlueM/Tree](https://github.com/BlueM/Tree) - BSD License
  - [twigphp/Twig](https://github.com/twigphp/Twig) - BSD License 3-clause
  - [TiGR/twig-preprocessor](https://github.com/TiGR/twig-preprocessor/tree/master/lib) - MIT License
+ - [Bootstrap](http://getbootstrap.com/) - MIT License
+ - [FezVrasta/popper.js](https://github.com/FezVrasta/popper.js) - MIT License
+
+ - [stefanocudini/bootstrap-list-filter](https://github.com/stefanocudini/bootstrap-list-filter) - MIT License
 
  Special thanks to all the people that contributed to these projects.
 
