@@ -19,3 +19,7 @@ lib/js/jquery/*
 lib/js/jquery-validation/*
 lib/js/popper/*
 lib/js/requirejs/*
+*.css.map
+*.js.map
+styles/bootstrap-custom.css
+styles/sdb-overrides.css
