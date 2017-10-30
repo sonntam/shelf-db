@@ -75,7 +75,7 @@ var ShelfDB = (function(sdb,$) {
         if( $popup.length > 0 )
         {
           setupPopup($popup);
-          $popup.popup('open', { transition: options.transition });
+          $popup.modal('show');
 
         } else {
 
@@ -91,7 +91,7 @@ var ShelfDB = (function(sdb,$) {
 
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
-            $popup.popup('open', { transition: options.transition});
+            $popup.modal('show');
           });
         }
       },
@@ -176,7 +176,7 @@ var ShelfDB = (function(sdb,$) {
             if( options.ok ) options.ok($input.val());
 
             if( !options.closeManually )
-              $popup.popup('close');
+              $popup.modal('hide');
           });
 
           // Button click handlers
@@ -207,7 +207,7 @@ var ShelfDB = (function(sdb,$) {
         if( $popup.length > 0 )
         {
           setupPopup($popup);
-          $popup.popup('open', { transition: options.transition });
+          $popup.modal('show');
 
         } else {
 
@@ -223,7 +223,7 @@ var ShelfDB = (function(sdb,$) {
 
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
-            $popup.popup('open', { transition: options.transition });
+            $popup.modal('show');
           });
         }
       },
@@ -295,7 +295,7 @@ var ShelfDB = (function(sdb,$) {
 
           if( $popup.length > 0 ) {
             setupPopup($popup);
-            $popup.popup('open', { transition: options.transition });
+            $popup.modal('show');
           } else {
             $popuptarget = $('<div />').appendTo('body');
 
@@ -310,7 +310,7 @@ var ShelfDB = (function(sdb,$) {
 
               sdb.GUI.Core.waitAnimationReferenced('hide');
 
-              $popup.popup('open', { transition: options.transition });
+              $popup.modal('show');
             });
           }
       },
@@ -321,6 +321,7 @@ var ShelfDB = (function(sdb,$) {
         var defaults = {
           url: null,
           postdata: null,
+          beforeopen: undefined,
           afteropen: undefined,
           afterclose: undefined,
           click: undefined,
@@ -353,7 +354,7 @@ var ShelfDB = (function(sdb,$) {
 
         if( options.forceReload && $popuptarget.length > 0 )
         {
-          $('[origin="'+options.url+'"]').popup('destroy');
+          $('[origin="'+options.url+'"]').modal('dispose');
           $popuptarget.remove();
           $popuptarget = $();
         }
@@ -362,7 +363,7 @@ var ShelfDB = (function(sdb,$) {
 
           var dialogId = $('[origin="'+options.url+'"]');
 
-          dialogId.popup('open', { transition: options.transition});
+          dialogId.modal('show');
 
         } else {
           $popuptarget = $('<div />').appendTo('body');
@@ -376,26 +377,16 @@ var ShelfDB = (function(sdb,$) {
 
           $popuptarget.load(options.url + (urlParams?"?"+urlParams:""), options.postdata, function() {
 
-            var dialogId = $(this).find('[data-role="popup"]').first();
+            var dialogId = $(this).find('[role="dialog"]').first();
             dialogId.attr({
               'origin': options.url
             });
             Lang.searchAndReplace();
-            $(this).enhanceWithin();
 
             // Setup event handlers
-            dialogId.popup({
-              beforeposition: function() {
-
-                  $(this).css( {
-                    maxHeight: ( options.constrainHeight ? window.innerHeight - options.minBorder : null ),
-                    maxWidth: ( options.fixedMaxWidth ? options.fixedMaxWidth : window.innerWidth - options.minBorder )
-                  });
-
-                },
-              afterclose: (options.afterclose ? options.afterclose : null),
-              afteropen: (options.afteropen ? options.afteropen : null),
-            });
+            dialogId.on('show.bs.modal', (options.beforeopen ? options.beforeopen : null));
+            dialogId.on('shown.bs.modal', (options.afteropen ? options.afteropen : null));
+            dialogId.on('hidden.bs.modal', (options.afterclose ? options.afterclose : null));
 
             if( options.customEventName && options.customEventHandler )
               dialogId.on(options.customEventName, options.customEventHandler);
@@ -408,7 +399,7 @@ var ShelfDB = (function(sdb,$) {
 
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
-            dialogId.popup('open', { transition: options.transition});
+            dialogId.modal('show');
           });
         }
       },
@@ -416,8 +407,6 @@ var ShelfDB = (function(sdb,$) {
       // Login user dialog
       loginPopup: function(options) {
         defaults = {
-          loggedInSelector: '[data-group=loggedIn]',
-          loggedOutSelector: '[data-group=loggedOut]',
           success: null
         };
 
@@ -447,10 +436,7 @@ var ShelfDB = (function(sdb,$) {
                   if( options.success && typeof options.success === 'function' )
                     options.success(data);
 
-                  $(options.loggedInSelector).removeClass('ui-screen-hidden');
-                  $(options.loggedOutSelector).addClass('ui-screen-hidden');
-
-                  $('#popupLoginDialog').popup('close');
+                  $('#popupLoginDialog').modal('hide');
                 } else {
                   // Show error
                   $('#popupLoginDialog').find('input').addClass('error');

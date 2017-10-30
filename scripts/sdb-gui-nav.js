@@ -3,6 +3,8 @@ var ShelfDB = (function(sdb,$) {
 
   var navModule = (function(){
 
+    var _setupDone = false;
+
     return {
       Search: {
         setup: function(opts) {
@@ -61,7 +63,6 @@ var ShelfDB = (function(sdb,$) {
           $tree.bind('tree.click', function(e) {
             // e.node.name - Name string
             // e.node.id   - ID string
-            debugger;
             sdb.Core.PageLoader.load({
               url: sdb.Core.basePath + "pages/page-showparts.php?catid=" + e.node.id + "&showSubcategories=" + Number(e.node.children.length > 0)
             });
@@ -92,9 +93,11 @@ var ShelfDB = (function(sdb,$) {
       },
       Logon: {
         setup: function(opts) {
+
+          // Setup only once
+          if( _setupDone ) return;
+
           var defaults = {
-            loggedInSelector:  '[data-group=loggedIn]',
-            loggedOutSelector: '[data-group=loggedOut]',
             isAdminSelector:   null,
             loginLinkSelector: 'a#navUserLogin',
             logoutLinkSelector:'a#navUserLogout',
@@ -103,26 +106,26 @@ var ShelfDB = (function(sdb,$) {
 
           opts = $.extend({}, defaults, opts);
 
-          $(opts.loginLinkSelector).click( function() {
+          $(document).on('click',opts.loginLinkSelector, function() {
             sdb.GUI.Popup.loginPopup({
-              loggedInSelector: opts.loggedInSelector,
-              loggedOutSelector: opts.loggedOutSelector,
               success: function(data) {
                   // Reload nav and main page
-                  $.mobile.pageContainer.change(sdb.Core.basePath+opts.pageAfterLogon);
+                  sdb.Core.PageLoader.load({
+                    url: sdb.Core.basePath+opts.pageAfterLogon,
+                    reloadHeader: true
+                  });
               }}
             );
           });
-
-          $(opts.logoutLinkSelector).click( function(evt) {
+          $(document).on('click',opts.logoutLinkSelector, function(evt) {
             sdb.GUI.Nav.Logon.logoutUser(opts);
           });
+
+          _setupDone = true;
 
         },
         logoutUser: function(opts) {
           var defaults = {
-            loggedInSelector:  null,
-            loggedOutSelector: null,
             isAdminSelector:   null,
             pageAfterLogon:    'index.php',
             success:           null
@@ -145,10 +148,10 @@ var ShelfDB = (function(sdb,$) {
                 opts.success(data);
 
               // Reload nav and main page
-              $.mobile.pageContainer.change(sdb.Core.basePath+opts.pageAfterLogon);
-
-              $(opts.loggedInSelector).addClass('ui-screen-hidden');
-              $(opts.loggedOutSelector).removeClass('ui-screen-hidden');
+              sdb.Core.PageLoader.load({
+                url: sdb.Core.basePath+opts.pageAfterLogon,
+                reloadHeader: true
+              });
 
               sdb.GUI.Core.waitAnimationReferenced('hide');
             },
