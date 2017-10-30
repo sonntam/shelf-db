@@ -152,6 +152,12 @@ module.exports = function(grunt) {
           cwd: 'node_modules/jquery-validation/dist/',
           src: ['jquery.validate.js', 'localization/*.js'],
           dest: 'lib/js/jquery-validation/'
+        }, {
+          expand: true,
+          flatten: true,
+          cwd: 'node_modules/bootstrap-list-filter/',
+          src: ['bootstrap-list-filter.src.js'],
+          dest: 'lib/js/bootstrap-list-filter/'
         },
         ]
       },
