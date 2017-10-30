@@ -26,10 +26,32 @@ var ShelfDB = (function(sdb, $) {
     var pageContainerBeforeLoadTasks = [];
 
     var _handlePageLoad = function(opts){
-      // AJAX request
-      var container = opts.container;
 
-      var res = $(document).triggerHandler("pagebeforeload");
+      // Parse options
+      defaults = {
+        headerSelector: 'header',
+        sidebarSelector: 'div.sdb-sidebar',
+        pageContainerSelector: 'div[data-rel=pageContainer]',
+        reloadHeader: false,
+        reloadSidebar: false,
+        complete: null,
+        url: null,
+        data: null
+      }
+      opts = $.extend({},defaults,opts);
+
+      // Sanity checks
+      if( !(opts.url) ) return;
+      // Do we have to do anything?
+      if( (
+        (location.pathname + location.search === opts.url && location.hash === '')
+        || (_stripHash(location.hash) === opts.url)
+      ) && !(opts.data) ) return;
+
+      // AJAX request
+      var container = opts.pageContainerSelector;
+
+      var res = $(document).triggerHandler('pagebeforeload');
       if( !(typeof res === 'undefined') && res === false ) {
         return;
       }
@@ -40,18 +62,43 @@ var ShelfDB = (function(sdb, $) {
         dataType: 'html',
         success: function(responseText, textStatus, jqXHR) {
           var $html = $(responseText);
+
+          // Header
+          if( opts.reloadHeader ) {
+            var header = $html.closest(opts.headerSelector).first();
+            if( header.length > 0 ) {
+              $(document).triggerHandler('headerbeforeload');
+              $(document).find(opts.headerSelector).replaceWith(header).promise().done( function() {
+                $(document).triggerHandler('headerafterload');
+              });
+            }
+          }
+
+          if( opts.reloadSidebar ) {
+            var sidebar = $html.closest(opts.sidebarSelector).first();
+            if( sidebar.length > 0 ) {
+              $(document).triggerHandler('sidebarbeforeload');
+              $(document).find(opts.sidebarSelector).replaceWith(header).promise().done( function() {
+                $(document).triggerHandler('sidebarafterload');
+              });
+            }
+          }
+
+          // Apply the page
           var page = $html.filter(container);
           if( page.length == 0 ) {
             page = $(responseText).find(container);
           }
+
           if( page.length > 0 ) {
             // Replace current page
             $(document).find(container).replaceWith(page).promise().done( function() {
               // Trigger events
               if( typeof opts.complete === 'function' )
                 opts.complete(responseText, textStatus, jqXHR);
-
-              $(document).triggerHandler("pageafterload");
+              // Update hash
+              location.hash = (opts.url === location.pathname ? '' : opts.url );
+              $(document).triggerHandler('pageafterload');
             });
           } else {
             $(document).append(page);
@@ -63,7 +110,6 @@ var ShelfDB = (function(sdb, $) {
     var _handlePageLink = function(e){
       var opts = e.data;
       opts.url = $(e.currentTarget).attr('href');
-      opts.complete = null;
 
       if( $(e.currentTarget).attr('data-nodefault') ) {
         e.preventDefault();
@@ -83,7 +129,7 @@ var ShelfDB = (function(sdb, $) {
     };
 
     var _stripHash = function( url ) {
-      return url.replace( /^#/, "" );
+      return url.replace( /^#/, '' );
     };
 
     var pageLoader = {
@@ -97,6 +143,10 @@ var ShelfDB = (function(sdb, $) {
           return defaults;
 
         opts = $.extend({},defaults,opts);
+        $.extend(opts, {
+          complete: null,
+          reloadHeader: false
+        });
 
         $(document).on('click', '[data-rel=pagelink]', opts, _handlePageLink);
 
@@ -118,17 +168,7 @@ var ShelfDB = (function(sdb, $) {
       },
 
       load: function(opts) {
-        defaults = {
-          url: '',
-          data: null,
-          complete: null,
-          container: 'div[data-rel=pageContainer]'
-        }
-        if( typeof opts === 'undefined' )
-          return defaults;
-
-        opts = $.extend({},defaults,opts);
-
+        // Redirect to handler
         _handlePageLoad(opts);
       }
     };
@@ -148,11 +188,13 @@ var ShelfDB = (function(sdb, $) {
         $(document).on('pagebeforeload',function(event) {
           console.log("DEBUG: pagebeforeload");
           sdb.Core.pageContainerBeforeLoadTasks.forEach(function(fun) { fun(event); });
+          sdb.Core.pageContainerBeforeLoadTasks = [];
         });
 
         $(document).on('pageafterload', function() {
           console.log("DEBUG: pageafterload");
           sdb.Core.pageContainerAfterLoadTasks.forEach(function(fun) { fun(event); });
+          sdb.Core.pageContainerAfterLoadTasks = [];
 
         });
 
@@ -163,6 +205,7 @@ var ShelfDB = (function(sdb, $) {
         $(document).on('pagecreate', function() {
           console.log("DEBUG: page - create");
           sdb.Core.pageCreateTasks.forEach(function(fun) { fun(event); });
+          sdb.Core.pageCreateTasks = [];
         });
       },
 
@@ -198,7 +241,7 @@ var ShelfDB = (function(sdb, $) {
         }
 
         sdb.GUI.Core.waitAnimationReferenced('show', {
-          theme: "a"
+          theme: 'a'
         });
 
         // Add the files
