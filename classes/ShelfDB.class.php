@@ -61,7 +61,7 @@ class ShelfDB
 
     $this->twig             = new Twig_Environment($this->twigLoader, array(
       'cache'       => joinPaths(dirname(__DIR__),'cache'),
-      'auto_reload' => \ConfigFile\Config::$debug,
+      'auto_reload' => true,
       'debug'       => \ConfigFile\Config::$debug
     ));
     $this->twig->addGlobal('debugMode', \ConfigFile\Config::$debug );
@@ -70,9 +70,9 @@ class ShelfDB
     $this->twig->addGlobal('jsRoot',    $this->RelRoot().'scripts/');
     $this->twig->addGlobal('libRoot',   $this->RelRoot().'lib/');
     $this->twig->addGlobal('imgRoot',   $this->RelRoot().'img/');
-    $this->twig->addGlobal('jsExt',     \ConfigFile\Config::$debug ? '.js' : '.min.js');
+    $this->twig->addGlobal('jsExt',     \ConfigFile\Config::$useMinified ? '.min.js' : '.js');
     $this->twig->addGlobal('cssRoot',   $this->RelRoot().'styles/');
-    $this->twig->addGlobal('cssExt',    \ConfigFile\Config::$debug ? '.css' : '.min.css');
+    $this->twig->addGlobal('cssExt',    \ConfigFile\Config::$useMinified ? '.min.css' : '.css');
     $this->twig->addGlobal('extSources',\ConfigFile\Config::$extSources);
     if( \ConfigFile\Config::$debug ) {
       $this->twig->addExtension(new Twig_Extension_Debug());
@@ -135,11 +135,27 @@ class ShelfDB
   }
 
   public function RenderTemplate() {
-      $args = func_get_args();
+    // Default args for templates
+    $default = array(
+      'version'          => array(
+          'programVersion'   => $this->GetProgramVersion(),
+          'databaseVersion'  => $this->GetDatabaseVersion()
+      ),
+      'logContent'       => Log::FetchLogContent(),
+      'user'             => array(
+        'isLoggedIn'         => $this->User()->IsLoggedIn(),
+        'isAdmin'            => $this->User()->IsAdmin(),
+        'data'               => $this->User()->GetLoggedInUser()
+      )
+    );
 
-      $args[1] = array_replace_recursive($args[1], array("requestUri" => $_SERVER["REQUEST_URI"]));
+    $args = func_get_args();
+    if( count($args) != 2 ) {
+      $args[] = array();
+    }
+    $args[1] = array_replace_recursive($default, $args[1], array("requestUri" => $_SERVER["REQUEST_URI"]));
 
-      return call_user_func_array( array($this->twig, 'render'), $args );
+    return call_user_func_array( array($this->twig, 'render'), $args );
   }
 
   /**
