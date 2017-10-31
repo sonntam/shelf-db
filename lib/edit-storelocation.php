@@ -62,6 +62,7 @@ switch ($_POST['method']) {
    * Add new category
    *
    */
+  case 'copy':
   case 'add':
     if( isset( $_POST['name'] ) ) {
       $name = $_POST['name'];
