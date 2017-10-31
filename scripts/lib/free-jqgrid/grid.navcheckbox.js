@@ -104,10 +104,8 @@
 	      if (findnav.length > 0) {
 	        if (id && findnav.find("#" + jqID(id)).length > 0) { return; }
 	        var tbd = $("<div tabindex='0' role='checkbox'></div>");
-	        $(tbd).addClass(navButtonClass).append("<div class='ui-pg-div'>" +
-	          "<span class='" + mergeCssClasses(commonIconClass) +
-	          "'><input type='checkbox' id='"+ id +"'></span>" +
-	          (o.caption ? "<span class='ui-pg-button-text'><label for='"+id+"'>" + o.caption + "</label></span>" : "") +
+	        $(tbd).addClass(navButtonClass).append("<div class='ui-pg-div'><input type='checkbox' id='"+ id +"'>"+
+	          (o.caption ? "<label for='"+id+"'>&nbsp;" + o.caption + "</label>" : "") +
 	          "</div>");
 	        if (id) { $(tbd).attr("id", id + "_super"); }
 	        if (o.position === "first" && findnav.children("div.ui-pg-button").length > 0) {
