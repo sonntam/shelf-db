@@ -10,26 +10,17 @@ var ShelfDB = (function(sdb,$) {
         setup: function(opts) {
 
           var defaults = {
-            searchHeaderSelector: 'div .search',
             searchBoxSelector: '#searchbar'
           };
 
           opts = $.extend({}, defaults, opts);
 
-          // Stop closing the menu when trying to select something in the searchbox
-          $(opts.searchHeaderSelector).on("swipeleft", function(e){
-            e.preventDefault();
-            e.stopPropagation();
-          });
-
           $(opts.searchBoxSelector).keypress(function(e){
             if(e.which == 13) {//Enter key pressed
                 if( $(e.target).val().trim() != "" ) {
-                  $(':mobile-pagecontainer').pagecontainer("change",
-                    sdb.Core.basePath + "pages/page-showsearchresults.php?search="+encodeURIComponent($(e.target).val()),
-                    {
-                      allowSamePageTransition: true,
-                      reload: true
+                  sdb.Core.PageLoader.load({
+                      url: sdb.Core.basePath + "pages/page-showsearchresults.php?search="+encodeURIComponent($(e.target).val()),
+                      forceReload: true
                     });
                 }
               }
