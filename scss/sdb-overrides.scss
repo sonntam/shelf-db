@@ -59,3 +59,22 @@ div {
 .searchFilter .form-control:not([size]):not([multiple]) {
   height: unset;
 }
+
+.ui-jqgrid {
+  div[role=checkbox] {
+
+    .ui-pg-div {
+      line-height: 0px;
+
+      label  {
+        margin: 0;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+
+      input[type=checkbox] {
+        vertical-align: middle;
+      }
+    }
+  }
+}
