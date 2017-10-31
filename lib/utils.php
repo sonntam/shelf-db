@@ -11,6 +11,8 @@ function TranslateJqGridColumnToMySQL($col) {
       return "p.name";
     case "supplier":
       return "su.name";
+    case "supplierid";
+      return "p.id_supplier";
     case "storeloc":
       return "s.name";
     case "storelocid":
