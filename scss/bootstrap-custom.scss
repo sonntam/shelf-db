@@ -9,34 +9,5 @@
 @import "scss/sidebar";
 @import "scss/spinner";
 @import "scss/validation";
-
-
-//
-// Footer
-//
-
-.sdb-footer {
-  font-size: 85%;
-  text-align: center;
-  background-color: #f7f7f7;
-  overflow-x: hidden;
-  width: 100%;
-
-  a {
-    font-weight: 500;
-    color: $gray-700;
-
-    &:hover,
-    &:focus {
-      color: $link-color;
-    }
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-
-  @include media-breakpoint-up(sm) {
-    text-align: left;
-  }
+@import "scss/footer";
 }
