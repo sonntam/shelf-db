@@ -9,20 +9,36 @@
   $data = array_replace_recursive(
     array(
       "catid"      => 0,
-      "withparent" => 0
+      "withparent" => 0,
+      "flat"       => false,
+      'method'     => 'get'
     ), $_GET, $_POST );
 
   // Get category ID
+  $pdb = ShelfDB::Instance();
   $catid      = $data["catid"];
-  $withparent = $data["withparent"];
+  $withparent = $data["withparent"] === '1';
 
-  $tree = $pdb->Category()->GetAsArray($catid, $withparent == 1);
+  if( strtolower($data["flat"]) === 'true' )
+    $tree = $pdb->Category()->GetAsFlatNameArray($catid, $withparent);
+  else
+    $tree = $pdb->Category()->GetAsArray($catid, $withparent);
 
-  $json = json_encode($tree, JSON_PRETTY_PRINT);
+  switch( strtolower($data["method"]) ) {
+    case "get":
+      $result = json_encode($tree, JSON_PRETTY_PRINT);
+      break;
+    case "gridfilter":
+
+      // Build html for grid filter
+      $result = buildOptionHTMLFromArray($tree, 'id', 'name');
+
+      break;
+  }
 
   // Clear buffer and print JSON
   ob_clean();
 
-  echo $json;
+  echo $result;
 
 ?>

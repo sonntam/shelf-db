@@ -224,4 +224,28 @@ function joinPaths() {
     return ($frontSep ? DIRECTORY_SEPARATOR : "" ).join(DIRECTORY_SEPARATOR, $paths);
 }
 
+function buildOptionHTMLFromArray($list, $valueKey, $nameKey) {
+
+  foreach( $list as &$el ) {
+    $elname = $el[$nameKey] ?? '';
+    $elname = htmlspecialchars( $elname, ENT_QUOTES );
+    $elname = preg_replace('/\G /', '&nbsp;', $elname);
+    $el = '<option'.( isset($el[$valueKey]) ? ' value=\''.htmlspecialchars($el[$valueKey],ENT_QUOTES).'\'' : '' ). '>'.$elname.'</option>';
+  }
+  return '<select>\n'.join("\n",$list).'</select>\n';
+
+}
+
+// From https://stackoverflow.com/a/14972714/542269
+function array_flatten($array) {
+
+   $return = array();
+   foreach ($array as $key => $value) {
+       if (is_array($value)){ $return = array_merge($return, array_flatten($value));}
+       else {$return[$key] = $value;}
+   }
+   return $return;
+
+}
+
 ?>

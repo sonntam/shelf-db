@@ -135,6 +135,27 @@ namespace ShelfDB {
         });
     }
 
+    public function GetAsFlatNameArray( int $baseid = 0, bool $withparent = false ) {
+      // Get in array form first
+      $cattree = $this->GetAsArray( $baseid, $withparent );
+
+      $walkFcn = function($cattree, int $level = 0) use (&$walkFcn) {
+        $return = array();
+        foreach( $cattree as $cat ) {
+          $return[] = array('id' => $cat['id'], 'name' => str_repeat(' ',$level*2).$cat['name'] );
+          if( isset($cat['children']) && count($cat['children']) > 0 ) {
+            $return = array_merge( $return, $walkFcn($cat['children'],$level+1) );
+          }
+        }
+        return $return;
+      };
+
+      // Walk the tree
+      $cattree = $walkFcn($cattree);
+
+      return $cattree;
+    }
+
     public function GetAsArray( int $baseid = 0, bool $withparent = false ) {
 
 

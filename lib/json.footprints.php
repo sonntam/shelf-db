@@ -2,16 +2,38 @@
 
   include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
-  $_GET += array("id" => null);
+  // Defaults
+  $defaults = array(
+    "id" => null,
+    "method" => "get",
+    "anyName" => null
+  );
 
-  $data = array_replace_recursive( array("id" => null), $_GET, $_POST );
+  $data = array_replace_recursive( $defaults, $_GET, $_POST );
 
+  // Get the data
+  $pdb = ShelfDB::Instance();
   $fp = $pdb->Footprint()->GetById($data["id"]);
 
-  $json = json_encode($fp, JSON_PRETTY_PRINT);
+  switch( strtolower($data["method"]) ) {
+    case "get":
+      $result = json_encode($fp, JSON_PRETTY_PRINT);
+      break;
+    case "gridfilter":
+
+      // Add the "any" option if requested
+      if( $data["anyName"] ){
+        array_unshift( $fp, array('name' => $data["anyName"]));
+      }
+
+      // Build html for grid filter
+      $result = buildOptionHTMLFromArray($fp, 'id', 'name');
+
+      break;
+  }
 
   // Clear buffer and print JSON
   ob_clean();
 
-  echo $json;
+  echo $result;
 ?>
