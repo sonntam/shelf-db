@@ -7,6 +7,8 @@
   include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
   include_once(dirname(__DIR__).'/lib/utils.php');
 
+  $pdb = ShelfDB::Instance();
+
   $defaults = array(
     "catid"              => 0,
     "partid"             => null,
