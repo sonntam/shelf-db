@@ -9,5 +9,12 @@
 @import "scss/sidebar";
 @import "scss/spinner";
 @import "scss/validation";
+@import "scss/collapse";
 @import "scss/footer";
+@import "scss/popup";
+
+/* Edit controls for category tree */
+div.editcontrols {
+  display: inherit;
+  z-index: 10;
 }
