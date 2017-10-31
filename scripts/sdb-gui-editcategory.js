@@ -8,7 +8,7 @@ var ShelfDB = (function(sdb,$) {
     var hideControls = function() {
       var $ctrl = $(_ctrlBoxSelector);
 
-      $ctrl.toggleClass('editcontrols-hidden', true);
+      $ctrl.toggleClass('d-none', true);
       $ctrl.attr("data-id",null);
     };
 
@@ -342,7 +342,7 @@ var ShelfDB = (function(sdb,$) {
     							$btnDelete.parent().hide();
     						}
     					}
-    					$ctrl.toggleClass('editcontrols-hidden', false);
+    					$ctrl.toggleClass('d-none', false);
     					$ctrl.detach().prependTo($(node.element).find("span").first());
     					$ctrl.attr("data-id",node.id);
 
