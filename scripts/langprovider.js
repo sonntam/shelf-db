@@ -109,6 +109,7 @@ var Lang = (function(){
         ok: 'Ok',
         yes: 'Ja',
         no: 'Nein',
+        any: 'Beliebig',
         date: 'Datum',
         add: 'Anlegen',
         show: 'Zeigen',
@@ -128,6 +129,7 @@ var Lang = (function(){
         parts: 'Teile',
         abort: 'Abbrechen',
         none: 'Keine',
+        noSearchResults: 'Keine Ergebnisse...',
         tools: 'Werkzeuge',
         settings: 'Einstellungen',
         image: 'Bild',
@@ -146,6 +148,7 @@ var Lang = (function(){
         },
         username: 'Benutzername',
         password: 'Passwort',
+        forgotPasswordLink: 'Passwort vergessen? »',
         register: 'Registrieren',
         administration: 'Administration',
         uploadImageLabel: 'Bild hochladen',
@@ -166,6 +169,7 @@ var Lang = (function(){
           return 'Teile in Kategorie ' + catname;
         },
         subCategories: 'Unterkategorien',
+        parentCategories: 'Übergeordnete Kategorien',
         partTitle: 'Bauteilansicht',
         partNumber: 'Artikelnummer',
         amountStored: 'Menge eingelagert',
@@ -181,7 +185,7 @@ var Lang = (function(){
         hideSubcategories: 'Unterkategorien ausblenden',
         noGroupingByCategories: 'Nicht gruppieren',
         searchResultsFor: function(str) {
-          return 'Suchergebnisse für "'+str+'"';
+          return 'Suchergebnisse für "'+$.trim(str)+'"';
         },
         upperLevel: 'Ebene höher',
         enterName: 'Namen eingeben',
