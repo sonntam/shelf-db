@@ -257,7 +257,7 @@ namespace ShelfDB {
           $deletePrevious = true;
 
         // Check if the file exists
-        if( file_exists( joinPaths(dirname(__DIR__), $path, $fileName) ) ) {
+        if( file_exists( joinPaths($this->db()->AbsRoot(), $path, $fileName) ) ) {
           // Create entry
           $fn = $this->db()->sql->real_escape_string($fileName);
           $query = "INSERT INTO pictures (parent_id, pict_fname, pict_width, pict_height, pict_type) VALUES ($elementId, '$fn', 0, 0, '$elementType');";
