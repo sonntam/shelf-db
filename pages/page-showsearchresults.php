@@ -59,19 +59,26 @@
 				'searchString' => $fp['id'],
 			);
 			break;
+		case 'supplierId':
+			$supplierId = $options['search'];
+			if( $su = $pdb->Supplier()->GetById($supplierId) ) {
+			} else {
+				$su = array(
+					'name' => 'undefined',
+					'id' => 0
+				);
+			}
+			$searchString = $su['name'];
+			$filterArguments = array(
+				'searchField' => 'supplierid',
+				'searchOper' => 'eq',
+				'searchString' => $su['id'],
+			);
+			break;
 
 		default:
 			return;
 	}
-
-	$search     = $options["search"];
-	$searchMode = $search && ($search != "");
-
-
-	// Filter strings
-	$fpFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Footprint()->GetAll()));
-	$slFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->StoreLocation()->GetAll()));
-	$ctFilter = join(';', array_map(function($el){return $el['id'].":".htmlspecialchars($el['name'],ENT_QUOTES);}, $pdb->Category()->GetAll()));
 
 	/*
 	searchString
@@ -84,10 +91,7 @@
 
 	echo $pdb->RenderTemplate('page-showsearchresults.twig', array(
 		'filterArguments' => $filterArguments,
-		'searchString' => $searchString,
-		'footprintFilterString' => $fpFilter,
-		'storeLocationFilterString' => $slFilter,
-		'categoryFilterString' => $ctFilter,
+		'searchString' => $searchString
 	));
 
 	exit;

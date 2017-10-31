@@ -4,10 +4,6 @@
   category.parents -> .id .name
   category.hasChildren
 
-  footprintFilterString
-  storeLocationFilterString
-  categoryFilterString
-
 #}
 {% extends 'ext-element-page.twig' %}
 
@@ -16,25 +12,19 @@
 {% set langLabels = { mainHeader: ':categoryNameHeader:' } %}
 {% set title = category.name %}
 
-{% block additionalHeader %}
-
-  {% if category.parents|length > 0 and category.id != 0 %}
-    <a class="ui-btn ui-btn-inline ui-btn-icon-left ui-shadow ui-icon-back" href="{{ relRoot }}pages/page-showparts.php?catid={{ (category.parents|last).id }}&showSubcategories=1" uilang="upperLevel"></a>
-  {% endif %}
-
-{% endblock additionalHeader %}
-
 {% block pagePre %}
 
 <script>
   console.log("DEBUG: page-showparts executing...");
+
   ShelfDB.Core.pageContainerAfterLoadTasks.push( function( event ){
     console.log("DEBUG: pagecontainer - change (id = {{ category.id }})");
 
     // Category tree
-		ShelfDB.GUI.Part.SubCategoryTree.setup({
+    ShelfDB.GUI.Part.SubCategoryTree.setup({
 			treeSelector: '#subcattree',
-			mainTreeSelector: '#navCategorytree'
+			mainTreeSelector: '#navCategorytree',
+      currentCategoryId: '{{ category.id ?? null }}'
 		});
 
     // Part list
@@ -50,16 +40,8 @@
         caption: Lang.get('hideSubcategories'),
         id: 'chkHideSubcategories'
       },
-      pagerSelector: '#partListPager',
-      footprintFilterString: '{{ footprintFilterString|e('js') }}',
-      storeLocationFilterString: '{{ storeLocationFilterString|e('js') }}',
-      categoryFilterString:  '{{ categoryFilterString|e('js') }}',
+      pagerSelector: '#partListPager'
     });
-
-    // Select current category in tree
-    var $tree = $('#navCategorytree');
-    $tree.tree( 'selectNode', $tree.tree('getNodeById', {{ category.id }}) );
-
     var lastwidth = 9999;
     $(window).on('resize', function() {
       var width = $("#partList").closest('div[data-rel=pageContainer]').width();
@@ -92,22 +74,72 @@
 {% endblock pagePre %}
 
 {% block pageContent %}
+  {# Title #}
+  {% if langLabels.mainHeader %}
+    <h2 class="text-center text-md-left" uilang="{{ langLabels.mainHeader }}">
+  {% else %}
+    <h2 class="text-center text-md-left">
+  {% endif %}
+  {{ title ?? '' }}</h2>
+
   {# echo join("<i class='fa fa-arrow-right'></i>",$buttons); #}
   {% for parent in category.parents %}
-    <i class='fa fa-arrow-right'></i>
-    <a style="margin: 0pt; padding: 0.4em" class="ui-btn ui-btn-inline ui-corner-all ui-shadow" href="{{ relRoot }}pages/page-showparts.php?catid={{ parent.id }}&showSubcategories=1">
-      {{ parent.name|e }}
-    </a>
+    {% if loop.first %}
+    <div class="card">
+      <div class="card-header d-flex justify-content-between" id="headingCollapseParentCategories">
+        <div>
+            <a uilang="parentCategories" class="collapsed" data-toggle="collapse" href="#collapseParentCategories" aria-expanded="false" aria-controls="collapseParentCategories"></a>
+        </div>
+        <div>
+            <a data-toggle="collapse" class="collapsed btn btn-default p-0 btn-xs text-right" href="#collapseParentCategories" aria-label="Expand/Collapse parent categories" aria-expanded="false" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+            </a>
+        </div>
+      </div>
+      <div id="collapseParentCategories" class="collapse" aria-labelledby="headingCollapseParentCategories">
+        <div class="card-body">
+    {% else %}
+      <i class='fa fa-arrow-right'></i>
+    {% endif %}
+      <a class="btn btn-secondary" role="button" data-rel="pagelink" href="{{ relRoot }}pages/page-showparts.php?catid={{ parent.id }}&showSubcategories=1">
+        {{ parent.name|e }}
+      </a>
+    {% if loop.last %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
   {% endfor %}
   {% if category.hasChildren %}
-    <h3 uilang="subCategories"></h3>
-    <div id="subcattree" data-url="{{ relRoot }}lib/json.categorytree.php?catid={{ category.id }}&withparent={{ ( category.id == 0 ? 0 : 1 ) }}"></div>
+    <!--
+      <h5 uilang="subCategories"></h5>
+      <div id="subcattree" data-url="{{ relRoot }}lib/json.categorytree.php?catid={{ category.id }}&withparent={{ ( category.id == 0 ? 0 : 1 ) }}"></div>
+    -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between" id="headingCollapseSubCategories">
+        <div>
+            <a uilang="subCategories" class="collapsed" data-toggle="collapse" href="#collapseSubCategories" aria-expanded="false" aria-controls="collapseSubCategories"></a>
+        </div>
+        <div>
+            <a data-toggle="collapse" class="collapsed btn btn-default p-0 btn-xs text-right" href="#collapseSubCategories" aria-label="Expand/Collapse Subcategories" aria-expanded="false" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+            </a>
+        </div>
+      </div>
+      <div id="collapseSubCategories" class="collapse" aria-labelledby="headingCollapseSubCategories">
+          <div class="card-body">
+              <div id="subcattree" data-url="{{ relRoot }}lib/json.categorytree.php?catid={{ category.id }}&withparent={{ ( category.id == 0 ? 0 : 1 ) }}"></div>
+          </div>
+      </div>
+    </div>
   {% endif %}
-  <h3 uilang="parts"></h3>
 
   <p>
     <table id="partList"></table>
     <div id="partListPager"></div>
   </p>
+
 
 {% endblock pageContent %}

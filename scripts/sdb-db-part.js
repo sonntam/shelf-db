@@ -7,10 +7,7 @@ var ShelfDB = (function(sdb, $, Lang) {
     var getListViewModel = function(opts) {
 
       defaults = {
-        imageFormatter: null,
-        footprintFilterString: "undefined",
-        storeLocationFilterString: "undefined",
-        categoryFilterString: "undefined"
+        imageFormatter: null
       };
 
       opts = $.extend(defaults, opts);
@@ -118,10 +115,14 @@ var ShelfDB = (function(sdb, $, Lang) {
             stype: 'select',
             searchoptions: {
               sopt: ['eq','ne'],
-              value: ":Any;"+opts.footprintFilterString
+              dataUrl: sdb.Core.basePath + 'lib/json.footprints.php?' + $.param({
+                method: 'gridFilter'
+              })
             },
             editoptions: {
-              value: opts.footprintFilterString
+              dataUrl: sdb.Core.basePath + 'lib/json.footprints.php?' + $.param({
+                method: 'gridFilter'
+              })
             },
             width: 10
           },
@@ -137,10 +138,14 @@ var ShelfDB = (function(sdb, $, Lang) {
             stype: 'select',
             searchoptions: {
               sopt: ['eq','ne'],
-              value: ":Any;"+opts.storeLocationFilterString
+              dataUrl: sdb.Core.basePath + 'lib/json.storelocations.php?' + $.param({
+                method: 'gridFilter'
+              })
             },
             editoptions: {
-              value: opts.storeLocationFilterString
+              dataUrl: sdb.Core.basePath + 'lib/json.storelocations.php?' + $.param({
+                method: 'gridFilter'
+              })
             },
             width: 10,
           },
@@ -182,14 +187,20 @@ var ShelfDB = (function(sdb, $, Lang) {
             stype: 'select',
             searchoptions: {
               sopt: ['eq','ne'],
-              value: ":Any;"+opts.categoryFilterString,
+              dataUrl: sdb.Core.basePath + 'lib/json.categorytree.php?' + $.param({
+                flat: true,
+                method: 'gridFilter'
+              }),
               searchhidden: true
             },
             editrules: {
               edithidden: true
             },
             editoptions: {
-              value: opts.categoryFilterString
+              dataUrl: sdb.Core.basePath + 'lib/json.categorytree.php?' + $.param({
+                flat: true,
+                method: 'gridFilter'
+              })
             }
           }
       ];
