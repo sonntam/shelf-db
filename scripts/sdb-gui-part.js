@@ -22,11 +22,13 @@ var ShelfDB = (function(sdb,$) {
 
           var defaults = {
             treeSelector: '#subcattree',
-    				mainTreeSelector: '#navCategorytree'
+    				mainTreeSelector: '#navCategorytree',
+            currentCategoryId: null
           };
 
           opts = $.extend(true, {}, defaults, opts);
 
+          var $tree = $(opts.mainTreeSelector);
           var $subtree = $(opts.treeSelector);
 
           // Tree callback
@@ -39,11 +41,18 @@ var ShelfDB = (function(sdb,$) {
           $subtree.bind('tree.click', function(e) {
             // e.node.name - Name string
             // e.node.id   - ID string
-            $('body').pagecontainer('change','page-showparts.php?catid=' + e.node.id + '&showSubcategories=' + Number(e.node.children.length > 0));
-            var $tree = $(opts.mainTreeSelector);
+            sdb.Core.PageLoader.load({
+              url: sdb.Core.basePath + 'pages/page-showparts.php?catid=' + e.node.id + '&showSubcategories=' + Number(e.node.children.length > 0)
+            });
+            //$('body').pagecontainer('change',);
 
             $tree.tree( 'selectNode', $tree.tree('getNodeById', e.node.id) );
           });
+
+          // Select current category in tree
+          if( opts.currentCategoryId ) {
+            $tree.tree( 'selectNode', $tree.tree('getNodeById', opts.currentCategoryId) );
+          }
         }
       },
       PartList: {
