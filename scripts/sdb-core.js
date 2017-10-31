@@ -25,28 +25,28 @@ var ShelfDB = (function(sdb, $) {
     var pageContainerAfterLoadTasks = [];
     var pageContainerBeforeLoadTasks = [];
 
+    var _currentPage = '';
+
     var _handlePageLoad = function(opts){
 
       // Parse options
       defaults = {
-        headerSelector: 'header',
-        sidebarSelector: 'div.sdb-sidebar',
-        pageContainerSelector: 'div[data-rel=pageContainer]',
         reloadHeader: false,
         reloadSidebar: false,
         complete: null,
         url: null,
-        data: null
+        data: null,
+        forceReload: false
       }
-      opts = $.extend({},defaults,opts);
+      opts = $.extend({},sdb.Core.PageLoader.defaults,defaults,opts);
 
       // Sanity checks
       if( !(opts.url) ) return;
       // Do we have to do anything?
-      if( (
+      if( !opts.forceReload && ( (
         (location.pathname + location.search === opts.url && location.hash === '')
-        || (_stripHash(location.hash) === opts.url)
-      ) && !(opts.data) ) return;
+        || (_stripHash(location.hash) === opts.url && _currentPage === opts.url)
+      ) && !(opts.data) && !opts.reloadHeader && !opts.reloadSidebar ) ) return;
 
       // AJAX request
       var container = opts.pageContainerSelector;
@@ -98,6 +98,7 @@ var ShelfDB = (function(sdb, $) {
                 opts.complete(responseText, textStatus, jqXHR);
               // Update hash
               location.hash = (opts.url === location.pathname ? '' : opts.url );
+              _currentPage = opts.url;
               $(document).triggerHandler('pageafterload');
             });
           } else {
@@ -136,6 +137,13 @@ var ShelfDB = (function(sdb, $) {
     };
 
     var pageLoader = {
+      // Default options
+      defaults: {
+        headerSelector: 'header',
+        sidebarSelector: 'div.sdb-sidebar',
+        pageContainerSelector: 'div[data-rel=pageContainer]'
+      },
+
       // Setup to register pagelink event
       setup: function(opts) {
         defaults = {
