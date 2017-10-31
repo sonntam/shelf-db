@@ -49,17 +49,17 @@ var ShelfDB = (function(sdb,$) {
           });
 
           // Button click handlers
-          $popup.find('a').one('click', function(ev){
+          $popup.find('button').one('click', function(ev){
             // Return buttonresult
             $buttonresult = $(ev.target).attr('buttonresult');
             console.log($buttonresult);
           });
 
-          $popup.one('popupafteropen', function(ev,ui) {
+          $popup.one('shown.bs.modal', function(ev,ui) {
               $cancelbtn.focus();
           });
 
-          $popup.one('popupafterclose', function(ev,ui) {
+          $popup.one('hidden.bs.modal', function(ev,ui) {
 
             if( $buttonresult == "ok" && options.confirm ) {
               options.confirm();
@@ -85,9 +85,7 @@ var ShelfDB = (function(sdb,$) {
 
           $popuptarget.load(sdb.Core.basePath+'pages/popup-confirmdialog.php', function() {
             var $popup = $('#popupConfirmDialog');
-            Lang.searchAndReplace();
             setupPopup($popup);
-            $(this).enhanceWithin();
 
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
@@ -187,13 +185,13 @@ var ShelfDB = (function(sdb,$) {
             console.log($buttonresult);
           });
 
-          $popup.off('popupafteropen');
-          $popup.one('popupafteropen', function(ev,ui) {
+          $popup.off('shown.bs.modal');
+          $popup.one('shown.bs.modal', function(ev,ui) {
               $popup.find("input").first().focus().select();
           });
 
-          $popup.off('popupafterclose');
-          $popup.one('popupafterclose', function(ev,ui) {
+          $popup.off('hidden.bs.modal');
+          $popup.one('hidden.bs.modal', function(ev,ui) {
             if ($buttonresult == "cancel" && options.cancel) {
               options.cancel($input.val());
             }
@@ -217,9 +215,7 @@ var ShelfDB = (function(sdb,$) {
 
           $popuptarget.load(sdb.Core.basePath+'pages/popup-inputdialog.php', function() {
             var $popup = $('#popupInputDialog');
-            Lang.searchAndReplace();
             setupPopup($popup);
-            $(this).enhanceWithin();
 
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
@@ -304,9 +300,7 @@ var ShelfDB = (function(sdb,$) {
             $popuptarget.load(sdb.Core.basePath+'pages/popup-inputmultilinedialog.php', function() {
               $popup = $('#popupInputMultilineDialog');
 
-              Lang.searchAndReplace();
               setupPopup($popup);
-              $(this).enhanceWithin();
 
               sdb.GUI.Core.waitAnimationReferenced('hide');
 
@@ -381,7 +375,6 @@ var ShelfDB = (function(sdb,$) {
             dialogId.attr({
               'origin': options.url
             });
-            Lang.searchAndReplace();
 
             // Setup event handlers
             dialogId.on('show.bs.modal', (options.beforeopen ? options.beforeopen : null));
