@@ -17,6 +17,9 @@ namespace ConfigFile {
 
 		/** @var bool Use remote minified css and js source files instead of local ones */
 		static $extSources = false;
+
+		/** @var bool Use minified JavaScript and css files */
+		static $useMinified = true;
 	}
 
 	/**
