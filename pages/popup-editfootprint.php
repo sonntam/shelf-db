@@ -86,8 +86,7 @@
   $('#popupFootprintEditDialog input[type=file]').on('change', uploadFiles);
 
   $('#popupFootprintEditDialog #footprintEditForm').on('submit', function (evt) {
-
-    $.mobile.referencedLoading('show');
+    debugger;
 
     evt.stopPropagation();
     evt.preventDefault();
@@ -96,7 +95,7 @@
     var formData = $(evt.target).formData();
 
     function postUploadReaction(formData) {
-
+      debugger;
       $.ajax({
         url: ShelfDB.Core.basePath+'lib/edit-footprint.php',
         type: 'POST',
@@ -104,12 +103,11 @@
         cache: false,
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
-          $.mobile.referencedLoading('hide');
           if( data.success )
           {
             // Success
             $('#popupFootprintEditDialog #footprintEditForm').trigger("positiveResponse", $.extend(data,{ buttonresult: 'ok'}));
-            $('#popupFootprintEditDialog').popup('close');
+            $('#popupFootprintEditDialog').modal('hide');
 
           } else {
             // Handle error
@@ -118,15 +116,16 @@
         error: function(jqXHR, textStatus, errorThrown) {
           // Handle error
           console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-          $.mobile.referencedLoading('hide');
         }
       });
     };
 
     // Is there something to upload
     if( formData['imageFileName'] == "" ) {
+      debugger;
       postUploadReaction(formData);
     } else {
+      debugger;
       $.ajax({
         url: ShelfDB.Core.basePath+'lib/upload-files.php',
         type: 'POST',
@@ -143,14 +142,12 @@
             postUploadReaction(formData);
           } else {
             // Handle error
-            $.mobile.referencedLoading('hide');
           }
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
           // Handle error
           console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-          $.mobile.referencedLoading('hide');
         }
       });
     }
@@ -158,6 +155,7 @@
 
   // Upload files
   function uploadFiles(event) {
+    debugger;
     files = event.target.files;
 
     /*event.stopPropagation();
@@ -171,9 +169,6 @@
 
     $('#popupFootprintEditDialog #changeToDefaultImg').val('false');
 
-    $.mobile.referencedLoading('show', {
-      theme: "a"
-    });
     // Add the files
     var data = new FormData();
     $.each(files, function(key, value) {
@@ -204,13 +199,11 @@
         } else {
           // Handle error
         }
-        $.mobile.referencedLoading('hide');
 
       },
       error: function(jqXHR, textStatus, errorThrown) {
         // Handle error
         console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-        $.mobile.referencedLoading('hide');
       }
     });
   }
@@ -218,47 +211,71 @@
 
 </script>
 
-<div data-role="popup" id="popupFootprintEditDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false"> <!-- position: fixed; height: 95%; width: 95%; -->
-  <div data-role="header" data-theme="a">
-    <h1 name="dialogHeader" style="margin: 0 15px;" uilang="popupFootprintAddHeader"></h1>
-  </div>
-  <div role="main" class="ui-content" >
-    <h3 name="dialogHeadline" class="ui-title" uilang="popupFootprintAddUserAction"></h3>
-    <form id="footprintEditForm" data-ajax="false">
-      <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
-      <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo $formData['changeToDefaultImg']; ?>">
-      <input type="hidden" name="imageFileName" id="imageFileName" value="">
-      <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
-      <div class="ui-grid-solo">
-        <div class="ui-block-a">
-          <label for="name" uilang="editPartNewName"></label>
-          <input type="text" name="name" id="name" value="<?php echo htmlentities($formData['name']); ?>" uilang="<?php if($formData['method'] == 'copy') echo "value:copyOf:value;"; ?>placeholder:enterName">
-        </div>
-        <div class="ui-block-a">
-          <div style="display: flex; flex-flow: row">
-            <div class="ui-shadow" style="text-align: center; background-color: lightgray; flex: 0 0 10em; width: 10em">
-              <img id="imgPreview" class="ui-center-element-relative" original-src="<?php echo $formData['imageUrl']; ?>" style="max-width:10em; max-height:10em" src="<?php echo htmlentities($formData['imageUrl']); ?>">
-            </div>
-            <div class="ui-grid-solo" style="flex: 1; margin-left: 1em; align-self: flex-end">
-              <div class="ui-block-a">
-                <label for="file" uilang="uploadImageLabel"></label>
-                <input id="file" name="file" type="file" value="">
+<div role="dialog" class="modal fade" id="popupFootprintEditDialog" aria-labelledby="popupFootprintEditHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupFootprintEditHeader" uilang="popupFootprintAddHeader"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="footprintEditForm">
+        <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
+        <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo $formData['changeToDefaultImg']; ?>">
+        <input type="hidden" name="imageFileName" id="imageFileName" value="">
+        <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <h6 name="dialogHeadline" class="ui-title" uilang="popupFootprintAddUserAction"></h6>
               </div>
-              <div class="ui-block-a">
-				<?php if( $formData['imageId'] && in_array($formData['method'], array('copy','edit') ) ) { ?>
-                <button type="button" class="ui-btn ui-mini" id="resetImg" uilang="resetImage"></button>
-				<?php } ?>
-                <button type="button" class="ui-btn ui-mini" id="defaultImg" uilang="defaultImage"></button>
-
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="name" uilang="editPartNewName"></label>
+                <input class="form-control" type="text" name="name" id="name" value="<?php echo htmlentities($formData['name']); ?>" uilang="<?php if($formData['method'] == 'copy') echo "value:copyOf:value;"; ?>placeholder:enterName">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto text-center">
+                <img id="imgPreview" original-src="<?php echo $formData['imageUrl']; ?>" style="background-color: lightgray; width:10em; height:10em; object-fit: contain;" src="<?php echo htmlentities($formData['imageUrl']); ?>">
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label for="file" uilang="uploadImageLabel"></label>
+                    <input class="form-control" id="file" name="file" type="file" value="">
+                  </div>
+                </div>
+                <div class="row">
+            <?php if( $formData['imageId'] && in_array($formData['method'], array('copy','edit') ) ) { ?>
+                  <div class="col-12 pb-1">
+                    <button type="button" class="btn btn-sm btn-secondary btn-sm btn-block" id="resetImg" uilang="resetImage"></button>
+                  </div>
+            <?php } ?>
+                  <div class="col-12">
+                    <button type="button" class="btn btn-sm btn-secondary btn-sm btn-block" id="defaultImg" uilang="defaultImage"></button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="ui-block-a ui-grid-a">
-          <div class="ui-block-a"><a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a></div>
-          <div class="ui-block-b"><button id="popupOkBtn" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" buttonresult="ok" value="ok" type="submit" uilang="<?php echo $formData['method']; ?>"></button></div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary btn-block" data-dismiss="modal" uilang="cancel"></button>
+              </div>
+              <div class="col-6">
+                <button id="popupOkBtn" type="submit" buttonresult="ok" value="ok" name="popupOkBtn" class="btn btn-primary btn-block" uilang="<?php echo $formData['method']; ?>">
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

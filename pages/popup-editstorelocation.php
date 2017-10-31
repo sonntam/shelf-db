@@ -14,10 +14,28 @@
         // Fetch data
         $id = $_GET['id'];
 
-        $storelocation = $pdb->StoreLocation()->GetById($id);
+        $sl = $pdb->StoreLocation()->GetById($id);
 
-        if( $storelocation ) {
-          $formData['name'] = $storelocation['name'];
+        if( $sl ) {
+            $formData['name'] = $sl['name'];
+        } else {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      break;
+
+    case 'copy':
+      if( isset($_GET['id']) ) {
+        // Fetch data
+        $id = $_GET['id'];
+
+        $sl = $pdb->StoreLocation()->GetById($id);
+
+        if( $sl ) {
+            $formData['name'] = $sl['name'];
         } else {
           return;
         }
@@ -36,11 +54,10 @@
   }
 
 ?>
-<script>
+<script type="text/javascript">
 
-  $('#popupStoreLocationEditDialog #storelocationEditForm').on('submit', function (evt) {
-
-    $.mobile.referencedLoading('show');
+  $('#popupStoreLocationEditDialog #storeLocationEditForm').on('submit', function (evt) {
+    debugger;
 
     evt.stopPropagation();
     evt.preventDefault();
@@ -49,7 +66,6 @@
     var formData = $(evt.target).formData();
 
     function postUploadReaction(formData) {
-
       $.ajax({
         url: ShelfDB.Core.basePath+'lib/edit-storelocation.php',
         type: 'POST',
@@ -57,12 +73,11 @@
         cache: false,
         dataType: 'json',
         success: function(data, textStatus, jqXHR) {
-          $.mobile.referencedLoading('hide');
           if( data.success )
           {
             // Success
-            $('#popupStoreLocationEditDialog #storelocationEditForm').trigger("positiveResponse", $.extend(data,{ buttonresult: 'ok'}));
-            $('#popupStoreLocationEditDialog').popup('close');
+            $('#popupStoreLocationEditDialog #storeLocationEditForm').trigger("positiveResponse", $.extend(data,{ buttonresult: 'ok'}));
+            $('#popupStoreLocationEditDialog').modal('hide');
 
           } else {
             // Handle error
@@ -71,36 +86,60 @@
         error: function(jqXHR, textStatus, errorThrown) {
           // Handle error
           console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-          $.mobile.referencedLoading('hide');
         }
       });
     };
 
-    // Is there something to upload
     postUploadReaction(formData);
   });
 
+
+
+
 </script>
 
-<div data-role="popup" id="popupStoreLocationEditDialog" data-overlay-theme="a" data-theme="a" data-dismissible="false"> <!-- position: fixed; height: 95%; width: 95%; -->
-  <div data-role="header" data-theme="a">
-    <h1 name="dialogHeader" style="margin: 0 15px;" uilang="popupStoreLocation<?php echo ucfirst(strtolower($formData['method'])); ?>Header"></h1>
-  </div>
-  <div role="main" class="ui-content" >
-    <h3 name="dialogHeadline" class="ui-title" uilang="popupStoreLocation<?php echo ucfirst(strtolower($formData['method'])); ?>UserAction"></h3>
-    <form id="storelocationEditForm" data-ajax="false">
-      <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
-      <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
-      <div class="ui-grid-solo">
-        <div class="ui-block-a">
-          <label for="name" uilang="editPartNewName"></label>
-          <input type="text" name="name" id="name" value="<?php echo htmlentities($formData['name']); ?>" uilang="<?php if($formData['method'] == 'copy') echo "value:copyOf:value;"; ?>placeholder:enterName">
-        </div>
-        <div class="ui-block-a ui-grid-a">
-          <div class="ui-block-a"><a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a></div>
-          <div class="ui-block-b"><button id="popupOkBtn" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" buttonresult="ok" value="ok" type="submit" uilang="<?php echo $formData['method']; ?>"></button></div>
-        </div>
+<div role="dialog" class="modal fade" id="popupStoreLocationEditDialog" aria-labelledby="popupStoreLocationEditHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupStoreLocationEditHeader" uilang="popupStoreLocationAddHeader"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-    </form>
+      <form id="storeLocationEditForm">
+        <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
+        <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo $formData['changeToDefaultImg']; ?>">
+        <input type="hidden" name="imageFileName" id="imageFileName" value="">
+        <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <h6 name="dialogHeadline" class="ui-title" uilang="popupStoreLocationAddUserAction"></h6>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="name" uilang="editPartNewName"></label>
+                <input class="form-control" type="text" name="name" id="name" value="<?php echo htmlentities($formData['name']); ?>" uilang="<?php if($formData['method'] == 'copy') echo "value:copyOf:value;"; ?>placeholder:enterName">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary btn-block" data-dismiss="modal" uilang="cancel"></button>
+              </div>
+              <div class="col-6">
+                <button id="popupOkBtn" type="submit" buttonresult="ok" value="ok" name="popupOkBtn" class="btn btn-primary btn-block" uilang="<?php echo $formData['method']; ?>">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

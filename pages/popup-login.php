@@ -1,26 +1,53 @@
-<script>
-  $('#loginForm').validate();
-</script>
-<div data-role="popup" id="popupLoginDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:98%;">
-    <div data-role="header" data-theme="a">
-      <h1 style="margin: 0 15px;" uilang="login"></h1>
-    </div>
-    <div role="main" class="ui-content">
-      <h3 uilang="login" class="ui-title"></h3>
-      <p uilang="loginHint"></p>
-      <form id="loginForm" data-ajax="false">
-        <label for="username" uilang="username"></label>
-        <input type="text" name="username" id="username" value="" uilang="placeholder:enterUsername" data-theme="a" minlength="2" required>
-        <label for="password" uilang="password"></label>
-        <input type="password" name="password" id="password" value="" uilang="placeholder:enterPassword" data-theme="a" required>
-        <input type="hidden" name="method" value="authenticate">
-        <div class="ui-grid-a">
-          <div class="ui-block-a">
-            <a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back" uilang="cancel"></a>
-          </div>
-          <div class="ui-block-b">
-            <button type="submit" buttonresult="ok" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-a" data-rel="back" data-transition="flow" uilang="ok">
+<!-- Bootstrap modal -->
+<div id="popupLoginDialog" class="modal fade" role="dialog" aria-labelledby="popupLoginHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupLoginHeader" uilang="login"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="loginForm">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <p uilang="loginHint"></p>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="username" uilang="username"></label>
+                <input class="form-control" type="text" name="username" id="username" value="" uilang="placeholder:enterUsername" minlength="2" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="password" uilang="password"></label>
+                <input class="form-control" type="password" name="password" id="password" value="" uilang="placeholder:enterPassword" required>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="modal-footer">
+          <input type="hidden" name="method" value="authenticate">
+          <!--<button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary" data-dismiss="modal" uilang="cancel"></button>-->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <button type="submit" buttonresult="ok" name="popupOkBtn" class="btn btn-success btn-block" uilang="login"></button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 text-right">
+                <button type="button" class="btn btn-link" style="font-size: 90%" uilang="forgotPasswordLink"></button>
+              </div>
+            </div>
+        </div>
+        </div>
       </form>
+    </div>
+  </div>
 </div>
+<script type="text/javascript">
+  $('#loginForm').validate();
+</script>
