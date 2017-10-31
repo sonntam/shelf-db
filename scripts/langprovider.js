@@ -504,20 +504,13 @@ var Lang = (function(){
         searchAndReplace();
       });
 
-      $(document).on('popupcreate', function() {
+      $(document).on('show.bs.modal', function() {
         console.log("DEBUG-LANGPROVIDER: popup - create - applying language...");
         Lang.searchAndReplace();
       });
 
-      $(document).on("mobileinit", function() {
-        console.log("DEBUG-LANGPROVIDER: mobileinit");
-        if( jQuery.isReady ) {
-          console.log("DEBUG-LANGPROVIDER: mobileinit - applying language...");
-          Lang.searchAndReplace();
-        }
-      });
-      $(document).on("pagebeforecreate", function(evt) {
-        console.log("DEBUG-LANGPROVIDER: page - beforecreate - applying language...");
+      $(document).on("pageafterload", function(evt) {
+        console.log("DEBUG-LANGPROVIDER: page - pageafterload - applying language...");
         Lang.searchAndReplace();
       });
     }
