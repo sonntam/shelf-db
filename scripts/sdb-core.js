@@ -101,7 +101,10 @@ var ShelfDB = (function(sdb, $) {
               $(document).triggerHandler('pageafterload');
             });
           } else {
-            $(document).append(page);
+            // Replace the whole document
+            var newDoc = document.open("text/html", "replace");
+            newDoc.write(responseText);
+            newDoc.close();
           }
         }
       });
