@@ -32,8 +32,12 @@
 
   foreach( $suppliers as &$f ) {
     $name = htmlspecialchars($f['name']);
-		$f = $createListEntryFcn($name, $f['pict_fname'], $f['id'], $pdb->Supplier()->ExpandRawUrl($f['urlTemplate'], "example"));
+		$f['urlExample'] = $pdb->Supplier()->ExpandRawUrl($f['urlTemplate'], "example");
   }
+
+	echo $pdb->RenderTemplate('page-editsuppliers.twig', array(
+		'suppliers' => $suppliers
+	));
 ?>
 
 <script type="text/javascript">

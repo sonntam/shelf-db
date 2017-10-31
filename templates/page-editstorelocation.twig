@@ -1,0 +1,89 @@
+{% extends 'ext-element-page.twig' %}
+
+{% set pageId = (pageId ?? 'editstorelocation') %}
+
+{% set langLabels = { mainHeader: 'editStoreLocations' } %}
+
+{% block pagePre %}
+{% endblock pagePre %}
+
+{% block pageContent %}
+  {# Title #}
+  {% if langLabels.mainHeader %}
+    <h2 class="text-center text-md-left" uilang="{{ langLabels.mainHeader }}">
+  {% else %}
+    <h2 class="text-center text-md-left">
+  {% endif %}
+  {{ title ?? '' }}</h2>
+
+  <p name="dialogMessage" uilang="popupStorelocationFilterHint"></p>
+
+  <form role="form">
+  	<div class="form-group">
+      <div class="container-fluid p-0">
+        <div class="row">
+          <div class="col-sm-4">
+            <button id="newStorelocation" class="btn btn-primary btn-block"><i class="fa fa-plus"></i>&nbsp;<span uilang="add"></span></button>
+          </div>
+          <div class="col-sm-8">
+            <input id="searchFilterInput" class="form-control" type="search" uilang="placeholder:popupStorelocationFilterPlaceholder">
+          </div>
+        </div>
+      </div>
+  	</div>
+  	<div id="searchFilterList" class="container-fluid list-group pr-0">
+      <style>
+        #searchFilterList .list-group-item {
+          display: flex
+        }
+      </style>
+
+      {% for storeLocation in storeLocations %}
+        {% embed 'ext-element-listedititem.twig' %}
+          {% set element = {
+            'btnEditName':'editStorelocation',
+            'btnCopyName':'copyStorelocation',
+            'btnDeleteName':'deleteStorelocation',
+            'nameTagName':'nameStorelocation',
+            'id': storeLocation.id,
+            'name': storeLocation.name,
+            'link': relRoot ~ 'pages/page-showsearchresults.php?searchMode=storageLocationId&search=' ~ storeLocation.id
+          } %}
+        {% endembed %}
+      {% endfor %}
+
+      {# Generate template for late item generation #}
+      {% set tmplItem %}
+        {% embed 'ext-element-listedititem.twig' %}
+        {% set element = {
+          'btnEditName':'editStorelocation',
+          'btnCopyName':'copyStorelocation',
+          'btnDeleteName':'deleteStorelocation',
+          'nameTagName':'nameStorelocation',
+          'id': '',
+          'name': '',
+          'link': 'tmpl'
+        } %}
+        {% endembed %}
+      {% endset %}
+  	</div>
+  </form>
+  <script type="text/javascript">
+  	$('#searchFilterList').btsListFilter('#searchFilterInput', {
+      itemChild: '[name=nameStorelocation]',
+      minLength: 2,
+      cancelNode: function() { return ''; '<span class="btn fa fa-remove form-control-feedback" aria-hidden="true" style="position: absolute;pointer-events: auto;top: 0.175rem;right: 0.875rem;"></span>'; },
+      emptyNode: function() { return '<a class="list-group-item well" href="#"><span>'+Lang.get('noSearchResults')+'</span></a>'; },
+      resetOnBlur: false,
+      initial: false
+    });
+
+    ShelfDB.Core.pageContainerAfterLoadTasks.push(function() {
+      ShelfDB.GUI.StoreLocation.Edit.setup({
+        nodeTemplate: '{{ tmplItem|e('js') }}'
+      });
+    });
+
+  </script>
+
+{% endblock pageContent %}

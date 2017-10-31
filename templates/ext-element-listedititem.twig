@@ -1,0 +1,33 @@
+<div class="list-group-item row ml-0 py-1 mr-0 pl-1 a align-items-center justify-content-center" style="overflow-x: auto">
+  <div class="col-auto px-0">
+    {% if element.imgPath %}
+    <img style="width: 64px; height: 64px; object-fit: contain;" src="{{ element.imgPath }}">
+    {% endif %}
+  </div>
+  <div class="col-auto col-sm">
+    {% if element.link %}
+    <a data-rel="pagelink" href="{{ element.link }}" class="d-inline-block">
+    {% endif %}
+      <h6 name="{{ element.nameTagName }}">{{ element.name }}</h6>
+    {% if element.link %}
+    </a>
+    {% endif %}
+    {% if element.secondaryLinkTagName %}
+    <br>
+    <a name="{{ element.secondaryLinkTagName }}" href="{{ element.secondaryLink }}">{{ element.secondaryLinkName ?? element.secondaryLink }}</a>
+    {% endif %}
+  </div>
+  <div class="col-sm-auto text-center">
+    <div class="btn-group" role="group" aria-label="Edit controls">
+      {% if element.btnCopyName %}
+      <button type="button" name="{{ element.btnCopyName }}"   value="{{ element.id }}" class="btn btn-light btn-sm"><i class="fa fa-copy"></i><br><span uilang="copy"></span></button>
+      {% endif %}
+      {% if element.btnEditName %}
+      <button type="button" name="{{ element.btnEditName }}"   value="{{ element.id }}" class="btn btn-light btn-sm"><i class="fa fa-edit"></i><br><span uilang="edit"></span></button>
+      {% endif %}
+      {% if element.btnDeleteName %}
+      <button type="button" name="{{ element.btnDeleteName }}" value="{{ element.id }}" class="btn btn-light btn-sm"><i class="fa fa-trash-o"></i><br><span uilang="delete"></span></button>
+      {% endif %}
+    </div>
+  </div>
+</div>
