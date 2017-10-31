@@ -44,30 +44,6 @@
      },
       pagerSelector: '#partListPager'
     });
-				var lastwidth = 9999;
-				$(window).on('resize', function() {
-					var width = $("#partList").closest('.ui-content').width();
-
-					if( width < 520 && lastwidth >= 520 ) {
-        $('#partList').jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
-					} else if( width >= 520 && lastwidth < 520) {
-        $('#partList').jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
-					}
-
-					if( width < 420 && lastwidth >= 420 ) {
-						$('#partList').jqGrid('hideCol',"footprint");
-						$("#chkHideGroups_super").hide();
-					} else if( width >= 420 && lastwidth < 420 ) {
-						$("#chkHideGroups_super").show();
-						$('#partList').jqGrid('showCol',"footprint");
-					}
-					lastwidth = width;
-
-	        $('#partList').jqGrid('setGridWidth', width);
-	      });
-
-				// Initial column hide/show
-				$(window).triggerHandler('resize');
   });
 </script>
 

@@ -180,6 +180,43 @@ var ShelfDB = (function(sdb,$) {
   	            }
   	 				 });
   				}
+
+          // Handle resizing of page
+          var lastwidth = 9999;
+          $(window).on('resize.sdb.page', function() {
+            console.log("Firing resize");
+            // Get width of pageContainert including padding
+            var $pc = $(sdb.Core.PageLoader.defaults.pageContainerSelector);
+            var $main = $('main');
+            var pcWidth = $pc.innerWidth()
+            var mainPadding = $main.innerWidth() - $main.width();
+            var width = pcWidth - mainPadding - 5; // Gap of 5 pixels
+
+            if( width < 520 && lastwidth >= 520 ) {
+              $(opts.listSelector).jqGrid('hideCol',['mininstock'/*,'datasheet'*/]);
+            } else if( width >= 520 && lastwidth < 520) {
+              $(opts.listSelector).jqGrid('showCol',['footprint','mininstock'/*,'datasheet'*/]);
+            }
+
+            if( width < 420 && lastwidth >= 420 ) {
+              $(opts.listSelector).jqGrid('hideCol','footprint');
+              $('#'+opts.groupingSwitch.id+'_super').hide();
+            } else if( width >= 420 && lastwidth < 420 ) {
+              $('#'+opts.groupingSwitch.id+'_super').show();
+              $(opts.listSelector).jqGrid('showCol','footprint');
+            }
+            lastwidth = width;
+
+            $(opts.listSelector).jqGrid('setGridWidth', width);
+          });
+
+          // Detach resize handler
+          $(document).one("pagebeforeload", function() {
+            $(window).off('resize.sdb');
+          });
+
+          // Initial column hide/show
+          $(window).triggerHandler('resize');
     		}
       }
     };
