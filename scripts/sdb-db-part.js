@@ -50,6 +50,7 @@ var ShelfDB = (function(sdb, $, Lang) {
             formatoptions: {
               idName: 'partid',
               baseLinkUrl: sdb.Core.basePath + 'pages/page-showpartdetail.php',
+              target: 'pagecontainer'
             },
             width: 40
           },
