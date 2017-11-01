@@ -159,7 +159,7 @@ var ShelfDB = (function(sdb, $) {
           reloadHeader: false
         });
 
-        $(document).on('click', '[data-rel=pagelink]', opts, _handlePageLink);
+        $(document).on('click', '[data-rel=pagelink], [target=pagecontainer]', opts, _handlePageLink);
 
         // Check if we do have an url after the hash, if so - navigate
         var path;
