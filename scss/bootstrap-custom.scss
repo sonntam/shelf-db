@@ -18,3 +18,24 @@ div.editcontrols {
   display: inherit;
   z-index: 10;
 }
+
+img.partimage {
+  width: 13rem;
+  height: 13rem;
+  object-fit: contain;
+
+  @include media-breakpoint-up(lg) {
+    width: 17rem;
+    height: 17rem;
+  }
+
+  @include media-breakpoint-down(lg) {
+    width: 13rem;
+    height: 13rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 15rem;
+    height: 15rem;
+  }
+}
