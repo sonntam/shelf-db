@@ -1,0 +1,23 @@
+<div class="m-1" name="pictureContainer" value="{{ image.id }}" style="vertical-align: top; display: inline-block; text-align: center">
+  <div>
+    <a href="#popupimg" data-rel="popup" data-position-to="window">
+      <img id="picture-{{ image.id }}" class="partinfo partImageListItem" data-other-src="{{ image.imgPath }}" src="{{ image.imgPath }}">
+    </a>
+  </div>
+  <div class="btn-group btn-group-sm" role="group" aria-label="Image controls" data-toggle="buttons">
+    <label class="checkbox btn btn-secondary {{ (image.master ? 'active' : '' )}}">
+      <input type="checkbox" {{ (image.master ? 'checked="checked"' : '') }} altname="masterPicCheckbox" name="masterPicSelect-{{ image.id }}" id="masterPicSelect-{{ image.id }}" autocomplete="off"><span uilang="masterImage"></span>
+    </label>
+    <button name="deletePicture" value="{{ image.id }}" class="btn btn-secondary" type="button" uilang="delete"></button>
+  </div>
+</div>
+
+{#
+<div name="pictureContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
+  <a name="pictureContainerAddButton" href="#">
+    <div class="partinfo partImageListItem" style="font-size: 1em; width: 10em; height: 10em">
+      <i class="fa fa-plus" style="font-size: 10em"></i>
+    </div>
+  </a>
+</div>
+#}

@@ -1,6 +1,18 @@
-{% extends 'ext-element-page.twig' %}
+{#
+  part
+    .name
+    .category .name .id
+    .showQr
+    .qrImgData <?php echo $qrImgData = $pdb->Part()->CreateQRCode($data['partid']); ?>
+    .supplierImgFile
+    .mainPicFile
+    .footprintImgFile
 
-{% set pageId = (pageId ?? 'editsuppliers') %}
+#}
+{% extends 'ext-element-page.twig' %}
+{% block pageForwarding %}
+{% endblock %}
+{% set pageId = (pageId ?? 'showpartdetail') %}
 
 {% set langLabels = { mainHeader: 'editSuppliers' } %}
 
@@ -11,33 +23,334 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col">
+        <h4 name="showName" class="mb-1">{{ part.name }}</h4>
+        <h6 class="mt-0 pt-0">{{ part.category.name }}</h6>
       </div>
       <div class="col-auto">
+        <button name="editName"   class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i></button>
+        <button name="copyPart"   class="btn btn-secondary btn-sm"><i class="fa fa-copy"></i></button>
+        <button name="deletePart" class="btn btn-secondary btn-sm"><i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-auto text-center">
+        <a id="popuplink" href="#popupimg" data-rel="popup">
+          <img class="partimage" data-other-src="{{ part.mainPicFile }}" src="{{ part.mainPicFile }}">
+          {% if part.showQr %}
+            <br>
+            <img data-other-src="{{ part.qrImgData }}" src="{{ part.qrImgData }}">
+          {% endif %}
+        </a>
+      </div>
+      <div class="col-sm">
+        <!-- Storage location -->
+        <div class="row">
+          <div class="col">
+            <label uilang="storageLocation" for="showStorageLocation"></label>
+          </div>
+        </div>
+        <div class="row no-gutters">
+          <div class="col">
+            <input id="showStorageLocation" class="form-control" name="showStoreloc" readonly="readonly" type="text" value="{{ part.storeloc|e }}">
+          </div>
+          <div class="col-auto">
+            <button name="editStoreloc" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+          </div>
+        </div>
+
+        <!-- Footprint -->
+        <div class="row mt-2">
+          <div class="col">
+            <label uilang="footprint" for="showFootprint"></label>
+          </div>
+        </div>
+        <div class="row no-gutters">
+          <div class="col-auto">
+            <a href="#popupimg" data-rel="popup" data-position-to="window">
+              <img data-other-src="{{ part.footprintImgFile }}" src="{{ part.footprintImgFile }}" name="imgFootprint" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
+            </a>
+          </div>
+          <div class="col">
+            <input id="showFootprint" class="form-control" name="showFootprint" readonly="readonly" type="text" value="{{ part.footprint|e }}">
+          </div>
+          <div class="col-auto">
+            <button name="editFootprint" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+          </div>
+        </div>
+
+        <!-- Amount available/stored -->
+        <div class="row">
+          <!-- Amount available -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label for=""><span uilang="amountAvailable"></span>
+                  <a tabindex="0"
+                    uilang="data-content:helpTotalInStock"
+                    role="button" link="#popupInfoSupplierUrl"
+                    data-toggle="popover"
+                    data-trigger="focus"
+                    class="btn btn-secondary btn-sm"
+                    title="">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col">
+                <input class="form-control" name="showTotal" type="text" readonly=readonly value="{{ part.totalstock }}">
+              </div>
+              <div class="col-auto">
+                <div class="btn-group" role="group" aria-label="Total number controls">
+                  <button name="addTotal" class="btn btn-secondary"><i class="fa fa-plus"></i></button>
+                  <button name="subTotal" class="btn btn-secondary"><i class="fa fa-minus"></i></button>
+                  <button name="editTotal" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Stock available -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label for=""><span uilang="amountStored"></span>
+                  <a tabindex="0"
+                    uilang="data-content:helpInStock"
+                    role="button" link="#popupInfoSupplierUrl"
+                    data-toggle="popover"
+                    data-trigger="focus"
+                    class="btn btn-secondary btn-sm"
+                    title="">
+                    <i class="fa fa-info"></i>
+                  </a>
+                </label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col">
+                <input class="form-control" name="showStock" type="text" readonly=readonly value="{{ part.instock }}">
+              </div>
+              <div class="col-auto">
+                <div class="btn-group" role="group" aria-label="Stock number controls">
+                  <button name="addStock" class="btn btn-secondary"><i class="fa fa-plus"></i></button>
+                  <button name="subStock" class="btn btn-secondary"><i class="fa fa-minus"></i></button>
+                  <button name="editStock" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supplier / Partnr -->
+        <div class="row">
+          <!-- Supplier -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label uilang="supplier"></label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col-auto">
+                <a href="#popupimg" data-rel="popup" data-position-to="window">
+                  <img data-other-src="{{ part.supplierImgFile }}" src="{{ part.supplierImgFile }}" name="imgSupplier" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
+                </a>
+              </div>
+              <div class="col">
+                <input class="form-control" name="showSupplier" url="{{ part.urlTemplate }}" supplierId="{{ part.id_supplier }}" type="text" readonly="readonly" value="{{ part.supplier_name }}">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-secondary" name="editSupplier"><i class="fa fa-edit"></i></button>
+              </div>
+            </div>
+          </div>
+          <!-- Partnr -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label uilang="partNumber"></label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col">
+                <input class="form-control" name="showPartNumber" type="text" readonly="readonly" value="{{ part.supplierpartnr }}">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-secondary" name="editPartNumber"><i class="fa fa-edit"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price / Least amount -->
+        <div class="row">
+          <!-- Price -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label uilang="price"></label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col">
+                <input class="form-control" name="showPrice" floatvalue="{{ part.price }}" value="{{ part.priceFormatted }}" type="text" readonly="readonly">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-secondary" name="editPrice"><i class="fa fa-edit"></i></button>
+              </div>
+            </div>
+          </div>
+          <!-- Least amount -->
+          <div class="col-lg-6 mt-2">
+            <div class="row">
+              <div class="col">
+                <label uilang="amountLeast"></label>
+              </div>
+            </div>
+            <div class="row no-gutters">
+              <div class="col">
+                <input class="form-control" name="showMinStock" type="text" readonly=readonly value="{{ part.mininstock }}">
+              </div>
+              <div class="col-auto">
+                <div class="btn-group" role="group" aria-label="Total number controls">
+                  <button name="editMinStock" class="btn btn-secondary"><i class="fa fa-edit"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <div class="row mt-2">
+      <div class="col">
+        <div class="card">
+          <div class="p-0 pl-3 card-header d-flex justify-content-between" id="headingDescription">
+            <div class="align-self-center">
+              <a style="vertical-align: baseline;" data-toggle="collapse" class="btn btn-default p-0 btn-sm text-right" href="#collapseDescription" aria-label="Expand/Collapse" aria-expanded="true" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+              </a>
+              <a uilang="description" class="" data-toggle="collapse" href="#collapseDescription" aria-expanded="true" aria-controls="collapseDescription"></a>
+            </div>
+            <div class="align-self-center">
+              <button type="button" class="b-0 btn btn-secondary" style="border-bottom: 0;">
+                <i class="fa fa-edit"></i>
+              </button>
+            </div>
+          </div>
+          <div id="collapseDescription" class="collapse show" aria-labelledby="headingDescription">
+            <div class="card-body">
+              {{ part.comment|e }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datasheets -->
+    <div class="row mt-2">
+      <div class="col">
+        <div class="card">
+          <div class="p-1 pl-3 card-header d-flex" id="headingDatasheets">
+            <div class="align-self-center">
+              <a style="vertical-align: baseline;" data-toggle="collapse" class="btn btn-default p-0 btn-sm text-right collapsed" href="#collapseDatasheets" aria-label="Expand/Collapse" aria-expanded="false" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+              </a>
+              <a uilang="datasheets" class="collapsed" data-toggle="collapse" href="#collapseDatasheets" aria-expanded="false" aria-controls="collapseDatasheets"></a>
+            </div>
+          </div>
+          <div id="collapseDatasheets" class="collapse" aria-labelledby="headingDatasheets">
+            <div class="card-body" name="partDatasheetsListView">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part pictures -->
+    <div class="row mt-2">
+      <div class="col">
+        <div class="card">
+          <div class="p-1 pl-3 card-header d-flex" id="headingImages">
+            <div class="align-self-center">
+              <a style="vertical-align: baseline;" data-toggle="collapse" class="btn btn-default p-0 btn-sm text-right collapsed" href="#collapseImages" aria-label="Expand/Collapse" aria-expanded="false" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+              </a>
+              <a uilang="images" class="collapsed" data-toggle="collapse" href="#collapseImages" aria-expanded="false" aria-controls="collapseImages"></a>
+            </div>
+          </div>
+          <div id="collapseImages" class="collapse" aria-labelledby="headingImages">
+            <div class="card-body" name="partPictureListView">
+              {% for image in part.images %}
+                {% embed 'ext-element-imgitem.twig' %}
+                {% endembed %}
+              {% endfor %}
+              <!-- The add button -->
+              <div class="m-1" name="pictureContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
+                <a name="pictureContainerAddButton" href="#">
+                  <div class="partImageListItem">
+                    <i class="fa fa-plus" style="font-size: 10em"></i>
+                  </div>
+                </a>
+              </div>
+
+              {# Generate template for late item generation #}
+              {% set tmplItem %}
+                {% embed 'ext-element-imgitem.twig' %}
+                {% set image = {
+                  'id':'tmpl',
+                  'master':'false',
+                  'imgPath':'tmpl'
+                } %}
+                {% endembed %}
+              {% endset %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="row mt-2">
+      <div class="col">
+        <div class="card">
+          <div class="p-1 pl-3 card-header d-flex" id="headingHistory">
+            <div class="align-self-center">
+              <a style="vertical-align: baseline;" data-toggle="collapse" class="btn btn-default p-0 btn-sm text-right collapsed" href="#collapseHistory" aria-label="Expand/Collapse" aria-expanded="false" role="button">
+                <i class="fa" aria-hidden="true"></i>
+                <span class="sr-only" uilang="expand"></span>
+              </a>
+              <a uilang="history" class="collapsed" data-toggle="collapse" href="#collapseHistory" aria-expanded="false" aria-controls="collapseHistory"></a>
+            </div>
+          </div>
+          <div id="collapseHistory" class="collapse" aria-labelledby="headingHistory">
+            <div class="card-body" name="partHistory">
+              {{ part.historyString|raw }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-{% endblock pageContent %}
-
-
-<div data-role="header" data-position="fixed">
-  <h1 uilang="partTitle"></h1>
-  <a href="#navPanel" class="ui-btn"><i class="fa fa-bars"></i></a>
-</div>
-<div role="main" class="ui-content">
-  <div class="partinfo ui-body ui-body-a ui-corner-all ui-shadow">
-    <div class="flexBoxTextInputEditControl">
-      <div class="flexContainer">
-        <h3 name="showName" style="margin-bottom: 0.1em"><?php echo $name; ?></h3>
-        <h5 style="margin-top: 0em">in <?php echo $categoryString; ?></h5>
-      </div>
-      <input name="editName" type="button" data-icon="edit" data-iconpos="notext">
-      <input name="copyPart" type="button" data-icon="fa-clone" data-iconpos="notext">
-      <input name="deletePart" type="button" data-icon="delete" data-iconpos="notext">
-    </div>
+  <script type="text/javascript">
+    $(function() {
+      $('#showpartdetail [data-toggle=popover]').popover();
+      ShelfDB.GUI.Part.PartDetails.setup({
+        partId: {{ part.id }},
+        pictureNodeTemplate: '{{ tmplItem|e('js') }}'
+      });
+    });
+  </script>
+{#
     <div class="ui-grid-a">
       <div class="ui-block-a partimageblock">
         <div class="partimagewrapper">
-          <a id="popuplink" href="#popupimg" data-rel="popup" data-position-to="window">
             <img class="partimage" data-other-src="<?php echo $part['mainPicFile']; ?>" src="<?php echo $part['mainPicFile']; ?>">
             <?php
               if( \ConfigFile\QRCode::$enable ) { ?>
@@ -45,7 +358,6 @@
                 <img data-other-src="<?php echo $qrImgData = $pdb->Part()->CreateQRCode($data['partid']); ?>" src="<?php echo $qrImgData; ?>">
               <?php }
             ?>
-          </a>
         </div>
         <!-- Popup image viewer -->
         <div data-role="popup" id="popupimg" class="photopopup" data-overlay-theme="a" data-corners="false" data-tolerance="30,15">
@@ -208,3 +520,5 @@
     <img src="" alt="">
   </div>
 </div>
+#}
+{% endblock pageContent %}

@@ -274,7 +274,7 @@ var ShelfDB = (function(sdb, $, Lang) {
           return false;
       }
 
-      return newval;
+      return true;
     };
 
     // Return the column model for jqGrid for the parts view
