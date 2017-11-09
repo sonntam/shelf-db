@@ -13,10 +13,26 @@
 @import "scss/footer";
 @import "scss/popup";
 
+/* Checkboxes in control-button groups */
+.btn-group {
+  label.checkbox {
+    margin-bottom: 0px;
+  }
+}
+
 /* Edit controls for category tree */
 div.editcontrols {
   display: inherit;
   z-index: 10;
+}
+
+.partImageListItem {
+  width: 10em;
+  height: 10em;
+  object-fit: contain;
+  border-width: medium;
+  border-color: dimgrey;
+  border-style: solid;
 }
 
 img.partimage {
