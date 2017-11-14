@@ -226,6 +226,7 @@ var ShelfDB = (function(sdb, $) {
       pageContainerBeforeLoadTasks: pageContainerBeforeLoadTasks,
 
       uploadFile: function(opts, event) {
+
         var defaults = {
           uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
           files: null,
@@ -306,8 +307,7 @@ var ShelfDB = (function(sdb, $) {
           targetType: null, //'footprintImage', ...
           tempFilename: null,
           success: null,
-          error: null,
-          data: null
+          error: null
         };
 
         opts = $.extend(true,{},defaults,opts);
@@ -326,7 +326,7 @@ var ShelfDB = (function(sdb, $) {
           if( typeof data.error === 'undefined') {
             // Success -> create new footprint entry in database
             if( typeof opts.success === 'function' )
-              opts.success(data, opts.data);
+              opts.success(data);
           } else {
             // Handle error
             sdb.GUI.Core.waitAnimationReferenced('hide');
@@ -342,7 +342,7 @@ var ShelfDB = (function(sdb, $) {
           sdb.GUI.Core.waitAnimationReferenced('hide');
 
           if( typeof opts.error === 'function' )
-            opts.error(errorThrown, opts.data);
+            opts.error(errorThrown);
         }
       });
       }
