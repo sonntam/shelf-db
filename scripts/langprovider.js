@@ -152,6 +152,7 @@ var Lang = (function(){
         register: 'Registrieren',
         administration: 'Administration',
         uploadImageLabel: 'Bild hochladen',
+        upload: 'Hochladen',
         description: 'Beschreibung',
         datasheets: 'Datenblätter',
         supplier: 'Lieferant',
