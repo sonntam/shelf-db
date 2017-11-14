@@ -19,7 +19,7 @@ var ShelfDB = (function(sdb,$) {
     var _addPictureContainer = function(opts, picId, picFile, picThumbFile) {
       debugger;
       $(opts.pictureNodeTemplate).insertBefore(
-        $(opts.pictureListViewSelector+'[value=add]')
+        $(opts.pictureAddElementSelector).attr('value',picId)
       );
 
       Lang.searchAndReplace();
@@ -93,9 +93,12 @@ var ShelfDB = (function(sdb,$) {
 
             pictureListViewSelector: '[name=partPictureListView]',
             pictureAddBtnSelector: '[name=pictureContainerAddButton]',
+            pictureElementSelector: '[name=pictureContainer]',
+            pictureAddElementSelector: '[name=pictureContainer][value=add]',
             pictureElDeleteBtnSelector: 'button[name=deletePicture]',
             pictureElMasterBtnSelector: 'input[altname=masterPicCheckbox]',
             partImageElSelector: 'img.partImageListItem',
+
             partId: null,
             pictureNodeTemplate: ''
           };
