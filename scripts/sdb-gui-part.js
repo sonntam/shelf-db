@@ -18,9 +18,16 @@ var ShelfDB = (function(sdb,$) {
 
     var _addPictureContainer = function(opts, picId, picFile, picThumbFile) {
       debugger;
-      $(opts.pictureNodeTemplate).insertBefore(
-        $(opts.pictureAddElementSelector).attr('value',picId)
-      );
+      var pnTemplate = $(opts.pictureNodeTemplate);
+
+      pnTemplate.attr('value',picId);
+      //pnTemplate.find('img').attr('id','picture-'+picId);
+      pnTemplate.find('img').attr('src',picFile);
+      pnTemplate.find('img').attr('data-other-src',picThumbFile);
+      pnTemplate.find(opts.pictureElDeleteBtnSelector).attr('value',picId);
+      pnTemplate.find(opts.pictureElMasterBtnSelector).attr('value',picId);
+
+      pnTemplate.insertBefore( $(opts.pictureAddElementSelector) )
 
       Lang.searchAndReplace();
     };
@@ -124,7 +131,7 @@ var ShelfDB = (function(sdb,$) {
       						// data.imageFileName
       						// data.pictureId
       						// data.thumbFileName
-      						_addPictureContainer(opts, data.pictureId, data.imageFileName, data.imageFileName);
+      						_addPictureContainer(opts, data.pictureId, data.imageFullPath, data.imageFullPath);
       					}
       				}
       			});
@@ -178,7 +185,10 @@ var ShelfDB = (function(sdb,$) {
       			e.preventDefault();
       			e.stopPropagation();
 
-      			if( this.checked ) return;
+      			if( this.checked ) {
+              // Do not allow unselecting
+              return false;
+            }
 
       			var that = this;
 

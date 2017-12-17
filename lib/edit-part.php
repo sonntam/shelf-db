@@ -72,7 +72,8 @@ $_REQUEST['id']"763"
           $response = array_replace_recursive($response, array(
             'success' => true,
             'pictureId' => $newid,
-            'imageFileName' => $data['imageFileName']
+            'imageFileName' => $data['imageFileName'],
+            'imageFullPath' => $pdb->RelRoot() . 'img/parts/' . $data['imageFileName']
           ));
         }
       }

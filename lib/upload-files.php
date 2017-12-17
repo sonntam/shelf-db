@@ -45,6 +45,7 @@
   }
 
   $uploadFullDir = joinPaths($pdb->AbsRoot(),$uploadDir);
+  $uploadRelDir  = joinPaths($pdb->RelRoot(),$uploadDir);
 
   if( sizeof($_FILES) > 0) {  // Upload
     $error = false;
@@ -61,7 +62,7 @@
 
         if( move_uploaded_file($file['tmp_name'], $uniqueFile ) )
         {
-            $files[] = array('fullpath' => joinPaths($uploadDir,$uniquePathParts['basename']),
+            $files[] = array('fullpath' => convertPathSepToForwardSlash(joinPaths($uploadRelDir,$uniquePathParts['basename'])),
                              'name' => $uniquePathParts['basename'] );
         }
         else
@@ -81,8 +82,9 @@
 
       if( $targetFileExists
         || rename(joinPaths(dirname(__DIR__),$sourceFile), joinPaths($uploadFullDir, $sourcePathParts['basename']) ) ) {
-        $files[] = array('fullpath' => joinPaths($uploadDir, $sourcePathParts['basename']),
-          'name' => $sourcePathParts['basename'] );
+        $files[] = array(
+          'fullpath' => convertPathSepToForwardSlash(joinPaths($uploadRelDir, $sourcePathParts['basename'])),
+          'name'     => $sourcePathParts['basename'] );
         } else {
           $error = true;
         }

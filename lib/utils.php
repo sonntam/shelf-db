@@ -226,6 +226,10 @@ function joinPaths() {
     return ($frontSep ? DIRECTORY_SEPARATOR : "" ).join(DIRECTORY_SEPARATOR, $paths);
 }
 
+function convertPathSepToForwardSlash($path) {
+  return str_replace('\\', '/', $path);
+}
+
 function buildOptionHTMLFromArray($list, $valueKey, $nameKey) {
 
   foreach( $list as &$el ) {
