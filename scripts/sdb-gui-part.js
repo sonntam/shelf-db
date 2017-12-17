@@ -104,7 +104,7 @@ var ShelfDB = (function(sdb,$) {
             pictureAddElementSelector: '[name=pictureContainer][value=add]',
             pictureElDeleteBtnSelector: 'button[name=deletePicture]',
             pictureElMasterBtnSelector: 'input[altname=masterPicCheckbox]',
-            partImageElSelector: 'img.partImageListItem',
+            partImageElSelector: 'img.partimage',
 
             partId: null,
             pictureNodeTemplate: ''
@@ -197,15 +197,17 @@ var ShelfDB = (function(sdb,$) {
       				type: 'POST',
       				dataType: 'json',
       				data: {
-      					id: $(this).attr('id').split('-')[1],
+      					id: $(this).attr('value'),
       					method: 'setMasterPic'
       				}
       			}).done(function(data) {
       				// Update gui
       				if( data && data.success ) {
       					// Remove checks from all other checkboxes and check own
+      					$(opts.pictureElMasterBtnSelector).closest('label').removeClass('active');
       					$(opts.pictureElMasterBtnSelector).prop('checked', false);
       					$(that).prop('checked', true);
+                $(that).closest('label').addClass('active');
 
       					// Update main image right away
       					$(opts.partImageElSelector).attr('src',$('#picture-'+data.id).attr('src'));
