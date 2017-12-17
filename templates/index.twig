@@ -64,6 +64,14 @@
           {% endblock %}
         {% endembed %}
 
+        <!-- Image popup viewer -->
+        {% embed 'ext-element-imgPopup.twig' %}
+        {% set image = {
+          'popupId':'universalImagePopup',
+          'imgPath':''
+        } %}
+        {% endembed %}
+
         <!-- PAGE END -->
       </div>
     </div>

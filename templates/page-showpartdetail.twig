@@ -34,13 +34,16 @@
     </div>
     <div class="row">
       <div class="col-sm-auto text-center">
-        <a id="popuplink" href="#popupimg" data-rel="popup">
-          <img class="partimage" data-other-src="{{ part.mainPicFile }}" src="{{ part.mainPicFile }}">
+        <!-- Part Main Image -->
+        <a href="#" data-toggle="universalPopup">
+          <img class="partimage" src="{{ part.mainPicFile }}">
+        </a>
           {% if part.showQr %}
             <br>
-            <img data-other-src="{{ part.qrImgData }}" src="{{ part.qrImgData }}">
+            <a href="#" data-toggle="universalPopup">
+              <img src="{{ part.qrImgData }}">
+            </a>
           {% endif %}
-        </a>
       </div>
       <div class="col-sm">
         <!-- Storage location -->
@@ -66,8 +69,8 @@
         </div>
         <div class="row no-gutters">
           <div class="col-auto">
-            <a href="#popupimg" data-rel="popup" data-position-to="window">
-              <img data-other-src="{{ part.footprintImgFile }}" src="{{ part.footprintImgFile }}" name="imgFootprint" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
+            <a href="#" data-toggle="universalPopup">
+              <img src="{{ part.footprintImgFile }}" name="imgFootprint" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
             </a>
           </div>
           <div class="col">
@@ -153,8 +156,8 @@
             </div>
             <div class="row no-gutters">
               <div class="col-auto">
-                <a href="#popupimg" data-rel="popup" data-position-to="window">
-                  <img data-other-src="{{ part.supplierImgFile }}" src="{{ part.supplierImgFile }}" name="imgSupplier" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
+                <a href="#" data-toggle="universalPopup">
+                  <img src="{{ part.supplierImgFile }}" name="imgSupplier" style="object-fit: contain; width: 2.375em; height: 2.375em; margin-right: 0.3em">
                 </a>
               </div>
               <div class="col">

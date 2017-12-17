@@ -10,7 +10,7 @@ var ShelfDB = (function(sdb,$) {
       retstr = '<img style="max-width: 32px; max-height: 32px; height:auto; '
       + 'width:auto" data-other-src="'+rowObject.mainPicFile+'" src="'+rowObject.mainPicThumbFile+'">';
 
-      retstr = '<a href="#imgViewer" data-rel="popup" data-position-to="window">'
+      retstr = '<a href="#" data-toggle="universalPopup">'
                 + retstr + '</a>';
 
       return retstr;
