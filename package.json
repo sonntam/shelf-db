@@ -19,7 +19,8 @@
     "jquery-validation": "^1.17.0",
     "jshint-html-reporter": "^0.2.5",
     "popper.js": "^1.12.3",
-    "requirejs": "^2.3.5"
+    "requirejs": "^2.3.5",
+    "sass": "^1.13.0"
   },
   "dependencies": {
     "grunt-cli": "^1.2.0"

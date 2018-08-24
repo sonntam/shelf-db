@@ -24,9 +24,11 @@ Installation
 ------------
 
  1. Extract the repository contents into any folder of a webserver meeting the requirements above.
- 2. Go into the `./config` folder and edit the `config.json` to meet your desired sql server settings.
- 3. Launch the `index.php` main page in a web browser. A standard database structure will be created where the database name given in the config file is used.
- 4. Ready for use!
+ 2. Go into the `./config` folder and edit the `config.json` to meet your desired sql server settings. If you don't want to use minified file versions add `"useMinified": false` to the config file.
+ 3. Resolve the npm dependencies by running `npm install` within the project folder.
+ 5. Build the SASS files and minified file versions using `npx grunt all`. By default, the minified and compiled files are copied to the `build` directory.
+ 6. Launch the `index.php` main page in a web browser. A standard database structure will be created where the database name given in the config file is used.
+ 7. Ready for use!
 
 Used libraries
 --------------

@@ -58,7 +58,13 @@ namespace {
       return $ret;
     }
 
-    public static function LogPhpError($errno, $errstr, $errfile, $errline, $errcontext)
+    public static function ShutdownPhpFunction() {
+      $error = error_get_last();
+      if ( $error["type"] == E_ERROR )
+        LogPhpError( $error["type"], $error["message"], $error["file"], $error["line"], null );
+    }
+
+    public static function FormatPhpError($errno, $errstr, $errfile, $errline, $errcontext)
     {
       if( Log::LOGLEVEL["error"] <= Log::LOGLEVEL[ConfigFile\Log::$logLevel] )
       {
@@ -67,6 +73,19 @@ namespace {
           . Log::LOG_TEXT_PREFIX . $errstr . "\n";
       }
       return true;
+
+    }
+
+    public static function LogPhpError($errno, $errstr, $errfile, $errline, $errcontext)
+    {
+      Log::FormatPhpError( $errno, $errstr, $errfile, $errline, $errcontext );
+
+      Log::PrintTerminationMessage("Shelf-DB Critical error",
+        "Critical error...",
+        "A critical error occured in file ". $errfile ." on line ". $errline .":\n\n".
+        $errstr."\n\nHere is the full log:\n\n".Log::FetchLogContent()
+      );
+      exit;
     }
 
     public static function LogPhpException( Throwable $e ) {
@@ -77,12 +96,6 @@ namespace {
                                     */
       //exit;
       Log::LogPhpError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), null );
-      Log::PrintTerminationMessage("Shelf-DB Critical error",
-        "Critical error...",
-        "A critical error occured in file ". $e->getFile() ." on line ".$e->getLine() .":\n\n".
-        $e->getMessage()."\n\nHere is the full log:\n\n".Log::FetchLogContent()
-      );
-      exit;
     }
 
     private static function BuildTracePrefix($step) {
