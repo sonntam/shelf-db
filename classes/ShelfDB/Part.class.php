@@ -672,7 +672,7 @@ namespace ShelfDB {
       $query = "SELECT p.*, p.id, p.id_category, p.name, p.instock, p.mininstock, "
         ."COALESCE(f.name, '-') AS footprint, "
         ."s.id AS storelocid, s.name AS storeloc, "
-        ."su.name AS supplier_name, c.name AS category_name, "
+        ."COALESCE(su.name, '-') AS supplier_name, c.name AS category_name, "
         ."pic.pict_id_arr, pic.pict_fname_arr, pic.pict_height_arr, pic.pict_width_arr, "
         ."pic.pict_masterpict_arr, pic.tn_id_arr, pic.tn_fname_arr, pic.tn_obsolete_arr, "
         ."pic.tn_t_arr,"
