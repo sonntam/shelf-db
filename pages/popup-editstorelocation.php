@@ -109,7 +109,7 @@
       </div>
       <form id="storeLocationEditForm">
         <input type="hidden" name="method" id="method" value="<?php echo $formData['method']; ?>">
-        <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo $formData['changeToDefaultImg']; ?>">
+        <input type="hidden" name="changeToDefaultImg" id="changeToDefaultImg" value="<?php echo isset( $formData['changeToDefaultImg'] ) ? $formData['changeToDefaultImg'] : ''; ?>">
         <input type="hidden" name="imageFileName" id="imageFileName" value="">
         <input type="hidden" name="id" id="id" value="<?php echo $formData['id']; ?>">
         <div class="modal-body">
