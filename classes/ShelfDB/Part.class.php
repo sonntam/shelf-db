@@ -124,7 +124,7 @@ namespace ShelfDB {
       $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       // Update history
-      if( $this->db()->affected_rows > 0 ) {
+      if( $this->db()->sql->affected_rows > 0 ) {
         $this->db()->History()->Add(0, 'P', 'edit', 'storeLocation', array(
           "id" => $oldid,
           "name" => $this->db()->StoreLocation()->GetNameById($oldid)
