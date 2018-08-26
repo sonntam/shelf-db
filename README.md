@@ -46,7 +46,6 @@ Used libraries
  - [TiGR/twig-preprocessor](https://github.com/TiGR/twig-preprocessor/tree/master/lib) - MIT License
  - [Bootstrap](http://getbootstrap.com/) - MIT License
  - [FezVrasta/popper.js](https://github.com/FezVrasta/popper.js) - MIT License
-
  - [stefanocudini/bootstrap-list-filter](https://github.com/stefanocudini/bootstrap-list-filter) - MIT License
 
  Special thanks to all the people that contributed to these projects.

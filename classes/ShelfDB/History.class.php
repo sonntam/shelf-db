@@ -47,7 +47,7 @@ namespace ShelfDB {
 
       switch( $elementType ) {
         case 'P':
-          $query = "SELECT u.name AS username, h.*, p.* FROM history h"
+          $query = "SELECT COALESCE(u.name, 'Anonymous') AS username, h.*, p.* FROM history h"
             ." LEFT JOIN parts p ON p.id = h.itemid"
             ." LEFT JOIN users u ON h.userid = u.id"
             ." WHERE h.itemtype = '$elementType' AND h.itemid = $elementId"
