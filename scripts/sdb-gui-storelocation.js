@@ -13,7 +13,7 @@ var ShelfDB = (function(sdb,$) {
 
     var _updateItem = function(item, data) {
       item.find(data.nameTagSelector).text( data.name );
-      item.find('a').attr('href', sdb.Core.basePath + 'pages/page-showsearchresults.php?type=footprint&id='+data.id);
+      item.find('a').attr('href', sdb.Core.basePath + 'pages/page-showsearchresults.php?searchMode=storageLocationId&search='+data.id);
       item.find('button').attr('value', data.id);
     }
 
@@ -73,8 +73,8 @@ var ShelfDB = (function(sdb,$) {
               var entryEl = $(evt.currentTarget).closest(opts.listItemSelector);
               var entryName = entryEl.first().find(opts.nameTagSelector).first().text();
               ShelfDB.GUI.Popup.confirmPopUp({
-    				    header: Lang.get('editFootprintDelete'),
-    				    text: (Lang.get('editFootprintDeleteHint',true))(entryName),
+    				    header: Lang.get('editStoreLocationDelete'),
+    				    text: (Lang.get('editStoreLocationDeleteHint',true))(entryName),
     				    confirmButtonText: Lang.get('delete'),
     				    confirm: function() {  // Confirmed delete operation
     							// TODO: Database action
