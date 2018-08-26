@@ -134,7 +134,7 @@ switch ($_POST['method']) {
           'success' => true,
           'name' => $name,
           'id' => $newId['id'],
-          'picId' => $newId['picid']
+          'picId' => $newId['picId']
         ));
 
       } else {
