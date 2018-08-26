@@ -49,7 +49,17 @@ $_REQUEST['id']"763"
   // Actions
   switch($data['method']) {
     case 'add':
-      # code...
+
+      $newItem = $p->Create($data['name'], $data['category_name'],
+        $data['footprint'], $data['storeloc'], 0,
+        $data['mininstock'], $data['totalstock'], $data['instock'] );
+
+      if( $newItem ) {
+        $response = array_replace_recursive($response, array(
+          'success' => true,
+          'newid' => $newItem['id']
+        ));
+      }
       break;
 
     case 'delete':

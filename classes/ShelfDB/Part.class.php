@@ -16,6 +16,35 @@ namespace ShelfDB {
       return $this->db;
     }
 
+    public function Create( $name, $categoryId, $footprintId, $storelocId,
+        $supplierId, $minAmount, $totalAmount, $availableAmount ) {
+      $name = trim($name);
+      $name = $this->db()->sql->real_escape_string( $name );
+      $query = "INSERT INTO `parts` (`name`, `instock`, `mininstock`, ".
+        "`totalstock`, `id_footprint`, `id_storeloc`, `id_supplier`, ".
+        "`id_category`, `comment`, `supplierpartnr`) VALUES ".
+        "('$name', '$availableAmount', '$minAmount', '$totalAmount', ".
+        "'$footprintId', '$storelocId', '$supplierId', '$categoryId', ".
+        " '', '' )";
+
+      $res = $this->db()->sql->query($query);
+
+      if( $res === true ) {
+        $newid = $this->db()->sql->insert_id;
+
+        $fp = array('id' => $newid, 'name' => $name);
+
+        // History update
+        $this->db()->History()->Add($newid, 'P', 'add', 'object', '', $fp);
+
+        return $fp;
+
+      } else {
+        \Log::WarningSQLQuery($query, $this->db()->sql);
+        return false;
+      }
+    }
+
     public function FormatPrice( $priceVal ) {
       $str = "";
       $str = number_format( $priceVal,
