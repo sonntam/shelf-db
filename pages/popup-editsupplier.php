@@ -2,7 +2,8 @@
   require_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
 
   $data = array_replace_recursive( array(
-    "method" => "add"
+    "method" => "add",
+    "id" => null
   ), $_GET, $_POST);
 
   $formData['method'] = $data['method'];
