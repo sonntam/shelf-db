@@ -76,7 +76,7 @@ namespace ShelfDB {
       $el = $this->GetById();
 
       // Check if only one element was returned. If so, build array
-      if( $el && !is_array($el[0]) )
+      if( $el && !isset($el[0]) )
       {
         $newel = array($el);
         return $newel;

@@ -7,7 +7,7 @@ namespace ShelfDB {
     private $isLoggedIn = false;
 
     private const hashAlgorithm = PASSWORD_BCRYPT;
-    private const hashOptions   = null;
+    private const hashOptions   = array();
 
     /** Constructor */
     function __construct($dbobj) {
