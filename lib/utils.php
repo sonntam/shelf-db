@@ -207,6 +207,10 @@ function stempnam($folder, $prefix, $suffix ) {
 
 }
 
+function absRoot() {
+  return dirname(__DIR__);
+}
+
 function joinPaths() {
     $args = func_get_args();
     $paths = array();
