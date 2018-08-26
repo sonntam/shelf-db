@@ -13,7 +13,7 @@
 
   // Get the data
   $pdb = ShelfDB::Instance();
-  $fp = $pdb->StoreLocation()->GetById($_GET["id"]);
+  $fp = $pdb->StoreLocation()->GetById($data["id"]);
 
   switch( strtolower($data["method"]) ) {
     case "get":
