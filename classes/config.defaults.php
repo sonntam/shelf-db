@@ -52,6 +52,12 @@ namespace ConfigFile {
 		static public $logLevel = "error";
 
 		static public $logDateTime = false;
+
+		/** @var bool Enable logging */
+		static $enableFileLogging = false;
+
+		/** @var string Path in which logging files will be created */
+		static $loggingDir = '';
 	}
 
 	/**

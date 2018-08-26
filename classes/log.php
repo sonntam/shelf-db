@@ -45,9 +45,15 @@ namespace {
     {
       if( Log::LOGLEVEL[strtolower($level)] <= Log::LOGLEVEL[ConfigFile\Log::$logLevel] )
       {
-        Log::$buffer = Log::$buffer. (ConfigFile\Log::$logDateTime == true ? date('c') . " " : "" )
+        $logLine = (ConfigFile\Log::$logDateTime == true ? date('c') . " " : "" )
           . $level . Log::LOG_LEVEL_SUFFIX . Log::BuildTracePrefix(2)
           . Log::LOG_TEXT_PREFIX . $text . "\n";
+        Log::$buffer = Log::$buffer. $logLine;
+
+        if( ConfigFile\Log::$enableFileLogging ) {
+          $filename = joinPaths(  absRoot(), ConfigFile\Log::$loggingDir, 'shelfdblog_'.date("Y-m-d").'.log' );
+  	      file_put_contents( $filename, $logLine, FILE_APPEND);
+        }
       }
     }
 
@@ -66,19 +72,28 @@ namespace {
 
     public static function FormatPhpError($errno, $errstr, $errfile, $errline, $errcontext)
     {
+      $logLine = "";
+
       if( Log::LOGLEVEL["error"] <= Log::LOGLEVEL[ConfigFile\Log::$logLevel] )
       {
-        Log::$buffer = Log::$buffer. (ConfigFile\Log::$logDateTime == true ? date('c') . " " : "" )
+        $logLine = (ConfigFile\Log::$logDateTime == true ? date('c') . " " : "" )
           . "PHP ERROR [$errno] " . Log::LOG_LEVEL_SUFFIX . Log::BuildTracePrefixPhpErrorHandler($errfile, $errline, $errcontext)
           . Log::LOG_TEXT_PREFIX . $errstr . "\n";
+        Log::$buffer = Log::$buffer. $logLine;
       }
-      return true;
+      return $logLine;
 
     }
 
     public static function LogPhpError($errno, $errstr, $errfile, $errline, $errcontext)
     {
-      Log::FormatPhpError( $errno, $errstr, $errfile, $errline, $errcontext );
+      $logLine = Log::FormatPhpError( $errno, $errstr, $errfile, $errline, $errcontext );
+
+      // Log to file if enabled
+      if( ConfigFile\Log::$enableFileLogging && $logLine != "" ) {
+        $filename = joinPaths(  absRoot(), ConfigFile\Log::$loggingDir, 'shelfdblog_'.date("Y-m-d").'.log' );
+	      file_put_contents( $filename, $logLine , FILE_APPEND);
+      }
 
       Log::PrintTerminationMessage("Shelf-DB Critical error",
         "Critical error...",
@@ -100,7 +115,9 @@ namespace {
 
     private static function BuildTracePrefix($step) {
       $tr = debug_backtrace();
-      return $tr[$step]["file"].":".$tr[$step]["line"].":".$tr[$step+1]["function"]."()";
+
+      $fcnStep = ( $step + 1 >= count($tr) ? $step : $step + 1 );
+      return $tr[$step]["file"].":".$tr[$step]["line"].":".$tr[$fcnStep]["function"]."()";
     }
 
     private static function BuildTracePrefixPhpErrorHandler($errfile, $errline, $errcontext) {
