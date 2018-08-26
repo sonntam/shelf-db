@@ -44,14 +44,14 @@
     $search   = WrapJqGridFilterString($options);
     $numparts = $pdb->Part()->GetCountByCategoryId($catid, $search, $recursive);
     $numpages = ceil($numparts/$limit);
-    $page     = min($numpages,$page);
+    $page     = max(1,min($numpages,$page));
 
     $offset   = $limit*($page - 1);
     $parts    = $pdb->Part()->GetSegmentByCategoryId($catid, $offset, $limit, $options["sidx"], $options["sord"], $recursive, $search);
 
     // Copy
     $newparts = array();
-    for( $i = 0; $i < count($parts); $i++)
+    for( $i = 0; $parts != null && $i < count($parts); $i++)
     {
       $newparts[$i]['cell'] = $parts[$i];
       $newparts[$i]['id'] = $parts[$i]['id'];
