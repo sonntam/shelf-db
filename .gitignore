@@ -24,3 +24,4 @@ lib/js/bootstrap-list-filter/*
 *.js.map
 styles/bootstrap-custom.css
 styles/sdb-overrides.css
+shelfdblog_*
