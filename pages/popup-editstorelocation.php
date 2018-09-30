@@ -81,6 +81,12 @@
 
           } else {
             // Handle error
+            switch( data.type ) {
+              case "notUnique":
+                $("#popupStoreLocationEditDialog #name").addClass("error");
+                break;
+              default:
+            }
           }
         },
         error: function(jqXHR, textStatus, errorThrown) {
