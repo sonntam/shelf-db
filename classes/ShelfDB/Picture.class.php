@@ -112,7 +112,8 @@ namespace ShelfDB {
       $data = $res->fetch_assoc();
       $res->free();
 
-      // Do some Cleanup
+      // Do some Cleanup and extract thumbnails
+      $data['thumbnails'] = [];
       $tn_ids    = array_filter(explode(',', $data['tn_id_arr']));
       $tn_fnames = array_filter(explode('/', $data['tn_fname_arr']));
       for($i = 0; $i < sizeof($tn_ids) ; $i++ ) {
@@ -141,7 +142,7 @@ namespace ShelfDB {
             ."SELECT i.tn_pictid, GROUP_CONCAT(i.id) AS tn_id_arr, GROUP_CONCAT(i.pict_fname SEPARATOR '/') AS tn_fname_arr FROM pictures i "
             ."WHERE i.pict_type = 'T' GROUP BY i.tn_pictid"
           .") t ON t.tn_pictid = p.id WHERE p.parent_id = $id AND p.pict_type = '$elementType';";
-          \Log::Info($query);
+
       $res = $this->db()->sql->query($query) or \Log::WarningSQLQuery($query, $this->db()->sql);
 
       if( !$res )
