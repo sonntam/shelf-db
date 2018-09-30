@@ -50,8 +50,8 @@
             'name': supplier.name,
             'imgPath': imgRoot ~ 'supplier/' ~ supplier.pict_fname,
             'link': relRoot ~ 'pages/page-showsearchresults.php?searchMode=supplierId&search=' ~ supplier.id,
-            'secondaryLink': supplier.urlExample,
-            'secondaryLinkName': supplier.urlExample|length > 30 ? supplier.urlExample|slice(0,30) ~ '...' : supplier.urlExample
+            'secondaryLink': supplier.urlTemplate,
+            'secondaryLinkName': supplier.urlTemplate|length > 30 ? supplier.urlTemplate|slice(0,30) ~ '...' : supplier.urlTemplate
           } %}
         {% endembed %}
       {% endfor %}
