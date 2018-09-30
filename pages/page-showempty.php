@@ -4,7 +4,11 @@
   // Get storelocations
   $storelocations = $pdb->StoreLocation()->GetEmpty();
 
-	echo $pdb->RenderTemplate('page-showempty.twig', array(
-		'storeLocations' => $storelocations
+	echo $pdb->RenderTemplate('page-editstorelocation.twig', array(
+		'storeLocations' => $storelocations,
+		'pageId' => 'showEmpty',
+		'langLabels' => array(
+			'mainHeader' => 'showEmptyStoreLocations'
+		)
 	));
 ?>

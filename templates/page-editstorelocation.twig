@@ -2,7 +2,7 @@
 
 {% set pageId = (pageId ?? 'editstorelocation') %}
 
-{% set langLabels = { mainHeader: 'editStoreLocations' } %}
+{% set langLabels = (langLabels ?? { mainHeader: 'editStoreLocations' }) %}
 
 {% block pagePre %}
 {% endblock pagePre %}
@@ -22,10 +22,14 @@
   	<div class="form-group">
       <div class="container-fluid p-0">
         <div class="row">
+          {% if not hideAddButton %}
           <div class="col-sm-4">
             <button id="newStorelocation" class="btn btn-primary btn-block"><i class="fa fa-plus"></i>&nbsp;<span uilang="add"></span></button>
           </div>
           <div class="col-sm-8">
+          {% else %}
+          <div class="col-sm">
+          {% endif %}
             <input id="searchFilterInput" class="form-control" type="search" uilang="placeholder:popupStorelocationFilterPlaceholder">
           </div>
         </div>
