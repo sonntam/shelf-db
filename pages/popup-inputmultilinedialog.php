@@ -1,13 +1,42 @@
-<div data-role="popup" id="popupInputMultilineDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="width:70vw; width: calc(100vw - 8em)">
-    <div data-role="header" data-theme="a">
-    <h1 name="dialogHeader" style="margin: 0 15px;"></h1>
+<div role="dialog" class="modal fade" id="popupInputMultilineDialog" aria-labelledby="popupInputMultilineHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupInputMultilineHeader" name="dialogHeader"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="formInputMultilineDialog">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <h6 name="dialogHeadline" class="ui-title"></h6>
+            </div>
+            <div class="row">
+              <p name="dialogMessage"></p>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <label for="usertext" name="dialogTextLabel"></label>
+                <textarea class="form-control" style="width: 100%; min-height: 2em; height: 70vh; height: calc(100vh - 20em)" id="usertext" name="dialogText"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary btn-block" data-dismiss="modal" uilang="cancel"></button>
+              </div>
+              <div class="col-6">
+                <button type="submit" buttonresult="ok" name="popupOkBtn" class="btn btn-primary btn-block" uilang="ok">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
-    <div role="main" class="ui-content">
-        <h3 name="dialogHeadline" class="ui-title"></h3>
-        <p name="dialogMessage"></p>
-        <label for="usertext" class="ui-hidden-accessible" name="dialogTextLabel"></label>
-        <textarea style="width: 100%; min-height: 2em; height: 70vh; height: calc(100vh - 16em)" data-autogrow="false" id="usertext" name="dialogText" data-theme="a"></textarea>
-        <a href="#" buttonresult="cancel" name="popupCancelBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back" uilang="cancel"></a>
-        <a href="#" buttonresult="ok" name="popupOkBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-a" data-rel="back" data-transition="flow" uilang="ok"></a>
-    </div>
+  </div>
 </div>

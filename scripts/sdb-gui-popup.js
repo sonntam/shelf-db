@@ -238,7 +238,8 @@ var ShelfDB = (function(sdb,$) {
             ok: null,
             cancel: null,
             transition: "pop",
-            afteropen: null
+            afteropen: null,
+            closeManually: false
           };
 
           options = $.extend(defaults,options);
@@ -251,6 +252,7 @@ var ShelfDB = (function(sdb,$) {
             var $input = $popup.find("[name='dialogText']");
             var $okbtn = $popup.find("[name='popupOkBtn']");
             var $cancelbtn = $popup.find("[name='popupCancelBtn']");
+            var $form = $popup.find("#formInputMultilineDialog");
 
             $popup.find("[name='dialogHeader']").first().text(options.header);
             $popup.find("[name='dialogHeadline']").first().text(options.headline);
@@ -269,6 +271,18 @@ var ShelfDB = (function(sdb,$) {
               }
             });
 
+            // Handle submit
+            $form.off('submit');
+            $form.on('submit', function(evt) {
+              evt.preventDefault();
+              evt.stopPropagation();
+
+              if( options.ok ) options.ok($input.val());
+
+              if( !options.closeManually )
+                $popup.modal('hide');
+            });
+
             // Button click handlers
             $popup.find('a').one('click', function(ev){
               // Return buttonresult
@@ -276,19 +290,22 @@ var ShelfDB = (function(sdb,$) {
               console.log($buttonresult);
             });
 
-            $popup.one('popupafteropen', function(ev,ui) {
-                $popup.find("textarea").first().focus();
-                if( options.afteropen ) options.afteropen(ev,ui);
+            $popup.off('shown.bs.modal');
+            $popup.one('shown.bs.modal', function(ev,ui) {
+                $popup.find("textarea").first().focus().select();
             });
-            $popup.one('popupafterclose', function(ev,ui) {
-              if( $buttonresult == "ok" && options.ok ) {
-                options.ok($input.val());
-              } else if ($buttonresult == "cancel" && options.cancel) {
+
+            $popup.off('hidden.bs.modal');
+            $popup.one('hidden.bs.modal', function(ev,ui) {
+              if ($buttonresult == "cancel" && options.cancel) {
                 options.cancel($input.val());
               }
             });
+
+            return $popup;
           };
 
+          // Check if we need to load
           if( $popup.length > 0 ) {
             setupPopup($popup);
             $popup.modal('show');
