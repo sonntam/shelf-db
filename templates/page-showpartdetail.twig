@@ -239,15 +239,13 @@
               <a uilang="description" class="" data-toggle="collapse" href="#collapseDescription" aria-expanded="true" aria-controls="collapseDescription"></a>
             </div>
             <div class="align-self-center">
-              <button type="button" class="b-0 btn btn-secondary" style="border-bottom: 0;">
+              <button type="button" name="editDescription" class="b-0 btn btn-secondary" style="border-bottom: 0;">
                 <i class="fa fa-edit"></i>
               </button>
             </div>
           </div>
           <div id="collapseDescription" class="collapse show" aria-labelledby="headingDescription">
-            <div class="card-body">
-              {{ part.comment|e }}
-            </div>
+            <div class="card-body" name="showDescription">{{ part.comment|e }}</div>
           </div>
         </div>
       </div>
