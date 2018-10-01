@@ -5,9 +5,11 @@
     </a>
   </div>
   <div class="btn-group btn-group-sm" role="group" aria-label="Image controls" data-toggle="buttons">
-    <label class="checkbox btn btn-secondary {{ (image.master ? 'active' : '' )}}">
-      <input type="checkbox" {{ (image.master ? 'checked="checked"' : '') }} altname="masterPicCheckbox" value="{{ image.id }}" name="masterPicSelect-{{ image.id }}" id="masterPicSelect-{{ image.id }}" autocomplete="off"><span uilang="masterImage"></span>
-    </label>
+    <div class="btn-group btn-group-sm btn-group-toggle">
+      <label class="checkbox btn btn-secondary {{ (image.master ? 'active' : '' )}}">
+        <input type="checkbox" {{ (image.master ? 'checked="checked"' : '') }} altname="masterPicCheckbox" value="{{ image.id }}" name="masterPicSelect-{{ image.id }}" id="masterPicSelect-{{ image.id }}" autocomplete="off"><span uilang="masterImage"></span>
+      </label>
+    </div>
     <button name="deletePicture" value="{{ image.id }}" class="btn btn-secondary" type="button" uilang="delete"></button>
   </div>
 </div>
