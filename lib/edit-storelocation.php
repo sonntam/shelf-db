@@ -59,7 +59,7 @@ switch ($_POST['method']) {
     break;
 
   /**
-   * Add new category
+   * Add new storage location
    *
    */
   case 'copy':
