@@ -1,0 +1,100 @@
+
+{#
+  hideAddButton
+  listItems .id .name .link .imgPath
+  langLabels .dialogHeader .dialogHeadline .dialogMessage .filterPlaceholder
+#}
+<div role="dialog" class="modal fade" id="popupSelectListItemDialog" aria-labelledby="popupSelectListItemHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document" style="overflow-y: initial !important">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupSelectListItemHeader" uilang="{{ langLabels.dialogHeader }}"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form role="form" id="formSelectListItemDialog">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <h6 uilang="{{ langLabels.dialogHeadline }}" class="ui-title"></h6>
+            </div>
+            <div class="row">
+              <p uilang="{{ langLabels.dialogMessage }}"></p>
+            </div>
+            <div class="row">
+              <div class="col-12 form-group">
+                <div class="row">
+                  {% if not hideAddButton %}
+                  <div class="col-sm-4 pl-0">
+                    <button id="addButton" class="btn btn-primary btn-block"><i class="fa fa-plus"></i>&nbsp;<span uilang="add"></span></button>
+                  </div>
+                  <div class="col-sm-8 pr-0">
+                  {% else %}
+                  <div class="col-sm px-0">
+                  {% endif %}
+                    <input id="searchFilterInput" class="form-control" type="search" uilang="placeholder:{{ langLabels.filterPlaceholder }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="searchFilterList" data-toggle="buttons" class="btn-group-toggle container-fluid list-group pr-0" style="overflow-y: auto; max-height: calc(100vh - 400px);">
+            <style>
+              #searchFilterList .list-group-item {
+                display: flex
+              }
+            </style>
+            {% for listItem in listItems %}
+              {% embed 'ext-element-listedititem.twig' %}
+                {% set element = {
+                  'nameTagName':'nameListItem',
+                  'id': listItem.id,
+                  'name': listItem.name,
+                  'link': listItem.link,
+                  'selectable': true,
+                  'imgPath': listItem.imgPath
+                } %}
+                {# relRoot ~ 'pages/page-showsearchresults.php?searchMode=storageLocationId&search=' ~ listItem.id #}
+              {% endembed %}
+            {% endfor %}
+            {# Generate template for late item generation #}
+            {% set tmplItem %}
+              {% embed 'ext-element-listedititem.twig' %}
+              {% set element = {
+                'nameTagName':'nameListItem',
+                'id': '',
+                'name': '',
+                'link': 'tmpl',
+                'selectable': true
+              } %}
+              {% endembed %}
+            {% endset %}
+        	</div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary btn-block" data-dismiss="modal" uilang="cancel"></button>
+              </div>
+              <div class="col-6">
+                <button type="submit" buttonresult="ok" name="popupOkBtn" class="btn btn-primary btn-block" uilang="ok">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $('#popupSelectListItemDialog #searchFilterList').btsListFilter('#popupSelectListItemDialog #searchFilterInput', {
+    itemChild: '[name=nameListItem]',
+    minLength: 2,
+    cancelNode: function() { return ''; '<span class="btn fa fa-remove form-control-feedback" aria-hidden="true" style="position: absolute;pointer-events: auto;top: 0.175rem;right: 0.875rem;"></span>'; },
+    emptyNode: function() { return '<a class="list-group-item well" href="#"><span>'+Lang.get('noSearchResults')+'</span></a>'; },
+    resetOnBlur: false,
+    initial: false
+  });
+</script>
