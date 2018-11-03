@@ -427,6 +427,15 @@ namespace ShelfDB {
             $this->db()->Picture()->DeleteById($picId);
         }
       }
+
+      // Now delete the datasheets
+      if( isset($fp['datasheet_id_arr']) && $fp['datasheet_id_arr'] ){
+        $dsIds = explode(';',$fp['datasheet_id_arr']);
+        foreach($dsIds as $dsId) {
+            \Log::Info("Trying to delete the datasheet id = $dsId entry for part id = $id");
+            $this->db()->Datasheet()->DeleteById($dsId);
+        }
+      }
       return true;
     }
 
@@ -617,7 +626,8 @@ namespace ShelfDB {
         ."ANY_VALUE(fpr.pict_height) as f_pict_height, "
         ."GROUP_CONCAT(pic.id) AS pict_id_arr, pic.parent_id, GROUP_CONCAT(pic.pict_fname SEPARATOR '/') AS pict_fname_arr, GROUP_CONCAT(pic.pict_height) AS pict_height_arr, "
         ."GROUP_CONCAT(pic.pict_width) AS pict_width_arr, GROUP_CONCAT(pic.pict_masterpict) AS pict_masterpict_arr, GROUP_CONCAT(tpic.id) AS tn_id_arr, GROUP_CONCAT(tpic.pict_fname SEPARATOR '/') AS tn_fname_arr, "
-        ."GROUP_CONCAT(tpic.tn_obsolete) AS tn_obsolete_arr, GROUP_CONCAT(tpic.tn_t) AS tn_t_arr "
+        ."GROUP_CONCAT(tpic.tn_obsolete) AS tn_obsolete_arr, GROUP_CONCAT(tpic.tn_t) AS tn_t_arr, "
+        ."GROUP_CONCAT(ds.id) AS datasheet_id_arr, GROUP_CONCAT(ds.datasheetFileName SEPARATOR '/') AS datasheet_fname_arr "
         ."FROM parts p "
         ."LEFT JOIN footprints f ON p.id_footprint = f.id "
         ."LEFT JOIN storeloc s ON p.id_storeloc = s.id "
@@ -629,6 +639,7 @@ namespace ShelfDB {
         ."LEFT JOIN pictures mtpf ON mtpf.parent_id = mpf.id AND mtpf.pict_type = 'T' "
         ."LEFT JOIN pictures pic ON pic.parent_id = p.id AND pic.pict_type = 'P' " //AND (pic.pict_masterpict = 1 OR pic.pict_) "
         ."LEFT JOIN pictures tpic ON tpic.parent_id = pic.id AND tpic.pict_type = 'T' "
+        ."LEFT JOIN datasheets ds ON ds.part_id = p.id "
         ."LEFT JOIN prices pr ON pr.part_id = p.id "
         ."LEFT JOIN pictures fpr ON f.id = fpr.parent_id AND fpr.pict_type = 'F' "
         ."LEFT JOIN pictures sup ON su.id = sup.parent_id AND sup.pict_type = 'SU' "
@@ -673,6 +684,7 @@ namespace ShelfDB {
         ."COALESCE(f.name, '-') AS footprint, "
         ."s.id AS storelocid, s.name AS storeloc, "
         ."COALESCE(su.name, '-') AS supplier_name, c.name AS category_name, "
+        ."ds.datasheet_id_arr, ds.datasheet_fname_arr, "
         ."pic.pict_id_arr, pic.pict_fname_arr, pic.pict_height_arr, pic.pict_width_arr, "
         ."pic.pict_masterpict_arr, pic.tn_id_arr, pic.tn_fname_arr, pic.tn_obsolete_arr, "
         ."pic.tn_t_arr,"
@@ -686,6 +698,11 @@ namespace ShelfDB {
         ."LEFT JOIN storeloc s ON p.id_storeloc = s.id "
         ."LEFT JOIN suppliers su ON p.id_supplier = su.id "
         ."LEFT JOIN categories c ON p.id_category = c.id "
+        ."LEFT JOIN ("
+          ."SELECT GROUP_CONCAT(a.id) AS datasheet_id_arr, a.part_id, GROUP_CONCAT(a.datasheetFileName SEPARATOR '/') AS datasheet_fname_arr " // datasheets ds ON p.id = ds.part_id "
+          ."FROM datasheets a "
+          ."GROUP BY a.part_id"
+        .") ds ON ds.part_id = p.id "
         ."LEFT JOIN ("
           ."SELECT GROUP_CONCAT(a.id) AS pict_id_arr, a.parent_id, GROUP_CONCAT(a.pict_fname SEPARATOR '/') AS pict_fname_arr, GROUP_CONCAT(a.pict_height) AS pict_height_arr, "
             ."GROUP_CONCAT(a.pict_width) AS pict_width_arr, GROUP_CONCAT(a.pict_masterpict) AS pict_masterpict_arr, GROUP_CONCAT(b.id) AS tn_id_arr, GROUP_CONCAT(b.pict_fname SEPARATOR '/') AS tn_fname_arr, "
