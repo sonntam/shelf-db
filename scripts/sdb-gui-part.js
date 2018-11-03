@@ -56,19 +56,19 @@ var ShelfDB = (function(sdb,$) {
       var nStock = parseInt(stock.val());
 
       if( nTotal <= nStock  || nTotal <= 0 )	// Disable minus total button
-        $(opts.totalSubBtnSelector).button('disable');
+        $(opts.totalSubBtnSelector).prop('disabled',true);
       else
-        $(opts.totalSubBtnSelector).button('enable');
+        $(opts.totalSubBtnSelector).prop('disabled',false);
 
       if( nStock >= nTotal )
-        $(opts.stockAddBtnSelector).button('disable');
+        $(opts.stockAddBtnSelector).prop('disabled',true);
       else
-        $(opts.stockAddBtnSelector).button('enable');
+        $(opts.stockAddBtnSelector).prop('disabled',false);
 
       if( nStock <= 0 )
-        $(opts.stockSubBtnSelector).button('disable');
+        $(opts.stockSubBtnSelector).prop('disabled',true);
       else
-        $(opts.stockSubBtnSelector).button('enable');
+        $(opts.stockSubBtnSelector).prop('disabled',false);
     };
 
     return {
