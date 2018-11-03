@@ -11,10 +11,11 @@ var ShelfDB = (function(sdb,$) {
         var defaults = {
           header: "",
           text: "",
-          confirmButtonText: "Ok",
+          confirmButtonText: Lang.get('ok'),
           transition: "pop",
           confirm: undefined,
-          cancel: undefined
+          cancel: undefined,
+          okButtonType_bs: "primary"
         };
 
         options = $.extend(defaults, options);
@@ -25,10 +26,11 @@ var ShelfDB = (function(sdb,$) {
 
           var $buttonresult = "";
           var $cancelbtn = $popup.find("[name='popupCancelBtn']");
+          var $okbtn     = $popup.find("[name='popupOkBtn']");
 
-          $popup.find("[name='dialogHeader']").first().text(options.header);
-          $popup.find("[name='dialogText']").first().text(options.text);
-          $popup.find("[name='popupOkBtn']").first().text(options.confirmButtonText);
+          //$popup.find("[name='dialogHeader']").first().text(options.header);
+          //$popup.find("[name='dialogText']").first().text(options.text);
+          //$okbtn.text(options.confirmButtonText);
 
           // Keypress handlers
           $popup.off('keypress');
@@ -83,14 +85,22 @@ var ShelfDB = (function(sdb,$) {
 
           sdb.GUI.Core.waitAnimationReferenced('show');
 
-          $popuptarget.load(sdb.Core.basePath+'pages/popup-confirmdialog.php', function() {
-            var $popup = $('#popupConfirmDialog');
-            setupPopup($popup);
+          $popuptarget.load(sdb.Core.basePath+'pages/popup-confirmdialog.php',
+            {
+              header: options.header,
+              text: options.text,
+              confirmButtonText: options.confirmButtonText,
+              okButtonType_bs: options.okButtonType_bs
+            },
+            function() {
+              var $popup = $('#popupConfirmDialog');
+              setupPopup($popup);
 
-            sdb.GUI.Core.waitAnimationReferenced('hide');
+              sdb.GUI.Core.waitAnimationReferenced('hide');
 
-            $popup.modal('show');
-          });
+              $popup.modal('show');
+            }
+          );
         }
       },
 
