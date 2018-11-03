@@ -2,6 +2,7 @@
   part
     .name
     .category .name .id
+    .categoryTree array( name, id, ...)
     .showQr
     .qrImgData <?php echo $qrImgData = $pdb->Part()->CreateQRCode($data['partid']); ?>
     .supplierImgFile
@@ -14,8 +15,6 @@
 {% endblock %}
 {% set pageId = (pageId ?? 'showpartdetail') %}
 
-{% set langLabels = { mainHeader: 'editSuppliers' } %}
-
 {% block pagePre %}
 {% endblock pagePre %}
 
@@ -24,7 +23,16 @@
     <div class="row">
       <div class="col">
         <h4 name="showName" class="mb-1">{{ part.name }}</h4>
-        <h6 class="mt-0 pt-0">{{ part.category.name }}</h6>
+        <h6 class="mt-0 pt-0">
+          {% for category in part.categoryTree %}
+            <a href="{{ relRoot }}pages/page-showparts.php?catid={{ category.id }}&showSubcategories=1" target="pagecontainer">
+              {{ category.name }}
+            </a>
+            {% if not loop.last %}
+              <i class='fa fa-arrow-right'></i>
+            {% endif %}
+          {% endfor %}
+        </h6>
       </div>
       <div class="col-auto">
         <button name="editName"   class="btn btn-secondary btn-sm"><i class="fa fa-edit"></i></button>
