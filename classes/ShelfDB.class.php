@@ -55,6 +55,7 @@ class ShelfDB
     $this->user            = new ShelfDB\User($this);
     $this->history         = new ShelfDB\History($this);
     $this->group           = new ShelfDB\Group($this);
+    $this->datasheet       = new ShelfDB\Datasheet($this);
 
     //$twigFileLoader        = new Twig_Loader_Filesystem(joinPaths(dirname(__DIR__),'templates'));
     $this->twigLoader      = new Twig_Loader_Preprocessor(joinPaths(dirname(__DIR__),'templates'));
@@ -89,6 +90,7 @@ class ShelfDB
   public function User()           : ShelfDB\User           { return $this->user; }
   public function History()        : ShelfDB\History        { return $this->history; }
   public function Group()          : ShelfDB\Group          { return $this->group; }
+  public function Datasheet()      : ShelfDB\Datasheet      { return $this->datasheet; }
 
   /**
    * Get the singleton instance of ShelfDB
