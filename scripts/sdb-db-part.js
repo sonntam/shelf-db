@@ -246,6 +246,25 @@ var ShelfDB = (function(sdb, $, Lang) {
   		});
   	};
 
+    var addPartDatasheet = function( id, filename, success ) {
+  		sdb.GUI.Core.waitAnimationReferenced('show');
+  		$.ajax({
+  			url: sdb.Core.basePath + 'lib/edit-part.php',
+  			data: {
+  				id: id,
+          datasheetFileName: filename,
+  				method: 'addDatasheet'
+  			},
+  			type: 'POST',
+  			dataType: 'json'
+  		}).done(function(data) {
+  			if( data && data.success && success) {
+  				success(data);
+  			}
+  			sdb.GUI.Core.waitAnimationReferenced('hide');
+  		});
+  	};
+
     var getPartFieldData = function( id, fieldName, success ) {
   		sdb.GUI.Core.waitAnimationReferenced('show');
   		$.ajax({
@@ -304,7 +323,8 @@ var ShelfDB = (function(sdb, $, Lang) {
       incrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:1, success:success}); },
       decrementStock: function(id, success) { return _addPartCount({id:id, type: "instock", inc:-1, success:success}); },
       editPartFieldData: editPartFieldData,
-      addPartPicture: addPartPicture
+      addPartPicture: addPartPicture,
+      addPartDatasheet: addPartDatasheet
     };
   })();
 

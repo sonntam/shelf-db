@@ -32,6 +32,21 @@ var ShelfDB = (function(sdb,$) {
       Lang.searchAndReplace();
     };
 
+    var _addDatasheetContainer = function(opts, id, file) {
+      debugger;
+      var pnTemplate = $(opts.datasheetNodeTemplate);
+
+      pnTemplate.attr('value',id);
+      //pnTemplate.find('img').attr('id','picture-'+picId);
+      pnTemplate.find('a').attr('href',file);
+      pnTemplate.find('a').attr('id', 'datasheet-'+id);
+      pnTemplate.find(opts.pictureElDeleteBtnSelector).attr('value',id);
+
+      pnTemplate.insertBefore( $(opts.datasheetAddElementSelector) )
+
+      Lang.searchAndReplace();
+    };
+
     var _updateButtons = function(opts) {
       var total = $(opts.totalTextSelector);
       var stock = $(opts.stockTextSelector);
@@ -104,13 +119,48 @@ var ShelfDB = (function(sdb,$) {
             pictureAddElementSelector: '[name=pictureContainer][value=add]',
             pictureElDeleteBtnSelector: 'button[name=deletePicture]',
             pictureElMasterBtnSelector: 'input[altname=masterPicCheckbox]',
+            pictureNodeTemplate: '',
             partImageElSelector: 'img.partimage',
 
-            partId: null,
-            pictureNodeTemplate: ''
+            datasheetListViewSelector: '[name=partDatasheetListView]',
+            datasheetAddBtnSelector: '[name=datasheetContainerAddButton]',
+            datasheetElementSelector: '[name=datasheetContainer]',
+            datasheetAddElementSelector: '[name=datasheetContainer][value=add]',
+            datasheetElDeleteBtnSelector: 'button[name=deleteDatasheet]',
+            datasheetNodeTemplate: '',
+
+            partId: null
           };
 
           opts = $.extend({}, defaults, opts);
+
+          _updateButtons(opts);
+
+          $(opts.datasheetAddBtnSelector).click( function(e) {
+      			// Show upload image dialog
+            debugger;
+      			sdb.GUI.Popup.openExternalPopup({
+      				url: sdb.Core.basePath+'pages/popup-uploadfile.php',
+      				forceReload: true,
+      				fixedMaxWidth: '600px',
+      				postdata: {
+      					id: opts.partId,
+      		    	method: 'addDatasheet',
+      					itemtype: 'part',
+      		   		type: 'datasheet'
+      				},
+      				customEventName: 'positiveResponse',
+      				customEventHandler: function( e, data ) {
+      					if( data && data.success ) {
+      						// Dynamically add picture to list (before plus button)
+      						// data.imageFileName
+      						// data.pictureId
+      						// data.thumbFileName
+      						_addDatasheetContainer(opts, data.datasheetId, data.datasheetFullPath);
+      					}
+      				}
+      			});
+      		});
 
           $(opts.pictureAddBtnSelector).click( function(e) {
       			// Show upload image dialog
