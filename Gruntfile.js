@@ -233,7 +233,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('all', ['newer:sass', 'newer:cssmin:build', 'newer:uglify:build', 'newer:jshint', 'newer:copy:deps']);
-  grunt.registerTask('rebuild_all', ['clean:build', 'all'])
+  grunt.registerTask('rebuild_all', ['clean:build', 'all']);
   grunt.registerTask('merged', ['newer:cssmin:merge', 'newer:uglify:merge']);
   grunt.registerTask('release', ['all', 'newer:copy:release', 'newer:copy:release_config']);
 
