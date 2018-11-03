@@ -17,14 +17,12 @@
 		$partSupplierImageFile = joinPaths( $pdb->RelRoot(), 'img/supplier', $part['su_pict_fname']);
 		$parentCategories = array_reverse( $pdb->Category()->GetAncestorsFromId($part['id_category'], true) );
 
-		$parentCategoryNames = array_map( function($x) { return $x['name']; }, $parentCategories );
-		$parentCategoryLinks = array_map( function($x) {
-			return '<a href="page-showparts.php?catid='.$x['id'].'&showSubcategories=1">'.$x['name'].'</a>';
-		}, $parentCategories );
-
 		$picFnames = ( $part['pict_id_arr'] ? explode("/", $part['pict_fname_arr']) : array() );
 		$picIds    = ( $part['pict_id_arr'] ? explode(",", $part['pict_id_arr']) : array() );
 		$picMaster = ( $part['pict_id_arr'] ? explode(",", $part['pict_masterpict_arr']) : array() );
+
+		$dsFnames = ( $part['datasheet_id_arr'] ? explode("/", $part['datasheet_fname_arr']) : array() );
+		$dsIds    = ( $part['datasheet_id_arr'] ? explode(",", $part['datasheet_id_arr']) : array() );
 
 		$arrPics = array();
 		for( $i = 0; $i < sizeof($picFnames); $i++ ) {
@@ -32,33 +30,19 @@
 				'id' => $picIds[$i],
 				'fname' => $picFnames[$i],
 				'master' => $picMaster[$i],
-			 	'imgPath' => $pdb->RelRoot().'img/parts/'.$picFnames[$i] );
+			 	'imgPath' => $pdb->RelRoot().'img/parts/'.$picFnames[$i]
+			);
 		}
 
-		$partImageHtml = array_map( function($x) use ($pdb) {
-			$imgPath = $pdb->RelRoot().'img/parts/'.$x['fname'];
-			ob_start();
-			?>
-				<div name="pictureContainer" value="<?php echo $x['id']; ?>" style="vertical-align: top; display: inline-block; text-align: center">
-					<a href="#popupimg" data-rel="popup" data-position-to="window">
-						<img id="picture-<?php echo $x['id']; ?>" class="partinfo partImageListItem" data-other-src="<?php echo $imgPath; ?>" src="<?php echo $imgPath; ?>">
-					</a>
-					<div data-role="controlgroup" data-type="horizontal" data-mini="true">
-						<input type="checkbox" <?php if($x['master']) { echo 'checked="checked"'; } ?> altname="masterPicCheckbox" name="masterPicSelect-<?php echo $x['id']; ?>" id="masterPicSelect-<?php echo $x['id']; ?>">
-						<label for="masterPicSelect-<?php echo $x['id']; ?>" uilang="masterImage"></label>
-						<a href="#" name="deletePicture" value="<?php echo $x['id']; ?>" class="ui-btn ui-corner-all ui-icon-delete ui-btn-icon-left" uilang="delete"></a>
-					</div>
-				</div>
-			<?php
-			$el = ob_get_clean();
-			return $el;
-		}, $arrPics);
+		$arrDatasheets = array();
+		for( $i = 0; $i < sizeof($dsFnames); $i++ ) {
+			$arrDatasheets[] = array(
+				'id' => $dsIds[$i],
+				'fname' => $dsFnames[$i],
+			 	'datasheetPath' => joinPaths($pdb->RelRoot(),$pdb->Datasheet()->GetDatasheetFolder(),$dsFnames[$i])
+			);
+		}
 
-		// Build category string
-		$categoryString = join( " <i class='fa fa-arrow-right'></i> ", $parentCategoryLinks);
-
-		// Link to supplier
-		$url = $pdb->Supplier()->GetUrlFromId($part['id_supplier'], $part['supplierpartnr']);
 	}
 
 	echo $pdb->RenderTemplate('page-showpartdetail.twig', array(
@@ -69,9 +53,11 @@
 				"name" => $part['category_name'],
 				"id" => $part['id_category']
 			),
+			"categoryTree" => $parentCategories,
 			"priceFormatted" => $pdb->Part()->FormatPrice($part['price']),
 			"historyString" => $pdb->History()->PrintHistoryData($pdb->History()->GetByTypeAndId($data['partid'], 'P')),
 			"images" => $arrPics,
+			"datasheets" => $arrDatasheets,
 			"supplierImgFile" => $partSupplierImageFile,
 	    "footprintImgFile" => $partFootprintImageFile
 		))
