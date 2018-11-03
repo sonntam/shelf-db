@@ -3,8 +3,8 @@ phpmyadmin
 img/parts/*
 img/footprint/*
 img/supplier/*
-attachment/datasheets/*
-attachment/tmp/*
+attachments/datasheets/*
+attachments/tmp/*
 cache/*
 img/tmp/*
 package-lock.json
