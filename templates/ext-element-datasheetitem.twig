@@ -1,0 +1,12 @@
+<div class="m-1" name="datasheetContainer" value="{{ datasheet.id }}" style="vertical-align: top; display: inline-block; text-align: center">
+  <div>
+    <a id="datasheet-{{ datasheet.id }}" href="{{ datasheet.datasheetPath }}">
+      <div class="partImageListItem">
+        <i class="fa fa-file-pdf-o" style="font-size: 6em"></i>
+      </div>
+    </a>
+  </div>
+  <div class="btn-group btn-group-sm" role="group" aria-label="Datasheet controls" data-toggle="buttons">
+    <button name="deleteDatasheet" value="{{ datasheet.id }}" class="btn btn-secondary" type="button" uilang="delete"></button>
+  </div>
+</div>

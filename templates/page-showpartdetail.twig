@@ -266,7 +266,28 @@
           </div>
           <div id="collapseDatasheets" class="collapse" aria-labelledby="headingDatasheets">
             <div class="card-body" name="partDatasheetsListView">
+              {% for datasheet in part.datasheets %}
+                {% embed 'ext-element-datasheetitem.twig' %}
+                {% endembed %}
+              {% endfor %}
+              <!-- The add button -->
+              <div class="m-1" name="datasheetContainer" value="add" style="vertical-align: top; display: inline-block; text-align: center">
+                <a name="datasheetContainerAddButton" href="#">
+                  <div class="partImageListItem">
+                    <i class="fa fa-plus" style="font-size: 10em"></i>
+                  </div>
+                </a>
+              </div>
 
+              {# Generate template for late item generation #}
+              {% set datasheetTmplItem %}
+                {% embed 'ext-element-datasheetitem.twig' %}
+                {% set datasheet = {
+                  'id':'!tmpl!',
+                  'datasheetPath':'!tmpl!'
+                } %}
+                {% endembed %}
+              {% endset %}
             </div>
           </div>
         </div>
@@ -302,7 +323,7 @@
               </div>
 
               {# Generate template for late item generation #}
-              {% set tmplItem %}
+              {% set pictureTmplItem %}
                 {% embed 'ext-element-imgitem.twig' %}
                 {% set image = {
                   'id':'!tmpl!',
@@ -339,12 +360,14 @@
       </div>
     </div>
   </div>
+
   <script type="text/javascript">
     $(function() {
       $('#showpartdetail [data-toggle=popover]').popover();
       ShelfDB.GUI.Part.PartDetails.setup({
         partId: {{ part.id }},
-        pictureNodeTemplate: '{{ tmplItem|e('js') }}'
+        pictureNodeTemplate: '{{ pictureTmplItem|e('js') }}',
+        datasheetNodeTemplate: '{{ datasheetTmplItem|e('js') }}'
       });
     });
   </script>
