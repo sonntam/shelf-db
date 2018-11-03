@@ -23,6 +23,7 @@ var ShelfDB = (function(sdb,$) {
       pnTemplate.attr('value',picId);
       //pnTemplate.find('img').attr('id','picture-'+picId);
       pnTemplate.find('img').attr('src',picFile);
+      pnTemplate.find('img').attr('id', 'picture-'+picId);
       pnTemplate.find('img').attr('data-other-src',picThumbFile);
       pnTemplate.find(opts.pictureElDeleteBtnSelector).attr('value',picId);
       pnTemplate.find(opts.pictureElMasterBtnSelector).attr('value',picId);
