@@ -60,7 +60,7 @@ class ShelfDB
     $this->twigLoader      = new Twig_Loader_Preprocessor(joinPaths(dirname(__DIR__),'templates'));
 
     $this->twig             = new Twig_Environment($this->twigLoader, array(
-      'cache'       => joinPaths(dirname(__DIR__),'cache'),
+      'cache'       => \ConfigFile\Config::$debug ? false : joinPaths(dirname(__DIR__),'cache'),
       'auto_reload' => true,
       'debug'       => \ConfigFile\Config::$debug
     ));
