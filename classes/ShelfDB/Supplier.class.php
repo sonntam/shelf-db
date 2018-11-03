@@ -235,6 +235,11 @@ namespace ShelfDB {
       $children = $res->fetch_all(MYSQLI_ASSOC);
       $res->free();
 
+      foreach( $children as &$child ) {
+        // Create full image path
+        $child['imgPath'] = joinPaths( $this->db()->RelRoot(), 'img/supplier', $child['pict_fname']);
+      }
+
       if( sizeof($children) == 1 ) {
         $children = $children[0];
       }
