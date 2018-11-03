@@ -181,6 +181,8 @@ var ShelfDB = (function(sdb,$) {
             if( !$(evt.target).valid() )
               return;
 
+            $buttonresult = $okbtn.attr('buttonresult');
+
             if( options.ok ) options.ok($input.val());
 
             if( !options.closeManually )
@@ -202,7 +204,7 @@ var ShelfDB = (function(sdb,$) {
 
           $popup.off('hidden.bs.modal');
           $popup.one('hidden.bs.modal', function(ev,ui) {
-            if ($buttonresult == "cancel" && options.cancel) {
+            if ($buttonresult != "ok" && options.cancel) {
               options.cancel($input.val());
             }
             $form.validate().resetForm();
@@ -412,7 +414,7 @@ var ShelfDB = (function(sdb,$) {
               dialogId.on(options.customEventName, options.customEventHandler);
 
             if( options.click )
-              dialogId.find('a, button').click( options.click );
+              dialogId.find('a, button').click( dialogId, options.click );
 
             if( options.submit )
               dialogId.find('form').on( 'submit', options.submit );
