@@ -7,8 +7,11 @@ namespace {
     private const LOG_LEVEL_SUFFIX = " - ";
     private const LOG_TEXT_PREFIX = " => ";
     private static $buffer = "";
-
+    private static $type = 0;
     private const LOGLEVEL = array( "none" => 0, "error" => 1, "warning" => 2, "info" => 3, "debug" => 4);
+
+    private const LOG_TYPE_DEFAULT = 0;
+    private const LOG_TYPE_JSON    = 1;
 
     public static function Warning(string $text) {
       Log::LogWithLevelTrace("WARNING",$text);
@@ -85,6 +88,14 @@ namespace {
 
     }
 
+    public static function SetErrorOuputJSON() {
+      Log::$type = Log::LOG_TYPE_JSON;
+    }
+
+    public static function SetErrorOutputDefault() {
+      Log::$type = Log::LOG_TYPE_DEFAULT;
+    }
+
     public static function LogPhpError($errno, $errstr, $errfile, $errline, $errcontext)
     {
       $logLine = Log::FormatPhpError( $errno, $errstr, $errfile, $errline, $errcontext );
@@ -95,12 +106,19 @@ namespace {
 	      file_put_contents( $filename, $logLine , FILE_APPEND);
       }
 
-      Log::PrintTerminationMessage("Shelf-DB Critical error",
-        "Critical error...",
-        "A critical error occured in file ". $errfile ." on line ". $errline .":\n\n".
-        $errstr."\n\nHere is the full log:\n\n".Log::FetchLogContent()
-      );
-      exit;
+      switch( Log::$type ) {
+        case Log::LOG_TYPE_DEFAULT:
+          Log::PrintTerminationMessage("Shelf-DB Critical error",
+            "Critical error...",
+            "A critical error occured in file ". $errfile ." on line ". $errline .":\n\n".
+            $errstr."\n\nHere is the full log:\n\n".Log::FetchLogContent()
+          );
+          exit;
+        case Log::LOG_TYPE_JSON:
+          echo json_encode( array("error" => $logLine) );
+          exit;
+      }
+
     }
 
     public static function LogPhpException( Throwable $e ) {
