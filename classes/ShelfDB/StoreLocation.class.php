@@ -41,7 +41,7 @@ namespace ShelfDB {
       $data = $res->fetch_all(MYSQLI_ASSOC);
       $res->free();
 
-      if( sizeof($data) == 1 ) {
+      if( count($data) == 1 ) {
         $data = $data[0];
       }
 
