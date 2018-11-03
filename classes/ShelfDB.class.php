@@ -365,13 +365,15 @@ class ShelfDB
 
   public function DeleteOldTempFiles() {
 
-    array_map( function( $filename ) {
-        $filedate = filectime( $filename );
-        if( $filedate < time() - ConfigFile\FileSystem::$tempFileMaxAgeSecs ) {
-          unlink($filename);
-        }
-    }, glob(dirname(__DIR__) . "/img/tmp/*"));
+    $delFcn = function( $filename ) {
+      $filedate = filectime( $filename );
+      if( $filedate < time() - ConfigFile\FileSystem::$tempFileMaxAgeSecs ) {
+        unlink($filename);
+      }
+    };
 
+    array_map( $delFcn, glob(dirname(__DIR__) . "/img/tmp/*"));
+    array_map( $delFcn, glob(dirname(__DIR__) . "/attachments/tmp/*"));
   }
 
   public function GetCache() {
