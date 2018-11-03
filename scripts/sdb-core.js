@@ -228,7 +228,7 @@ var ShelfDB = (function(sdb, $) {
       uploadFile: function(opts, event) {
 
         var defaults = {
-          uploadTarget: 'tempFile', //'footprintImage', ,'tempImage', 'tempFile' ...
+          uploadTarget: 'tempFile', //'footprintImage', 'supplierImage', 'datasheetFile' ,'tempImage', 'tempFile' ...
           files: null,
           success: null,
           error: null
@@ -304,7 +304,7 @@ var ShelfDB = (function(sdb, $) {
 
       moveUploadedFile: function(opts) {
         var defaults = {
-          targetType: null, //'footprintImage', ...
+          targetType: null, //'partImage', 'footprintImage', 'supplierImage', 'datasheetFile' ,'tempImage', 'tempFile' ...
           tempFilename: null,
           success: null,
           error: null
@@ -313,37 +313,37 @@ var ShelfDB = (function(sdb, $) {
         opts = $.extend(true,{},defaults,opts);
 
         $.ajax({
-        url: ShelfDB.Core.basePath+'lib/upload-files.php',
-        type: 'POST',
-        data: {
-          tempFilename: opts.tempFilename,
-          type: 'moveTempToTarget',
-          target: opts.targetType,
-        },
-        cache: false,
-        dataType: 'json',
-        success: function(data, textStatus, jqXHR) {
-          if( typeof data.error === 'undefined') {
-            // Success -> create new footprint entry in database
-            if( typeof opts.success === 'function' )
-              opts.success(data);
-          } else {
+          url: ShelfDB.Core.basePath+'lib/upload-files.php',
+          type: 'POST',
+          data: {
+            tempFilename: opts.tempFilename,
+            type: 'moveTempToTarget',
+            target: opts.targetType,
+          },
+          cache: false,
+          dataType: 'json',
+          success: function(data, textStatus, jqXHR) {
+            if( typeof data.error === 'undefined') {
+              // Success -> create new footprint entry in database
+              if( typeof opts.success === 'function' )
+                opts.success(data);
+            } else {
+              // Handle error
+              sdb.GUI.Core.waitAnimationReferenced('hide');
+
+              if( typeof opts.error === 'function' )
+                opts.error(textStatus, data);
+            }
+
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
             // Handle error
+            console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
             sdb.GUI.Core.waitAnimationReferenced('hide');
 
             if( typeof opts.error === 'function' )
-              opts.error(textStatus, data);
+              opts.error(errorThrown);
           }
-
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          // Handle error
-          console.log('ERRORS: ' + textStatus + ' ' + errorThrown.message);
-          sdb.GUI.Core.waitAnimationReferenced('hide');
-
-          if( typeof opts.error === 'function' )
-            opts.error(errorThrown);
-        }
       });
       }
     };

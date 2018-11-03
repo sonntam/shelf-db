@@ -3,6 +3,8 @@
   include_once(dirname(__DIR__).'/classes/ShelfDB.class.php');
   include_once(__DIR__.'/utils.php');
 
+  \Log::SetErrorOuputJSON();
+
   $data = array();
 
   // Handle passed data
@@ -12,7 +14,7 @@
 
   switch($args['type']) {
     case 'moveTempToTarget':
-      $sourceFile = joinPaths('/img/tmp', basename($sourceFile) );
+      $sourceFile = joinPaths('/attachments/tmp', basename($sourceFile) );
       break;
     case 'uploadToTemp':
       // Delete old temporary files in folder
@@ -32,13 +34,11 @@
       $uploadDir = '/img/parts';
       break;
     case 'tempImage':
-      $uploadDir = '/img/tmp';
-      break;
     case 'tempFile':
-      $uploadDir = '/img/attachments';
+      $uploadDir = '/attachments/tmp';
       break;
     case 'datasheetFile':
-      $uploadDir = '/attachments/datasheet';
+      $uploadDir = '/attachments/datasheets';
       break;
     default:
       return;
@@ -60,14 +60,18 @@
 
         $uniquePathParts  = pathinfo($uniqueFile);
 
-        if( move_uploaded_file($file['tmp_name'], $uniqueFile ) )
-        {
-            $files[] = array('fullpath' => convertPathSepToForwardSlash(joinPaths($uploadRelDir,$uniquePathParts['basename'])),
-                             'name' => $uniquePathParts['basename'] );
-        }
-        else
-        {
-            $error = true;
+        try {
+          if( move_uploaded_file($file['tmp_name'], $uniqueFile ) )
+          {
+              $files[] = array('fullpath' => convertPathSepToForwardSlash(joinPaths($uploadRelDir,$uniquePathParts['basename'])),
+                               'name' => $uniquePathParts['basename'] );
+          }
+          else
+          {
+              $error = true;
+          }
+        } catch( Throwable $t) {
+          $error = true;
         }
     }
     $data = ($error) ? array('error' => 'There was an error uploading your files') : array('files' => $files);
