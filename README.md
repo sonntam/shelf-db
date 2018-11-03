@@ -76,3 +76,4 @@ TODOs
  - show price information in part detail view including tooltip with timestamp of last update
  - REST API
  - Refactor all the JavaScript code
+ - Fix file upload. Show preview but only upload to server after user clicks "upload". Also save original filename and size of file
