@@ -329,6 +329,7 @@ var ShelfDB = (function(sdb,$) {
       		    header: Lang.get('editPartDelete'),
       		    text: Lang.get('noUndoHint'),
       		    confirmButtonText: Lang.get('delete'),
+              okButtonType_bs: 'danger',
       		    confirm: function() {
       					// TODO Submit and delete
       					alert('TODO Delete part');
