@@ -337,6 +337,21 @@ var ShelfDB = (function(sdb,$) {
       		});
 
       		$(opts.storeLocationEditBtnSelector).click(function(evt) {
+            debugger;
+            // This is the function that sets the parts store location to the
+            // specified id, name
+            var setStoreLocation = function( id, name, done ) {
+              sdb.Part.editPartFieldData( opts.partId, 'storelocation', id,
+                function(data) {
+                  if( data && data.success ) {
+                    // Load store location name and store in database
+                    $(opts.storeLocationTextSelector).attr('value',name);
+                    if( done ) done(data);
+                  }
+                }
+              );
+            };
+
       			sdb.GUI.Popup.openExternalPopup({
       				forceReload: true,
       				url: sdb.Core.basePath+'pages/popup-selectstorelocation.php',
@@ -347,18 +362,55 @@ var ShelfDB = (function(sdb,$) {
       					//alert(JSON.stringify(evt));
       				},
       				click: function(evt) {
-      					var storeClicked = $(evt.currentTarget).attr('storeid');
-      					if( storeClicked )
+                var $dialog = evt.data;
+                debugger;
+
+                if( $(evt.currentTarget)[0].id == "addButton" ) {
+                    evt.preventDefault();
+                    $dialog.modal('hide');
+                    sdb.GUI.Popup.inputPopUp({
+                      message: Lang.get('editStoreLocationAddHint'),
+                      headline: Lang.get('editStoreLocationNewName'),
+                      textLabel: Lang.get('editStoreLocationAdd'),
+                      textPlaceholder: Lang.get('namePlaceholder'),
+                      ok: function(val) {
+                        // Cerate new storage location and use it!
+                        sdb.StoreLocation.createStoreLocationAsync({
+                          name: val,
+                          done: function(data) {
+                            if( data.success ) {
+        						           setStoreLocation(data.id, data.name, function(data) {
+                                 if( !data || !data.success ) {
+                                   $dialog.modal('show');
+                                 }
+                               })
+                            } else {
+                              $dialog.modal('show');
+                            }
+                          }
+                        });
+                      },
+                      cancel: function(val) {
+                        $dialog.modal('show');
+                      }
+                    });
+                    return;
+                }
+                else if( $(evt.currentTarget).attr("buttonresult") != "ok" )
+                  return;
+
+                evt.preventDefault();
+
+      					var storeClicked = $dialog.find('input[name=listItemOptions]:checked');
+
+      					if( storeClicked.length > 0 )
       					{
-      						sdb.Part.editPartFieldData( opts.partId, 'storelocation', storeClicked,
-      							function(data) {
-      								if( data && data.success ) {
-      									//evt.preventDefault();
-      									// Load store location name and store in database
-      									$(opts.storeLocationTextSelector).attr('value',$(evt.currentTarget).attr('storename'));
-      								}
-      							}
-      						);
+                  var storeId   = storeClicked.val();
+                  var storeName = storeClicked.parent().find('h6[name=nameListItem]').text();
+                  setStoreLocation( storeId, storeName, function(data) {
+                    if( data && data.success )
+                      $dialog.modal('hide');
+                  } );
       					}
       				}
       			});
@@ -374,14 +426,24 @@ var ShelfDB = (function(sdb,$) {
       				afterclose: function(evt) {
       				},
       				click: function(evt) {
-      					var fpClicked = $(evt.currentTarget).attr('footprintid');
-      					if( fpClicked )
+                debugger;
+
+                if( $(evt.currentTarget).attr("buttonresult") != "ok" ) return;
+
+                evt.preventDefault();
+
+                var $dialog = evt.data;
+      					var fpClicked = $dialog.find('input[name=listItemOptions]:checked');
+
+      					if( fpClicked.length > 0 )
       					{
-      						ShelfDB.Part.editPartFieldData( opts.partId, 'footprint', fpClicked,
+                  var fpId = fpClicked.val();
+      						sdb.Part.editPartFieldData( opts.partId, 'footprint', fpId,
       							function(data) {
       								if( data && data.success ) {
       									// Load store location name and store in database
-      									$(opts.footprintTextSelector).attr('value',$(evt.currentTarget).attr('footprintname'));
+                        var fpName = fpClicked.parent().find('h6[name=nameListItem]').text();
+      									$(opts.footprintTextSelector).attr('value',fpName);
       									// Update pictures
       									$.ajax({	// Main picture if necessary
       										url: sdb.Core.basePath+'lib/json.parts.php',
@@ -401,23 +463,26 @@ var ShelfDB = (function(sdb,$) {
       											});
       										}
       									});
-      									$.ajax({
+
+       									$.ajax({ // Update footprint picture
       										url: sdb.Core.basePath+'lib/json.footprints.php',
       										type: 'POST',
       										dataType: 'json',
       										data: {
-      											id: fpClicked
+      											id: fpId
       										}
       									}).done(function(data) {
       										// Update gui
       										if( data ) {
-      											var imgFile = sdb.Core.basePath+'img/footprint/'+data['pict_fname'];
+      											var imgFile = data['imgPath']; //sdb.Core.basePath+'img/footprint/'+
       											$(opts.footprintImageSelector).attr({
       												src: imgFile,
       												'data-other-src': imgFile
       											});
       										}
       									});
+
+                        $dialog.modal('hide');
       								}
       							}
       						);
@@ -436,16 +501,26 @@ var ShelfDB = (function(sdb,$) {
       				afterclose: function(evt) {
       				},
       				click: function(evt) {
-      					var fpClicked = $(evt.currentTarget).attr('supplierid');
-      					if( fpClicked )
+                debugger;
+
+                if( $(evt.currentTarget).attr("buttonresult") != "ok" ) return;
+
+                evt.preventDefault();
+
+                var $dialog = evt.data;
+      					var spClicked = $dialog.find('input[name=listItemOptions]:checked');
+
+      					if( spClicked.length > 0 )
       					{
-      						sdb.Part.editPartFieldData( opts.partId, 'supplierid', fpClicked,
+                  var spId = spClicked.val();
+      						sdb.Part.editPartFieldData( opts.partId, 'supplierid', spId,
       							function(data) {
       								if( data && data.success ) {
       									// Load store location name and store in database
+                        var spName = spClicked.parent().find('h6[name=nameListItem]').text();
       									$(opts.supplierTextSelector)
-      										.attr('value',$(evt.currentTarget).attr('suppliername'))
-      										.attr('supplierId', fpClicked);
+      										.attr('value',spName)
+      										.attr('supplierId', spId);
 
       									// Get url for part and update picture
       									$.ajax({
@@ -453,19 +528,20 @@ var ShelfDB = (function(sdb,$) {
       										type: 'POST',
       										dataType: 'json',
       										data: {
-      											id: fpClicked,
+      											id: spId,
       											partNr: $(opts.partNumberTextSelector).val()
       										}
       									}).done(function(data) {
       										// Update gui
       										if( data ) {
-      											var imgFile = sdb.Core.basePath+'img/supplier/'+data['pict_fname'];
+      											var imgFile = data['imgPath'];
       											$(opts.supplierImageSelector).attr({
       												src: imgFile,
       												'data-other-src': imgFile
       											});
 
       											$(opts.supplierTextSelector).attr('url',data.urlTemplate);
+                            $dialog.modal('hide');
       										}
       									});
       								}

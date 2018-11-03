@@ -2,13 +2,12 @@
 var ShelfDB = (function(sdb, $, Lang) {
 
   // The Part submodule
-  var supplierModule = (function() {
+  var storeLocationModule = (function() {
 
-    var getSupplierByIdAsync = function(args) {
+    var getStoreLocationByIdAsync = function(args) {
 
       opts = {
         id: null,
-        partNr: null,
         done: null
       };
 
@@ -16,12 +15,11 @@ var ShelfDB = (function(sdb, $, Lang) {
 
       sdb.GUI.Core.waitAnimationReferenced('show');
       $.ajax({
-        url: sdb.Core.basePath + 'lib/json.suppliers.php',
+        url: sdb.Core.basePath + 'lib/json.storelocations.php',
         type: 'POST',
         dataType: 'json',
         data: {
           id: opts.id,
-          partNr: opts.partNr
         }
       }).done(function(data) {
         if( opts.done )
@@ -31,14 +29,40 @@ var ShelfDB = (function(sdb, $, Lang) {
       });
     };
 
+    var createStoreLocationAsync = function(args) {
+      opts = {
+        name: null,
+        done: null
+      };
+
+      $.extend(opts, args);
+
+      sdb.GUI.Core.waitAnimationReferenced('show');
+      $.ajax({
+        url: sdb.Core.basePath + 'lib/edit-storelocation.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          name: opts.name,
+          method: 'add'
+        }
+      }).done(function(data) {
+        if( opts.done )
+          opts.done(data);
+
+        sdb.GUI.Core.waitAnimationReferenced('hide');
+      });
+    }
+
     // Return the column model for jqGrid for the parts view
     return  {
-      getSupplierByIdAsync: getSupplierByIdAsync
+      getStoreLocationByIdAsync: getStoreLocationByIdAsync,
+      createStoreLocationAsync: createStoreLocationAsync
     };
   })();
 
   $.extend(sdb, {
-    Supplier: supplierModule,
+    StoreLocation: storeLocationModule,
   });
 
   return sdb;
