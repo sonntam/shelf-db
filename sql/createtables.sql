@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   `action` mediumtext NOT NULL,
   `timestamp` datetime NOT NULL,
   `itemid` int(11),
-  `itemtype` enum('C','P','F','SU','SL','U','G','PIC') NOT NULL COMMENT 'Type of item this entry belongs to `C` category, `P` part, `F` footprint, `SL` storelocation, `SU` supplier, `U` user, `G` group, `PIC` picture',
+  `itemtype` enum('C','P','F','SU','SL','U','G','PIC','DS') NOT NULL COMMENT 'Type of item this entry belongs to `C` category, `P` part, `F` footprint, `SL` storelocation, `SU` supplier, `U` user, `G` group, `PIC` picture',
   `field` mediumtext NOT NULL,
   `newvalue` mediumtext,
   `oldvalue` mediumtext

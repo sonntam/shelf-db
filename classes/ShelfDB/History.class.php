@@ -16,7 +16,7 @@ namespace ShelfDB {
     }
 
     public function Add(int $itemId, $itemType, $action, $field, $oldValue, $newValue) {
-      // $itemType can be one of G, U, P, SU, F, SL, PIC
+      // $itemType can be one of G, U, P, SU, F, SL, PIC, DS
       // Group, User, Part, Supplier, Footprint, Storelocation, Picture
 
       $userId = $this->db()->User()->GetLoggedInUserId();
