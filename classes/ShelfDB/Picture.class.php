@@ -283,7 +283,7 @@ namespace ShelfDB {
             return $newid;
 
           } else {
-            \Log::Error("Error creating new picture entry (type = $elementId, fileName = \"$fn\")");
+            \Log::Error("Error creating new picture entry (id = $elementId, type = $elementType, fileName = \"$fn\")");
             \Log::WarningSQLQuery($query, $this->db()->sql);
             return false;
           }
