@@ -129,6 +129,7 @@ var Lang = (function(){
         parts: 'Teile',
         abort: 'Abbrechen',
         none: 'Keine',
+        namePlaceholder: 'Namen eingeben...',
         noSearchResults: 'Keine Ergebnisse...',
         tools: 'Werkzeuge',
         settings: 'Einstellungen',
@@ -152,6 +153,7 @@ var Lang = (function(){
         register: 'Registrieren',
         administration: 'Administration',
         uploadImageLabel: 'Bild hochladen',
+        uploadFileLabel: 'Datei hochladen',
         upload: 'Hochladen',
         description: 'Beschreibung',
         datasheets: 'Datenblätter',
@@ -281,6 +283,7 @@ var Lang = (function(){
 
         showEmptyStoreLocations: "Leerfächer anzeigen",
         showNonEmptyStoreLocations: "Belegte Fächer anzeigen",
+        showHistory: "Verlauf anzeigen",
 
         editStoreLocations: "Fächer bearbeiten",
         editStoreLocationNewName: 'Neuer Name',
