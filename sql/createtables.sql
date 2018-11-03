@@ -58,7 +58,9 @@ DROP TABLE IF EXISTS `datasheets`;
 CREATE TABLE IF NOT EXISTS `datasheets` (
   `id` int(11) NOT NULL UNIQUE,
   `part_id` int(11) NOT NULL DEFAULT '0',
-  `datasheeturl` varchar(255) NOT NULL DEFAULT ''
+  `datasheetFileName` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `filesize` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
