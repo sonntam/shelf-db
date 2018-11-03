@@ -112,6 +112,40 @@ namespace {
 				}
 			}
 
+			// Check if any fields were missing. If so add the default value
+			// Get Sections of config file
+			$nsf = new NameSpaceFinder();
+
+			$nsc = $nsf->getClassesOfNameSpace("ConfigFile");
+
+			// Traverse each Sections
+			$missing = false;
+			foreach ($nsc as $key => $sectionpath) {
+				// The section name itself
+				$section = lcfirst( endn(explode("\\",$sectionpath)) );
+				$class = new ReflectionClass($sectionpath);
+				$props = $class->getStaticProperties();
+
+				if( !array_key_exists($section, $cfg) ) {
+					Log::Warning("Configuration file is missing section \"$section\". I'm adding the default values...");
+					$cfg[$section] = $props;
+					$missing = true;
+				} else {
+					foreach( $props as $propKey => $propVal ) {
+						if( !array_key_exists($propKey, $cfg[$section] ) ) {
+							Log::Warning("Configuration file is missing value \"$section::$propKey\". Setting it to current value \"$propVal\" (probably the default).");
+							$cfg[$section][$propKey] = $propVal;
+							$missing = true;
+						}
+					}
+				}
+			}
+
+			// Write missing config options to file
+			if( $missing ) {
+				$this->SaveToNewFile($this->filename, $cfg);
+			}
+
 			// Check if versions differ
 			if( $version != ConfigFile::VERSION )
 			{
@@ -136,7 +170,7 @@ namespace {
 		 * Save the current configuration to a specific FilesystemIterator
 		 * @param string $filename Path to JSON config file
 		 */
-		public function SaveToNewFile(string $filename)
+		public function SaveToNewFile(string $filename, $cfg = null)
 		{
 			if( !isset($filename) || $filename == "" )
 			{
@@ -150,25 +184,28 @@ namespace {
 			$nsc = $nsf->getClassesOfNameSpace("ConfigFile");
 
 			// Traverse each Sections
-			$cfg = [];
-			foreach ($nsc as $key => $sectionpath) {
-				// The section name itself
-				$section = lcfirst( endn(explode("\\",$sectionpath)) );
-				$class = new ReflectionClass($sectionpath);
-				$props = $class->getStaticProperties();
+			if( empty($cfg) ) {
 
-				// Formatted configurations fit for JSON export
-				$props_f = $props;
-				/*foreach ($props as $propname => $propvalue) {
-					$propname_l = strtolower($propname);
-					if( $propname != $propname_l )
-					{
-						$props_f[$propname_l] = $propvalue;
-						unset($props_f[$propname]);
-					}
-				}*/
+				$cfg = [];
+				foreach ($nsc as $key => $sectionpath) {
+					// The section name itself
+					$section = lcfirst( endn(explode("\\",$sectionpath)) );
+					$class = new ReflectionClass($sectionpath);
+					$props = $class->getStaticProperties();
 
-				$cfg[$section] = $props_f;
+					// Formatted configurations fit for JSON export
+					$props_f = $props;
+					/*foreach ($props as $propname => $propvalue) {
+						$propname_l = strtolower($propname);
+						if( $propname != $propname_l )
+						{
+							$props_f[$propname_l] = $propvalue;
+							unset($props_f[$propname]);
+						}
+					}*/
+
+					$cfg[$section] = $props_f;
+				}
 			}
 
 			Log::Debug("Saving JSON: ".var_export($cfg,true));
