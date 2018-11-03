@@ -1,0 +1,67 @@
+{#
+  langLabels .title .headline
+  type "picture", "datasheet"
+  originalFile
+  method
+  fileId
+#}
+
+<div role="dialog" class="modal fade" id="popupUploadFileDialog" aria-labelledby="popupUploadFileHeader" aria-hidden="true" style="max-width:98%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="popupUploadFileHeader" uilang="popupUploadFile"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="uploadFileForm">
+        <input type="hidden" name="method" id="method" value="{{ method }}">
+        <input type="hidden" name="type" id="type" value="{{ type }}">
+        <input type="hidden" name="fileName" id="fileName" value="">
+        <input type="hidden" name="id" id="id" value="{{ fileId }}">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-12">
+                <h6 name="dialogHeadline" class="ui-title" uilang="popupUploadFileUserAction"></h6>
+              </div>
+            </div>
+            <div class="row">
+              {% if type == "picture" %}
+              <div class="col-auto text-center">
+                <img id="imgPreview" original-src="{{ originalFile|e }}" style="background-color: lightgray; object-fit: contain; width:10em; height:10em" src="{{ originalFile|e }}">
+              </div>
+              {% endif %}
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <label for="file" uilang="{{ type=="picture" ? "uploadImageLabel" : "uploadFileLabel" }}"></label>
+                    <input class="form-control" id="file" name="file" type="file" value="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" buttonresult="cancel" name="popupCancelBtn" class="btn btn-secondary btn-block" data-dismiss="modal" uilang="cancel"></button>
+              </div>
+              <div class="col-6">
+                <button id="popupOkBtn" type="submit" buttonresult="ok" value="ok" name="popupOkBtn" class="btn btn-primary btn-block" uilang="upload">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function() {
+    $('#popupUploadFileDialog [data-toggle=popover]').popover();
+  });
+</script>
