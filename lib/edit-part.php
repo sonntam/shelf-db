@@ -73,6 +73,22 @@ $_REQUEST['id']"763"
       }
       break;
 
+    case 'addDatasheet':
+      if( isset($data['datasheetFileName']) && isset($data['id']) ) {
+        $id = $data['id'];
+        $newid = $pdb->Datasheet()->Create($id, $data['datasheetFileName'], false);
+
+        if( $newid ) {
+          $response = array_replace_recursive($response, array(
+            'success' => true,
+            'datasheetId' => $newid,
+            'datasheetFileName' => $data['datasheetFileName'],
+            'datasheetFullPath' => $pdb->RelRoot() . 'attachments/datasheets/' . $data['datasheetFileName']
+          ));
+        }
+      }
+      break;
+
     case 'addPicture':
       if( isset($data['imageFileName']) && isset($data['id']) ) {
         $id = $data['id'];
